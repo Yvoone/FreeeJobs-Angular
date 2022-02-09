@@ -8,10 +8,29 @@ import { JobListing } from 'src/app/entities/job-listing';
   providedIn: 'root'
 })
 export class JobListingService {
-
+  
   private jobListingUrl = 'http://localhost:8083/jobListing';
 
   constructor(private httpClient: HttpClient) {}
+
+  getJobListingToBrowse(pageNumber: number, searchValue: string) {
+    const URL = this.jobListingUrl + '/listAllOpenActiveJobListing';
+
+    let params = new HttpParams()
+    .set('pageNumber', pageNumber)
+    .set('searchValue', searchValue);
+
+    return this.httpClient.get<JobListing[]>(URL, {params});
+  }
+
+  getJobListingToBrowseTotal(searchValue: string) {
+    const URL = this.jobListingUrl + '/getAllOpenActiveJobListingTotal';
+
+    let params = new HttpParams()
+    .set('searchValue', searchValue);
+
+    return this.httpClient.get<number>(URL, {params});
+  }
 
   getJobListingByUser(authorId: number): Observable<JobListing[]> {
     const URL = this.jobListingUrl + '/listJobListingByAuthorId';

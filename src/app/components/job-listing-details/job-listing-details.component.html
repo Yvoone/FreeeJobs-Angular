@@ -1,9 +1,9 @@
 <div class="container mt-4">
     <div class="row mb-3">
-        <div class="col-8">
+        <div class="col-10">
             <h3 class="card-title text-secondary flex-fill">{{jobListing.title}}</h3>
         </div>
-        <div class="col-4">
+        <div class="col-2">
             <div class="container">
                 <h5 class="row justify-content-end mb-n1">
                     {{jobListing.status}}
@@ -15,7 +15,7 @@
       </div>
     </div>
       <div class="row">
-        <div class="col-8">
+        <div class="col-10">
             <div class="card">       
                 <h5 class="card-header">Job Details</h5>
                 <div class="card-body">
@@ -23,26 +23,61 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-2">
             <div class="container">
-                <h5 class="row justify-content-end">
+                <h5 class="row justify-content-end pb-2">
                     {{jobListing.rate}}{{jobListing.rateType}}
                 </h5>
                 <div class="row justify-content-end">
                     <button type="button" class="btn btn-dark">Apply Now</button>
                 </div>
+                <div class="row justify-content-end">
+                    <button type="button" class="btn btn-dark">Edit Job</button>
+                </div>
             </div>
          </div>
       </div>
       <div class="row pt-3">
-        <div class="col-8">
+        <div class="col-10">
             <div class="card">       
-                <h5 class="card-header">About The Client</h5>
+                <h5 class="card-header">About The sClient</h5>
                 <div class="card-body">
                 <p class="card-text">whowhowho</p>
                 </div>
             </div>
         </div>
-        <div class="col-4"></div>
-</div>
+        <div class="col-2"></div>
+    </div>
+    <div class="row pt-3">
+        <div class="col-10">
+            <div class="card">       
+                <h5 class="card-header">Applicants </h5>
+                <div class="card" *ngFor="let applicant of applicants">
+                    <div class="card-body" *ngIf="applicants.length > 0">
+                        <div class="row">
+                            <div class="col-8">
+                                <h4 class="card-title btn-link text-secondary flex-fill" >{{applicant.firstName}}{{applicant.lastName}}</h4>
+                            </div>
+                            <div class="col-4">
+
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-10">
+                                <div class="card-text flex-fill text-left">{{applicant.aboutMe}}</div>
+                            </div>
+                            <div class="col-2 justify-content-end">
+                                <button type="button" class="btn btn-dark float-right">View Application</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="card-body" *ngIf="applicants.length == 0">
+                    <h4 class="card-title text-centre">No Jobs Listed</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    
 

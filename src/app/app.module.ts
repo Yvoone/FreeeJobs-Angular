@@ -8,19 +8,24 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { JobListingDetailsComponent } from './components/job-listing-details/job-listing-details.component';
+import { JobListingBrowseComponent } from './components/job-listing-browse/job-listing-browse.component';
+
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    JobListingDetailsComponent
+    JobListingDetailsComponent,
+    JobListingBrowseComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
