@@ -13,6 +13,7 @@ export class JobListingDetailsComponent implements OnInit {
 
   id!: number;
   jobListing!: JobListing;
+  userType!: number;
   applicants: User[] = [
     {
       id: 1,
@@ -49,6 +50,9 @@ export class JobListingDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("open listing details");
+	//Temp hardcoded
+	this.userType = 0;
+	
     this.id = this.activatedRoute.snapshot.params['id'];
     this.getJobDetails(this.id);
   }

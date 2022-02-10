@@ -3,43 +3,38 @@
         <div class="col-10">
             <h3 class="card-title text-secondary flex-fill">{{jobListing.title}}</h3>
         </div>
-        <div class="col-2">
-            <div class="container">
-                <h5 class="row justify-content-end mb-n1">
-                    {{jobListing.status}}
-                </h5>
-                <div class="row justify-content-end">
-                    Posted 1 day ago
-                </div>
-            </div>
+      <div class="container position-absolute">
+        <h5 class="row justify-content-end mb-n1">
+          {{jobListing.status}}
+        </h5>
+        <div class="row justify-content-end mb-3">
+          Posted 1 day ago
+        </div>
+        <h5 class="row justify-content-end mb-2">
+          {{jobListing.rate}}{{jobListing.rateType}}
+        </h5>
+        <div class="row justify-content-end" *ngIf="userType == 0" >
+            <button type="button" class="btn btn-dark">Apply Now</button>
+        </div>
+        <div class="row justify-content-end" *ngIf="userType == 1">
+            <button type="button" class="btn btn-dark">Edit Job</button>
+        </div>
       </div>
     </div>
       <div class="row">
         <div class="col-10">
-            <div class="card">       
+            <div class="card">
                 <h5 class="card-header">Job Details</h5>
                 <div class="card-body">
                 <p class="card-text">{{jobListing.details}}</p>
                 </div>
             </div>
         </div>
-        <div class="col-2">
-            <div class="container">
-                <h5 class="row justify-content-end pb-2">
-                    {{jobListing.rate}}{{jobListing.rateType}}
-                </h5>
-                <div class="row justify-content-end">
-                    <button type="button" class="btn btn-dark">Apply Now</button>
-                </div>
-                <div class="row justify-content-end">
-                    <button type="button" class="btn btn-dark">Edit Job</button>
-                </div>
-            </div>
-         </div>
       </div>
+
       <div class="row pt-3">
         <div class="col-10">
-            <div class="card">       
+            <div class="card">
                 <h5 class="card-header">About The sClient</h5>
                 <div class="card-body">
                 <p class="card-text">whowhowho</p>
@@ -48,10 +43,10 @@
         </div>
         <div class="col-2"></div>
     </div>
-    <div class="row pt-3">
+    <div class="row pt-3 jobAppSpace">
         <div class="col-10">
-            <div class="card">       
-                <h5 class="card-header">Applicants </h5>
+            <div class="card">
+                <h5 class="card-header">Applicants ({{applicants.length}}) </h5>
                 <div class="card" *ngFor="let applicant of applicants">
                     <div class="card-body" *ngIf="applicants.length > 0">
                         <div class="row">
@@ -79,5 +74,5 @@
         </div>
         <div class="col-2"></div>
     </div>
-    
+
 
