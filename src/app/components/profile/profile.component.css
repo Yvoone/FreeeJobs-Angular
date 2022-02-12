@@ -1,0 +1,36 @@
+.nav-tabs {
+    margin-top: 2em;
+}
+
+.tab-content {
+    padding: 1em;
+}
+
+img {
+    width: 15em;
+    height: 15em;
+    margin-bottom: 1em;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.aboutMeTitle {
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+.editPofBtn {
+    float: right;
+}
+
+.row {
+    margin-bottom: 1em;
+}
+
+.skills {
+    margin-bottom: 1em;
+}
