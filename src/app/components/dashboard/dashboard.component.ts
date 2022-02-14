@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JobListing } from 'src/app/entities/job-listing';
 import { JobListingService } from 'src/app/services/job-listing.service';
 import { Application } from 'src/app/entities/application';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/job-application.service';
 import { Router } from '@angular/router';
 
 @Component({
