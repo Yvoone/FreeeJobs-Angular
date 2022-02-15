@@ -1,6 +1,10 @@
   <div class="container mt-4">
+    <h3 class="card-title text-secondary flex-fill">Dashboard</h3>
     <ngb-accordion #a="ngbAccordion" activeIds="custom-panel-1">
-        <ngb-panel title="Job Listings" >
+        <ngb-panel>
+          <ng-template ngbPanelTitle>
+            <span>Job Listing ({{jobListings.length}})</span>
+          </ng-template>
             <ng-template ngbPanelContent>
               <div class="card mb-4" *ngFor="let jobListing of jobListings">
                 <div class="card-body" *ngIf="jobListings.length > 0">
@@ -20,7 +24,10 @@
             </div>
             </ng-template>
           </ngb-panel>
-          <ngb-panel title="Job Applications">
+          <ngb-panel>
+            <ng-template ngbPanelTitle>
+              <span>Job Applications ({{jobApplications.length}})</span>
+            </ng-template>
             <ng-template ngbPanelContent>
               <div class="card mb-4" *ngFor="let jobApplication of jobApplications">
                 <div class="card-body" *ngIf="jobListings.length > 0">
@@ -31,7 +38,7 @@
                 </div>
               </div>
               <div class="card-body" *ngIf="jobListings.length == 0">
-                <h4 class="card-title text-centre">No Jobs Listed</h4>
+                <h4 class="card-title text-centre">No Applications Listed</h4>
             </div>
             </ng-template>
           </ngb-panel>

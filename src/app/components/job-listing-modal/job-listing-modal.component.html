@@ -1,0 +1,98 @@
+<div class="container mt-4">
+    <h3 class="text-secondary">{{modalTitle}} Job</h3>
+    <div id="alertId" *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{successMessage}}</strong>
+      </div>
+      <form id="myeditform" [formGroup]="editForm">
+        <div class="form-group row">
+          <div class="col">
+            <label>Enter a Job Listing Title</label><span class="required">*</span>
+            <div class="input-group">
+              <input name="title" formControlName="title" class="form-control" maxlength="100"> 
+            </div>
+            <div *ngIf="getEditFormControl['title'].errors?.['required'] && getEditFormControl['title'].touched"
+                 class="alert alert-danger">Job Title is required.
+            </div>
+            <div *ngIf="getEditFormControl['title'].errors?.['minlength'] && getEditFormControl['title'].touched"
+                 class="alert alert-danger">Job Title must be greater than 3 characters.
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>What is the job description and/or scope?</label>
+          <div class="input-group">
+            <textarea class="form-control" formControlName="details" name="details" rows="5"></textarea>
+          </div>
+          <div *ngIf="getEditFormControl['details'].errors?.['required'] && getEditFormControl['details'].touched"
+                 class="alert alert-danger">Description is required.
+            </div>
+            <div *ngIf="getEditFormControl['details'].errors?.['minlength'] && getEditFormControl['details'].touched"
+                 class="alert alert-danger">Description must be greater than 3 characters.
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Rate</label><span class="required">*</span>
+            <div class="row">
+                <div class="col-auto">
+                    <div class="input-group">
+                        <div ngbDropdown class="d-inline-block">
+                            <button class="btn btn-secondary" id="rateTypeDropdown" ngbDropdownToggle>
+                                {{this.selectedRateType}}
+                            </button>
+                            <div ngbDropdownMenu aria-labelledby="rateTypeDropdown">
+                              <button ngbDropdownItem *ngFor="let rateType of rateTypes"
+                              (click)="onSelect(rateType)">{{rateType}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group">
+                      <input id="rate" name="rate" formControlName="rate" class="form-control" maxlength="100"> 
+                    </div>
+                    <div *ngIf="getEditFormControl['rate'].errors?.['required'] && getEditFormControl['rate'].touched"
+                         class="alert alert-danger">Rate is required.
+                    </div>
+                    <div *ngIf="getEditFormControl['rate'].errors?.['pattern'] && getEditFormControl['rate'].touched"
+                         class="alert alert-danger">Rate should only be in numbers
+                    </div>
+                </div>
+            </div>
+            
+        </div>   
+        <div class="alertMessage" *ngIf="allRequiredFieldsEnteredMessage">{{allRequiredFieldsEnteredMessage}}</div>
+        <div class="alertMessage" *ngIf="updateFieldsMessage">{{updateFieldsMessage}}</div>
+        <div class="alertMessage" *ngIf="accessErrorMessage">{{accessErrorMessage}}</div>
+      </form>
+      <div class="modal-footer">
+        <input type="submit" class="btn btn-secondary" form="myeditform" (click)="submit()"/>
+      </div>
+</div>
+  <ng-template #accessErrorModal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="errorModalTitle">ERROR</h4>
+      <!-- <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+    </div>
+    <div class="modal-body">
+      <p>{{accessErrorMessage}}</p>
+    </div>
+    <div class="modal-footer">
+      <!-- <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">Save</button> -->
+    </div>
+  </ng-template>
+  <ng-template #successModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="errorModalTitle">Success!!</h4>
+      <!-- <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+    </div>
+    <div class="modal-body">
+      <p>{{successMessage}}</p>
+    </div>
+    <div class="modal-footer">
+      <!-- <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">Save</button> -->
+    </div>
+  </ng-template>

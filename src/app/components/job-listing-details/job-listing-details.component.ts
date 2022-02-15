@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobListing } from 'src/app/entities/job-listing';
 import { User } from 'src/app/entities/user';
 import { JobListingService } from 'src/app/services/job-listing.service';
@@ -43,7 +43,7 @@ export class JobListingDetailsComponent implements OnInit {
     }
   ];
 
-  constructor(
+  constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private jobListingService: JobListingService
   ) {}
@@ -62,6 +62,10 @@ export class JobListingDetailsComponent implements OnInit {
         this.jobListing = response;
       }
     );
+  }
+  
+  openEditPage(url: string){
+    this.router.navigate([url]);
   }
 
 }

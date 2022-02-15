@@ -49,4 +49,15 @@ export class JobListingService {
 
     return this.httpClient.get<JobListing>(URL, {params});
   }
+  updateListing(updatedListing: any) {
+    const URL = this.jobListingUrl + '/' + updatedListing.id + '/edit';
+    return this.httpClient.put<any>(URL, updatedListing);
+  }
+
+  create(newListing: any): Observable<JobListing[]> {
+    const createUrl = this.jobListingUrl + '/create';
+    return this.httpClient.post<any>(createUrl, newListing);
+  }
 }
+
+

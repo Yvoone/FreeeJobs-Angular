@@ -14,6 +14,7 @@
           {{jobListing.rate}}{{jobListing.rateType}}
         </h5>
         <div class="row justify-content-end" *ngIf="userType == 0" >
+            <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
             <button type="button" class="btn btn-dark">Apply Now</button>
         </div>
         <div class="row justify-content-end" *ngIf="userType == 1">
@@ -35,7 +36,7 @@
       <div class="row pt-3">
         <div class="col-10">
             <div class="card">
-                <h5 class="card-header">About The sClient</h5>
+                <h5 class="card-header">About The Client</h5>
                 <div class="card-body">
                 <p class="card-text">whowhowho</p>
                 </div>

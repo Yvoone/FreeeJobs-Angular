@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
@@ -12,6 +12,7 @@ import { JobListingBrowseComponent } from './components/job-listing-browse/job-l
 import { ProfileComponent } from './components/profile/profile.component';
 
 import {NgxPaginationModule} from 'ngx-pagination';
+import { JobListingModalComponent } from './components/job-listing-modal/job-listing-modal.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     DashboardComponent,
     JobListingDetailsComponent,
     JobListingBrowseComponent,
-    ProfileComponent
+    ProfileComponent,
+    JobListingModalComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +29,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     NgbModule,
     FormsModule,
     HttpClientModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
