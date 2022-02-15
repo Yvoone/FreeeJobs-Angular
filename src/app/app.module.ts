@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from "./material/material.module";
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatIconModule} from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
@@ -30,6 +33,9 @@ import { JobListingModalComponent } from './components/job-listing-modal/job-lis
     FormsModule,
     HttpClientModule,
     NgxPaginationModule,
+    MaterialModule,
+    MatToolbarModule,
+    MatIconModule,
     ReactiveFormsModule
   ],
   providers: [],

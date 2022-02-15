@@ -14,8 +14,7 @@
           {{jobListing.rate}}{{jobListing.rateType}}
         </h5>
         <div class="row justify-content-end" *ngIf="userType == 0" >
-            <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
-            <button type="button" class="btn btn-dark">Apply Now</button>
+            <button type="button" class="btn btn-dark" (click) = "showPopUp(subApp, -1)">Apply Now</button>
         </div>
         <div class="row justify-content-end" *ngIf="userType == 1">
             <button type="button" class="btn btn-dark">Edit Job</button>
@@ -52,7 +51,7 @@
                     <div class="card-body" *ngIf="applicants.length > 0">
                         <div class="row">
                             <div class="col-8">
-                                <h4 class="card-title btn-link text-secondary flex-fill" >{{applicant.firstName}}{{applicant.lastName}}</h4>
+                                <h4 class="card-title btn-link text-secondary flex-fill" >{{applicant.firstName}} {{applicant.lastName}}</h4>
                             </div>
                             <div class="col-4">
 
@@ -63,7 +62,7 @@
                                 <div class="card-text flex-fill text-left">{{applicant.aboutMe}}</div>
                             </div>
                             <div class="col-2 justify-content-end">
-                                <button type="button" class="btn btn-dark float-right">View Application</button>
+                                <button type="button" class="btn btn-dark float-right" (click)="showPopUp(viewApp, applicant.id)">View Application</button>
                             </div>
                         </div>
                     </div>
@@ -75,5 +74,81 @@
         </div>
         <div class="col-2"></div>
     </div>
+
+
+    <ng-template #viewApp let-modal class="mt-5">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">View Application</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <mat-card>
+            <mat-card-content style="text-align: center;">
+
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">First Name</label>
+                    <h6>{{selectedUser.firstName}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Last Name</label>
+                    <h6>{{selectedUser.lastName}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <button type="button" class="btn btn-dark">View Applicant Profile</button>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Email Address</label>
+                    <h6>{{selectedUser.email}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Contact Number</label>
+                    <h6>{{selectedUser.contactNo}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Description</label>
+                    <textarea placeholder="" rows="5" cols="50"
+                    class="form-control" style="width: 100%; height: fit-content; resize: none;" disabled>{{selectedDesc}}</textarea>
+                </div>
+
+                <mat-card-actions>
+                    <button type="button" class="btn btn-dark mr-1">Reject</button>
+                    <button type="button" class="btn btn-dark">Approve</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
+    <ng-template #subApp let-modal class="mt-5">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Submit Application</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <mat-card>
+            <mat-card-content style="text-align: center;">
+
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Job Name</label>
+                    <h6>{{jobListing.title}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Client Name</label>
+                    <h6>{{jobListing.title}}</h6>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Why should you be choosen?</label>
+                    <textarea placeholder="" rows="5" cols="50"
+                    class="form-control" style="width: 100%; resize: none;" [(ngModel)] = "appDesc"></textarea>
+                </div>
+
+                <mat-card-actions>
+                    <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
+                    <button type="button" class="btn btn-dark" (click)="applyJob(appDesc)">Apply</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
 
 
