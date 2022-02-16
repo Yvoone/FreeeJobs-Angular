@@ -34,3 +34,30 @@ img {
 .skills {
     margin-bottom: 1em;
 }
+
+svg {
+    transform: scale(1.3);
+}
+
+.alignWithSvgRight {
+    padding-left: 0.5em;
+}
+
+.alignWithSvgLeft {
+    padding-right: 0.5em;
+}
+
+.last {
+    min-height: 10em;
+}
+
+.totalRatings {
+    margin: 1em 0 1em 0;
+    font-size: larger;
+    font-weight: bold;
+}
+
+ngb-rating {
+    color: #fcba03;
+    font-size: 30px;
+}
