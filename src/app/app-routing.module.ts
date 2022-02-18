@@ -4,10 +4,12 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { JobListingBrowseComponent } from './components/job-listing-browse/job-listing-browse.component';
 import { JobListingDetailsComponent } from './components/job-listing-details/job-listing-details.component';
 import { JobListingModalComponent } from './components/job-listing-modal/job-listing-modal.component';
+import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
+  {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'jobListing/:id', component: JobListingDetailsComponent},
   {path: 'jobListingBrowse', component: JobListingBrowseComponent},

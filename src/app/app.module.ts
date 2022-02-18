@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";  
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
@@ -16,6 +17,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 
 import {NgxPaginationModule} from 'ngx-pagination';
 import { JobListingModalComponent } from './components/job-listing-modal/job-listing-modal.component';
+import { LoginComponent } from './components/login/login.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
 
 @NgModule({
   declarations: [
@@ -24,9 +27,12 @@ import { JobListingModalComponent } from './components/job-listing-modal/job-lis
     JobListingDetailsComponent,
     JobListingBrowseComponent,
     ProfileComponent,
-    JobListingModalComponent
+    JobListingModalComponent,
+    LoginComponent,
+    TopbarComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     NgbModule,
@@ -36,7 +42,10 @@ import { JobListingModalComponent } from './components/job-listing-modal/job-lis
     MaterialModule,
     MatToolbarModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+  ],
+  exports: [
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
