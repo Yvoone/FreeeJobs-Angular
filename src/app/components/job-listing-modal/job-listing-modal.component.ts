@@ -37,7 +37,7 @@ export class JobListingModalComponent implements OnInit {
 
   //hardcode user
   user : User = {
-    id: 1,
+    id: 5,
     password: "",
     firstName: "David",
     lastName: "Lee",
@@ -59,7 +59,7 @@ export class JobListingModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.modalType = this.activatedRoute.snapshot.params['type'];
-    this.rateTypes= ['Pay Per Hour', 'Pay Per Job'];
+    this.rateTypes= ['Per Hour', 'Per Job'];
     this.editForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       details: ['', [Validators.required]],

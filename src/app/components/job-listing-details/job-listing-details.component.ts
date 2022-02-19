@@ -7,6 +7,9 @@ import { JobApplicationService } from 'src/app/services/job-application.service'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Application } from 'src/app/entities/application';
 import { IAMService } from 'src/app/services/iam.service';
+import { RatingService } from 'src/app/services/rating.service';
+import { Rating } from 'src/app/entities/rating';
+import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 
 @Component({
   selector: 'app-job-listing-details',
@@ -54,12 +57,19 @@ export class JobListingDetailsComponent implements OnInit {
   selectedUser!: User;
   selectedDesc!: String;
 
+  ratings: string[] = ['1','2','3','4','5'];
+  review!:string;
+  selectedRating!:string
+  ratingForUserAndJob!: Rating[];
+  postedDays!: number;
+
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private jobListingService: JobListingService,
     private modalService: NgbModal,
     private jobApplicationService: JobApplicationService,
-    private iamService: IAMService
+    private iamService: IAMService,
+    private ratingService: RatingService
   ) {}
 
   ngOnInit(): void {
@@ -70,12 +80,18 @@ export class JobListingDetailsComponent implements OnInit {
 
     this.id = this.activatedRoute.snapshot.params['id'];
     this.getJobDetails(this.id);
+    //TODO: access management - if status of job is closed, check if user is author or accepted applicant, in case hacker hardcode jobId value
     this.getApplicants(this.id);
+    this.getReviewsDoneByUser();
+    
   }
 
   getJobDetails(id: number) {
     this.jobListingService.getJobListingById(id).subscribe(response => {
         this.jobListing = response;
+        this.jobListing.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === this.jobListing.status)?.[1]|| '';
+        this.jobListing.dateCreated=new Date(response.dateCreated);
+        this.postedDays = Math.floor(Math.floor((new Date).valueOf()- this.jobListing.dateCreated.valueOf())/(1000 * 60 * 60 * 24));
       }
     );
   }
@@ -106,9 +122,6 @@ export class JobListingDetailsComponent implements OnInit {
   }
 
   getApplicants(id: number) {
-
-
-
     this.jobApplicationService.getApplicantsByJobId(id).subscribe(response => {
        console.log(response);
       let applications: Application[] = response;
@@ -133,5 +146,69 @@ export class JobListingDetailsComponent implements OnInit {
       }
     );
   }
+
+  isOwnerOfPostIsUser() {
+    return this.jobListing.authorId==this.userId;
+  }
+  isAcceptedApplicantOfPostUser() {
+    return this.jobListing.authorId==this.userId;
+  }
+  isListingCompleted(){
+    return this.jobListing.status==JobListingStatusEnum.PC;
+  }
+  isListingPendingCompletion(){
+    return this.jobListing.status==JobListingStatusEnum.PC;
+  }
+  isListingOpen(){
+    return this.jobListing.status==JobListingStatusEnum.OFA;
+  }
+  isPendingRating(){
+    //to return status==C and no ratings in table
+    return (this.jobListing.status=='Pending Completion')&&(this.ratingForUserAndJob.length==0)
+  }
+  getReviewsDoneByUser(){
+    //check if authorId and listing Id in rating table
+    this.ratingService.getRatingsByUserIdJobId(this.userId, this.id).subscribe(response =>{
+      this.ratingForUserAndJob= response;
+    });
+  }
+  showRatingPopUp(content:any) {
+    console.log(this.applicants);
+    this.modalService.open(content, {centered: true });
+  }
+  onSelectRating(rating:string){
+    this.selectedRating=rating;
+  }
+  submitRating(review: String, rating: String) {
+    console.log(review);
+    console.log(rating);
+    let newRating = {
+      jobId: this.id,
+      applicantId: this.userId,
+      reviewTitle: '',
+      review: review,
+      ratingScale: rating
+    }
+
+    this.ratingService.create(newRating).subscribe(response => {
+      console.log(response);
+      this.modalService.dismissAll();
+      }
+    );
+  }
+
+  showCompletePopUp(content:any) {
+    console.log(this.applicants);
+    this.modalService.open(content, {centered: true });
+  }
+  
+  completeJob(){
+    this.jobListingService.updateJobStatus('C', this.jobListing.id).subscribe(response => {
+      console.log(response);
+      this.modalService.dismissAll();
+    }
+  );
+  }
+
 
 }

@@ -8,17 +8,34 @@
           {{jobListing.status}}
         </h5>
         <div class="row justify-content-end mb-3">
-          Posted 1 day ago
+          Posted {{this.postedDays}} day ago
         </div>
         <h5 class="row justify-content-end mb-2">
-          {{jobListing.rate}}{{jobListing.rateType}}
+          ${{jobListing.rate}} {{jobListing.rateType}}
         </h5>
-        <div class="row justify-content-end" *ngIf="userType == 0" >
-            <button type="button" class="btn btn-dark" (click) = "showPopUp(subApp, -1)">Apply Now</button>
+        <div *ngIf="isListingOpen()">
+            <div class="row justify-content-end" *ngIf="!isOwnerOfPostIsUser()" >
+                <button type="button" class="btn btn-dark" (click) = "showPopUp(subApp, -1)">Apply Now</button>
+            </div>
+            <div class="row justify-content-end mb-1" *ngIf="isOwnerOfPostIsUser()">
+                <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
+            </div>
+            <div class="row justify-content-end" *ngIf="isOwnerOfPostIsUser()">
+                <button type="button" class="btn btn-dark" >Delete Job</button>
+            </div>
         </div>
-        <div class="row justify-content-end" *ngIf="userType == 1">
-            <button type="button" class="btn btn-dark">Edit Job</button>
+        <div *ngIf="!isListingOpen()">
+            <div class="row justify-content-end" *ngIf="isOwnerOfPostIsUser()&&isListingPendingCompletion()">
+                <button type="button" class="btn btn-dark" (click)="showCompletePopUp(completeJobModal)">Complete Job</button>
+            </div>
+            <div class="row justify-content-end" *ngIf="isPendingRating()">
+                <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Rate Applicant</button>
+            </div>
+            <div class="row justify-content-end" *ngIf="isPendingRating()">
+                <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Rate Job</button>
+            </div>
         </div>
+        
       </div>
     </div>
       <div class="row">
@@ -146,6 +163,61 @@
                 <mat-card-actions>
                     <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
                     <button type="button" class="btn btn-dark" (click)="applyJob(appDesc)">Apply</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
+    <ng-template #subRating let-modal class="mt-5">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Submit Rating</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <mat-card>
+            <mat-card-content style="text-align: center;">
+
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Rating</label>
+                    <div class="input-group">
+                        <div ngbDropdown class="d-inline-block">
+                            <button class="btn btn-secondary" id="rateTypeDropdown" ngbDropdownToggle>
+                                {{this.selectedRating}}
+                            </button>
+                            <div ngbDropdownMenu aria-labelledby="rateTypeDropdown" [(ngModel)] = "selectedRating">
+                              <button ngbDropdownItem *ngFor="let rating of ratings" (click)="onSelectRating(rating)"
+                              >{{rating}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="name" style="text-align: left;">Review</label>
+                    <textarea placeholder="" rows="5" cols="50"
+                    class="form-control" style="width: 100%; resize: none;" [(ngModel)] = "review"></textarea>
+                </div>
+
+                <mat-card-actions>
+                    <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
+                    <button type="button" class="btn btn-dark" (click)="submitRating(review, selectedRating)">Submit</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
+    <ng-template #completeJobModal let-modal class="mt-5">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Are You Sure You Want To Complete Job?</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <mat-card>
+            <mat-card-content style="text-align: center;">
+                <mat-card-actions>
+                    <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
+                    <button type="button" class="btn btn-dark" (click)="completeJob()">YES</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>

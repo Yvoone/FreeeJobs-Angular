@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JobListing } from 'src/app/entities/job-listing';
+import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { JobListingService } from 'src/app/services/job-listing.service';
 
 @Component({
@@ -30,6 +31,9 @@ export class JobListingBrowseComponent implements OnInit {
     this.jobListingService.getJobListingToBrowse(pageNumber, searchValue).subscribe(response => {
       console.log(response);
         this.jobListings = response;
+        this.jobListings.forEach((element) => {
+          element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+        });
       }
     );
   }
