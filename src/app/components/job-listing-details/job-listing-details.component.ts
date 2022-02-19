@@ -59,6 +59,7 @@ export class JobListingDetailsComponent implements OnInit {
 
   ratings: string[] = ['1','2','3','4','5'];
   review!:string;
+  reviewTitle!:string;
   selectedRating!:string
   ratingForUserAndJob!: Rating[];
   postedDays!: number;
@@ -164,12 +165,13 @@ export class JobListingDetailsComponent implements OnInit {
   }
   isPendingRating(){
     //to return status==C and no ratings in table
-    return (this.jobListing.status=='Pending Completion')&&(this.ratingForUserAndJob.length==0)
+    return (this.jobListing.status==JobListingStatusEnum.C)&&(this.ratingForUserAndJob.length==0)
   }
   getReviewsDoneByUser(){
     //check if authorId and listing Id in rating table
     this.ratingService.getRatingsByUserIdJobId(this.userId, this.id).subscribe(response =>{
       this.ratingForUserAndJob= response;
+      console.log(this.ratingForUserAndJob.length);
     });
   }
   showRatingPopUp(content:any) {
@@ -184,15 +186,18 @@ export class JobListingDetailsComponent implements OnInit {
     console.log(rating);
     let newRating = {
       jobId: this.id,
-      applicantId: this.userId,
-      reviewTitle: '',
+      userId: this.userId,
+      reviewTitle: this.reviewTitle,
       review: review,
-      ratingScale: rating
+      ratingScale: Number(rating)
     }
 
     this.ratingService.create(newRating).subscribe(response => {
       console.log(response);
       this.modalService.dismissAll();
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
       }
     );
   }
@@ -201,7 +206,7 @@ export class JobListingDetailsComponent implements OnInit {
     console.log(this.applicants);
     this.modalService.open(content, {centered: true });
   }
-  
+
   completeJob(){
     this.jobListingService.updateJobStatus('C', this.jobListing.id).subscribe(response => {
       console.log(response);

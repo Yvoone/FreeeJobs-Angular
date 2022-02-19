@@ -29,10 +29,7 @@
                 <button type="button" class="btn btn-dark" (click)="showCompletePopUp(completeJobModal)">Complete Job</button>
             </div>
             <div class="row justify-content-end" *ngIf="isPendingRating()">
-                <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Rate Applicant</button>
-            </div>
-            <div class="row justify-content-end" *ngIf="isPendingRating()">
-                <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Rate Job</button>
+                <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Give Ratings</button>
             </div>
         </div>
         
@@ -177,9 +174,13 @@
           </div>
         <mat-card>
             <mat-card-content style="text-align: center;">
-
                 <div class="form-group" align='left'>
-                    <label for="name" style="text-align: left;">Rating</label>
+                    <label for="reviewTitle" style="text-align: left;">Review Title (Please give a brief summary of your review.)</label>
+                    <textarea placeholder="" rows="1" cols="50"
+                    class="form-control" style="width: 100%; resize: none;" [(ngModel)] = "reviewTitle"></textarea>
+                </div>
+                <div class="form-group" align='left'>
+                    <label for="ratingScale" style="text-align: left;">Rating: 1 (Not at All Satisfied) - 5 (Extremely Satisfied) </label>
                     <div class="input-group">
                         <div ngbDropdown class="d-inline-block">
                             <button class="btn btn-secondary" id="rateTypeDropdown" ngbDropdownToggle>
@@ -193,7 +194,7 @@
                     </div>
                 </div>
                 <div class="form-group" align='left'>
-                    <label for="name" style="text-align: left;">Review</label>
+                    <label for="review" style="text-align: left;">Review</label>
                     <textarea placeholder="" rows="5" cols="50"
                     class="form-control" style="width: 100%; resize: none;" [(ngModel)] = "review"></textarea>
                 </div>
