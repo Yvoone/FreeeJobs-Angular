@@ -19,6 +19,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { JobListingModalComponent } from './components/job-listing-modal/job-listing-modal.component';
 import { LoginComponent } from './components/login/login.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './services/auth.guard';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,7 @@ import { TopbarComponent } from './components/topbar/topbar.component';
   exports: [
     NgbModule
   ],
-  providers: [],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

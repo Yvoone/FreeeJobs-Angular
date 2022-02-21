@@ -1,39 +1,40 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Fifth navbar example">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Fifth navbar example" >
 
     <div class="container-fluid" >
         <a class="navbar-brand" href="/dashboard">FreeeJobs</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05"
                 aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarsExample05">
-        <ul class="navbar-nav mr-auto">
-            <!--        <li class="nav-item">-->
-            <!--          <a class="nav-link active" aria-current="page" routerLink="auth/login">Login</a>-->
-            <!--        </li>-->
-            <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link active" href="/jobListingBrowse">Apply for Job</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link active" href="/listing/create">Create New Job</a>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse" id="navbarsExample05" *ngIf="isLoggedIn$ | async as isLoggedIn">
+        <!-- <div class="collapse navbar-collapse" id="navbarsExample05" *ngIf="islogin"> -->
+            <ul class="navbar-nav mr-auto">
+                <!--        <li class="nav-item">-->
+                <!--          <a class="nav-link active" aria-current="page" routerLink="auth/login">Login</a>-->
+                <!--        </li>-->
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/jobListingBrowse">Apply for Job</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/listing/create">Create New Job</a>
+                </li>
+            </ul>
 
-        <form>
-            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-        </form>
+            <form>
+                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+            </form>
 
-        <ul class="navbar-nav">
-            <li class="nav-item">
-            <a class="nav-link active" href="/profile">Profile</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link active" href="">Logout</a>
-            </li>
-        </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/profile">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" style="cursor: pointer;" (click)="onLogout()" >Logout</a>
+                </li>
+            </ul>
 
         </div>
     </div>

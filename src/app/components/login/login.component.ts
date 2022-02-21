@@ -5,6 +5,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { environment } from "../../../environments/environment";
+import { SessionStorageService } from "../../services/session-storage.service";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -25,10 +27,12 @@ export class LoginComponent implements OnInit {
   user_touched: boolean = false;
   pw_touched: boolean = false;
 
+  email_require!: boolean;
+  pw_require!: boolean;
 
   //////////////////////////////
   // form: FormGroup = new FormGroup({
-  //   username: new FormControl(''),
+  //   email: new FormControl(''),
   //   password: new FormControl(''),
   // });
 
@@ -37,39 +41,66 @@ export class LoginComponent implements OnInit {
     private titleService: Title,
     private http: HttpClient,
     private formBuilder: FormBuilder,
+    private sessionStorageService: SessionStorageService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    sessionStorage.clear();
 
     this.loginForm = this.formBuilder.group({
 
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
-  get username (){
-    return this.loginForm.get('username');
+  isFieldInvalid(field: string) { // {6}
+    return (
+      (!this.loginForm.get(field)!.valid && this.loginForm.get(field)!.touched) ||
+      (this.loginForm.get(field)!.untouched && this.submitted)
+    );
   }
-  get password (){
-    return this.loginForm.get('password');
-  }
+
 
   onSubmit(){
     this.control = this.loginForm.controls;
-    console.log(this.loginForm)
+    this.email_require = this.control.email.errors
+    this.pw_require = this.control.password.errors
+    console.log(this.control)
+    console.log(this.control.email.value)
     if (this.loginForm.valid) {
+      console.log("submitted")
       this.submitted = true;
+      // this.authService.login(this.loginForm.value);   // {1}
+      
+      this.authService.login(this.control.email.value, this.control.password.value);
       this.submitEM.emit(this.loginForm.value);
+
+      //store email or ID later
+      // sessionStorage.clear();
+      // this.sessionStorageService.setEmail('email', this.control.email.value);
+
+      //navigete to other page
+      // this.router.navigateByUrl("");
+
     } else { 
       this.submitted = false;
+      console.log("no submit")
     }
-    console.log("submit?")
-    let username = this.loginForm.get('username')?.value;
-    console.log(username)
-    let password = this.loginForm.get('password')?.value;
-    
   }
 
+  register(){
+    console.log("register")
+  }
+
+  //check session storage
+  loginemail!: string
+  checkSession(){
+    this.loginemail = this.sessionStorageService.getEmail('email');
+  }
+  clearSession(){
+    this.sessionStorageService.removeEmail('email');
+  }
 
 }

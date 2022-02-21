@@ -6,16 +6,18 @@ import { JobListingDetailsComponent } from './components/job-listing-details/job
 import { JobListingModalComponent } from './components/job-listing-modal/job-listing-modal.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
-  {path: '', component: DashboardComponent},
+  {path: '', component: DashboardComponent, canActivate: [ AuthGuard]},
   {path: 'login', component: LoginComponent},
-  {path: 'dashboard', component: DashboardComponent},
+  {path: 'dashboard', component: DashboardComponent , canActivate: [ AuthGuard]},
   {path: 'jobListing/:id', component: JobListingDetailsComponent},
-  {path: 'jobListingBrowse', component: JobListingBrowseComponent},
-  {path: 'profile', component: ProfileComponent},
+  {path: 'jobListingBrowse', component: JobListingBrowseComponent, canActivate: [ AuthGuard] },
+  {path: 'profile', component: ProfileComponent, canActivate: [ AuthGuard]},
   {path: 'listing/:type', component: JobListingModalComponent},
-  {path: 'listing/:type/:id', component: JobListingModalComponent}
+  {path: 'listing/:type/:id', component: JobListingModalComponent},
+  { path: '**', redirectTo: ''}
 ];
 
 @NgModule({
