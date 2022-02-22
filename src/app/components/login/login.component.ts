@@ -72,9 +72,10 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       console.log("submitted")
       this.submitted = true;
-      // this.authService.login(this.loginForm.value);   // {1}
       
-      this.authService.login(this.control.email.value, this.control.password.value);
+      // this.authService.login(this.loginForm.value);   // {1}  Login with API
+      this.authService.login(this.control.email.value, this.control.password.value); // {1}  Login WITHOUT API
+
       this.submitEM.emit(this.loginForm.value);
 
       //store email or ID later

@@ -21,6 +21,8 @@ import { LoginComponent } from './components/login/login.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth.guard';
+import { RegisterComponent } from './components/register/register.component';
+import { AlertComponent } from './components/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { AuthGuard } from './services/auth.guard';
     ProfileComponent,
     JobListingModalComponent,
     LoginComponent,
-    TopbarComponent
+    TopbarComponent,
+    RegisterComponent,
+    AlertComponent
   ],
   imports: [
     BrowserAnimationsModule,

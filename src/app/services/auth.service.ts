@@ -5,6 +5,8 @@ import { SessionStorageService } from "../services/session-storage.service";
 import {  BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { IAMService } from "../services/iam.service";
+import { AlertService } from "../services/alert.service";
 
 
 
@@ -43,22 +45,48 @@ export class AuthService {
 
   constructor(
     private sessionStorageService: SessionStorageService,
+    private IAMService: IAMService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private alertService: AlertService
   ) {}
 
-
+  // //Login with API
+  // login(user:User){
+  // // login(email: string, password: string){
+  //   console.log("auth service login in")
+  //   this.IAMService.login(user).subscribe(e=>{
+  //     console.log(e)
+  //     // if (user.email !== '' && user.password !== '' ) { // {3}
+  //     if (e.loginStatus == 1) {
+  //       this.loggedIn.next(true);
+  //       this.loggedIn2.next('loggin');
+  //       sessionStorage.clear();
+  //       console.log(this.sessionStorageService.getEmail('email'));
+  //       this.sessionStorageService.setEmail('email', user.email);
+  //       this.router.navigate(['/dashboard']);
+  //       // this.router.navigateByUrl("")
+  //     } else if(e.loginStatus == 0) {
+  //       this.alertService.error('Login Fail', true);
+  //     }
+  //   })
+  // }
+  
+  //Login WITHOUT API
   login(email: string, password: string){
     console.log("auth service login in")
-    if (email !== '' && password !== '' ) { // {3}
-      this.loggedIn.next(true);
-      this.loggedIn2.next('loggin');
-      sessionStorage.clear();
-      console.log(this.sessionStorageService.getEmail('email'));
-      this.sessionStorageService.setEmail('email', email);
-      this.router.navigate(['/dashboard']);
-      // this.router.navigateByUrl("")
-    }
+      if (email !== '' && password !== '' ) { // {3}
+      
+        this.loggedIn.next(true);
+        this.loggedIn2.next('loggin');
+        sessionStorage.clear();
+        console.log(this.sessionStorageService.getEmail('email'));
+        this.sessionStorageService.setEmail('email', email);
+        this.router.navigate(['/dashboard']);
+        // this.router.navigateByUrl("")
+      } else {
+        this.alertService.error('Login Fail', true);
+      }
   }
 
   logout() {                            // {4}

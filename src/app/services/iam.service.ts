@@ -43,4 +43,15 @@ export class IAMService {
     return this.httpClient.post<any>(URL, reqBody);
   }
 
+  login(user: User): Observable<any> {
+    const URL = this.IAMUrl + '/login';
+
+    let reqBody : any =  {
+      "password": user.password,
+      "email": user.email
+      }
+
+    return this.httpClient.post<any>(URL, reqBody);
+  }
+
 }

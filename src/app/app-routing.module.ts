@@ -7,10 +7,12 @@ import { JobListingModalComponent } from './components/job-listing-modal/job-lis
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AuthGuard } from './services/auth.guard';
+import { RegisterComponent } from "./components/register/register.component";
 
 const routes: Routes = [
   {path: '', component: DashboardComponent, canActivate: [ AuthGuard]},
   {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
   {path: 'dashboard', component: DashboardComponent , canActivate: [ AuthGuard]},
   {path: 'jobListing/:id', component: JobListingDetailsComponent},
   {path: 'jobListingBrowse', component: JobListingBrowseComponent, canActivate: [ AuthGuard] },
