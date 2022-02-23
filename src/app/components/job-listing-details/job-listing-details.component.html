@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" *ngIf="jobListing">
     <div class="row mb-3">
         <div class="col-10">
             <h3 class="card-title text-secondary flex-fill">{{jobListing.title}}</h3>
@@ -21,7 +21,7 @@
                 <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
             </div>
             <div class="row justify-content-end" *ngIf="isOwnerOfPostIsUser()">
-                <button type="button" class="btn btn-dark" >Delete Job</button>
+                <button type="button" class="btn btn-dark" (click)="deleteJob()">Delete Job</button>
             </div>
         </div>
         <div *ngIf="!isListingOpen()">
@@ -32,7 +32,7 @@
                 <button type="button" class="btn btn-dark" (click)="showRatingPopUp(subRating)">Give Ratings</button>
             </div>
         </div>
-        
+
       </div>
     </div>
       <div class="row">
@@ -57,7 +57,7 @@
         </div>
         <div class="col-2"></div>
     </div>
-    <div class="row pt-3 jobAppSpace">
+    <div class="row pt-3 jobAppSpace" *ngIf="isOwnerOfPostIsUser()">
         <div class="col-10">
             <div class="card">
                 <h5 class="card-header">Applicants ({{applicants.length}}) </h5>
@@ -73,7 +73,7 @@
                         </div>
                         <div class="row pt-3">
                             <div class="col-10">
-                                <div class="card-text flex-fill text-left">{{applicant.aboutMe}}</div>
+                                <div class="card-text flex-fill text-left">{{getApplicantDesc(applicant.id)}}</div>
                             </div>
                             <div class="col-2 justify-content-end">
                                 <button type="button" class="btn btn-dark float-right" (click)="showPopUp(viewApp, applicant.id)">View Application</button>
@@ -125,9 +125,9 @@
                     class="form-control" style="width: 100%; height: fit-content; resize: none;" disabled>{{selectedDesc}}</textarea>
                 </div>
 
-                <mat-card-actions>
-                    <button type="button" class="btn btn-dark mr-1">Reject</button>
-                    <button type="button" class="btn btn-dark">Approve</button>
+                <mat-card-actions *ngIf="isListingOpen()">
+                    <button type="button" class="btn btn-dark mr-1" (click)= "setApplicantsStatus('REJ', selectedUser.id)">Reject</button>
+                    <button type="button" class="btn btn-dark" (click)= "setApplicantsStatus('ACC', selectedUser.id)">Approve</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>

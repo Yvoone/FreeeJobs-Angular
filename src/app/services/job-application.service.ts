@@ -31,6 +31,15 @@ export class JobApplicationService {
     return this.httpClient.get<Application[]>(URL, {params});
   }
 
+  getAcceptedApplicantsByJobId(jobId: number): Observable<Application[]> {
+    const URL = this.jobApplicationUrl + '/listAcceptedApplicantsByJobId';
+
+    let params = new HttpParams()
+      .set('jobId', jobId.toString());
+
+    return this.httpClient.get<Application[]>(URL, {params});
+  }
+
   applyJob(jobId: number, userId: number, description: String): Observable<any> {
     const URL = this.jobApplicationUrl + '/applyJob';
 
@@ -41,6 +50,31 @@ export class JobApplicationService {
     }
 
     return this.httpClient.post<any>(URL, reqBody);
+  }
+
+  setApplicantsStatus(jobId: number, userId: number, status: String) {
+    const URL = this.jobApplicationUrl + '/setAppStatus';
+
+    let reqBody : any =  {
+      "jobId": jobId,
+      "applicantId":userId,
+      "status": status
+    }
+
+    return this.httpClient.post<any>(URL, reqBody);
+
+  }
+
+  closeApplicantsStatus(jobId: number, status: String) {
+    const URL = this.jobApplicationUrl + '/closeAppStatus';
+
+    let reqBody : any =  {
+      "jobId": jobId,
+      "status": status
+    }
+
+    return this.httpClient.post<any>(URL, reqBody);
+
   }
 
   openApplication(listingId: number): Observable<Application[]> {

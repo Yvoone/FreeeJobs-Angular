@@ -10,6 +10,7 @@ import { IAMService } from 'src/app/services/iam.service';
 import { RatingService } from 'src/app/services/rating.service';
 import { Rating } from 'src/app/entities/rating';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
+import { JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
 
 @Component({
   selector: 'app-job-listing-details',
@@ -76,27 +77,34 @@ export class JobListingDetailsComponent implements OnInit {
   ngOnInit(): void {
     console.log("open listing details");
     //Temp hardcoded
-    this.userType = 0;
-    this.userId = 5;
+    this.userId = 1;
 
     this.id = this.activatedRoute.snapshot.params['id'];
     this.getJobDetails(this.id);
-    //TODO: access management - if status of job is closed, check if user is author or accepted applicant, in case hacker hardcode jobId value
-    this.getApplicants(this.id);
     this.getReviewsDoneByUser();
-    
+
   }
 
   getJobDetails(id: number) {
     this.jobListingService.getJobListingById(id).subscribe(response => {
+        console.log(response);
         this.jobListing = response;
         this.jobListing.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === this.jobListing.status)?.[1]|| '';
         this.jobListing.dateCreated=new Date(response.dateCreated);
         this.postedDays = Math.floor(Math.floor((new Date).valueOf()- this.jobListing.dateCreated.valueOf())/(1000 * 60 * 60 * 24));
+        if (this.isOwnerOfPostIsUser()) {
+          //TODO: access management - if status of job is closed, check if user is author or accepted applicant, in case hacker hardcode jobId value
+          if (this.isListingPendingCompletion() || this.isListingCompleted()) {
+            this.getAcceptedApplicants(this.id);
+          }
+          else {
+            this.getApplicants(this.id);
+          }
+        }
       }
     );
   }
-  
+
   openEditPage(url: string){
     this.router.navigate([url]);
   }
@@ -108,8 +116,15 @@ export class JobListingDetailsComponent implements OnInit {
       let appValue = this.applicantMap.get(applicantId);
 
       this.selectedUser = this.applicants[appValue["index"]];
+      console.log(this.selectedUser);
       this.selectedDesc = appValue["desc"];
     }
+  }
+
+  getApplicantDesc(id: number) {
+    let appValue = this.applicantMap.get(id);
+
+    return appValue["desc"];
   }
 
   applyJob(desc: String) {
@@ -125,6 +140,20 @@ export class JobListingDetailsComponent implements OnInit {
   getApplicants(id: number) {
     this.jobApplicationService.getApplicantsByJobId(id).subscribe(response => {
        console.log(response);
+        this.populateApplicants(response);
+      }
+    );
+  }
+
+  getAcceptedApplicants(id: number) {
+    this.jobApplicationService.getAcceptedApplicantsByJobId(id).subscribe(response => {
+       console.log(response);
+        this.populateApplicants(response);
+      }
+    );
+  }
+
+  populateApplicants(response: any ) {
       let applications: Application[] = response;
       let listApplicants : User[] = [];
       let appInd = 0;
@@ -144,8 +173,6 @@ export class JobListingDetailsComponent implements OnInit {
         );
       }
       this.applicants = listApplicants;
-      }
-    );
   }
 
   isOwnerOfPostIsUser() {
@@ -155,7 +182,7 @@ export class JobListingDetailsComponent implements OnInit {
     return this.jobListing.authorId==this.userId;
   }
   isListingCompleted(){
-    return this.jobListing.status==JobListingStatusEnum.PC;
+    return this.jobListing.status==JobListingStatusEnum.C;
   }
   isListingPendingCompletion(){
     return this.jobListing.status==JobListingStatusEnum.PC;
@@ -207,12 +234,53 @@ export class JobListingDetailsComponent implements OnInit {
     this.modalService.open(content, {centered: true });
   }
 
-  completeJob(){
+  completeJob() {
     this.jobListingService.updateJobStatus('C', this.jobListing.id).subscribe(response => {
       console.log(response);
       this.modalService.dismissAll();
     }
-  );
+    );
+  }
+
+  setApplicantsStatus(status: String, applicantId: number) {
+    let validStats = true;
+    if (status === "ACC") {
+      status = JobAppsStatusEnum.ACC;
+
+      this.jobListingService.updateJobStatus('PC', this.jobListing.id).subscribe(response => {
+        console.log(response);
+        this.modalService.dismissAll();
+      }
+      );
+    }
+    else if (status === "REJ") {
+      status = JobAppsStatusEnum.REJ;
+    }
+    else {
+      validStats = false;
+    }
+    if (validStats) {
+      this.jobApplicationService.setApplicantsStatus(this.id, applicantId, status).subscribe(response => {
+        console.log(response);
+        this.modalService.dismissAll();
+      }
+      );
+    }
+
+  }
+
+  deleteJob() {
+    this.jobListingService.updateJobStatus('R', this.jobListing.id).subscribe(response => {
+      console.log(response);
+      this.modalService.dismissAll();
+    }
+    );
+
+    this.jobApplicationService.closeApplicantsStatus(this.id, JobAppsStatusEnum.CLS).subscribe(response => {
+      console.log(response);
+      this.modalService.dismissAll();
+    }
+    );
   }
 
 
