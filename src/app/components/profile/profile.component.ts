@@ -7,6 +7,7 @@ import { IAMService } from 'src/app/services/iam.service';
 import { Rating } from 'src/app/entities/rating';
 import { RatingService } from 'src/app/services/rating.service';
 import { Router } from '@angular/router';
+import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 
 
 @Component({
@@ -25,81 +26,16 @@ export class ProfileComponent implements OnInit {
   jobSecTitle!: string;
   edit = false;
   editProfileForm!: FormGroup;
+  avgRating!: string;
+  reviewCount!: number;
   url!: any;
   selectedFile!: File;
 
   @ViewChild('inputFile')
   myInputVariable!: ElementRef;
 
-  //hard coded examples START
+  //hard coded
   imagePath = './assets/img/default.png';
-
-  // user: User = {
-  //   id: 1,
-  //   password: "",
-  //   firstName: "Jackson",
-  //   lastName: "Wang",
-  //   email: "js@example.com",
-  //   contactNo: "99999999",
-  //   gender: "male",
-  //   dob: "",
-  //   aboutMe: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-  //   skills: "Java, HTML, Python, Angular",
-  //   linkedInAcct: "",
-  //      professionalTitle = "Software Engineer";
-  // };
-
-  // jobListings: JobListing[] = [
-  //   {
-  //     id: 1,
-  //     authorId: 1,
-  //     title: 'Urgently need UI/UX developer',
-  //     details: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon official aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.',
-  //     rate: '$50',
-  //     rateType: '/hour',
-  //     status: 'Completed',
-  //     dateCreated: new Date()
-  //   },
-  //   {
-  //     id: 1,
-  //     authorId: 1,
-  //     title: 'Urgentlyy need UI/UX developer',
-  //     details: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon official aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.',
-  //     rate: '$50',
-  //     rateType: '/hour',
-  //     status: 'Completed',
-  //     dateCreated: new Date()
-  //   }
-  // ];
-
-  // ratings: Rating[] = [
-  //   {
-  //     id: 1,
-  //     jobId: 1,
-  //     userId: 1,
-  //     reviewTitle: 'Job done properly',
-  //     review: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon official aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.',
-  //     ratingScale: 3
-  //   },
-  //   {
-  //     id: 2,
-  //     jobId: 2,
-  //     userId: 2,
-  //     reviewTitle: "Best freelancer in town!",
-  //     review: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon official aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.',
-  //     ratingScale: 5
-  //   },
-  //   {
-  //     id: 3,
-  //     jobId: 3,
-  //     userId: 3,
-  //     reviewTitle: "Thank you for your service",
-  //     review: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon official aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.',
-  //     ratingScale: 4
-  //   }
-  // ];
-
-  //hard coded examples END
 
   constructor(
     private router: Router,
@@ -139,7 +75,7 @@ export class ProfileComponent implements OnInit {
       console.log(response);
 
       let jobListings: JobListing[] = response;
-      let completedJobs : JobListing[] = [];
+      let completedJobs: JobListing[] = [];
       for (let job of jobListings) {
         if (job.status == 'Completed') {
           completedJobs.push(job);
@@ -153,22 +89,30 @@ export class ProfileComponent implements OnInit {
   getRatings(userId: number) {
     this.ratingService.getRatingsByUserId(userId).subscribe(response => {
       console.log(response);
+
+      let allRatings: Rating[] = response;
+      if (allRatings.length > 0) {
+        const count = allRatings.length;
+        let sumRatings = 0;
+        for (let rating of allRatings) {
+          sumRatings += rating.ratingScale;
+        }
+        this.avgRating = (parseFloat((sumRatings/count).toString()).toFixed(1)) + "/5.0";
+        this.reviewCount = count;
+      } else {
+        this.avgRating = "-";
+        this.reviewCount = 0;
+      }
+
       this.ratings = response;
     })
   }
-
 
   openListing(listingUrl: String) {
     console.log("open listing called" + listingUrl);
     let source = window.location.origin;
     console.log("source: " + source)
     this.router.navigate([listingUrl]);
-  }
-
-  removeImage() {
-    document.getElementById('imgPreview')!.removeAttribute('src');
-    this.myInputVariable.nativeElement.value = ''; // clear uploaded image
-    this.url = null;
   }
 
   editProfileClicked() {
@@ -192,6 +136,12 @@ export class ProfileComponent implements OnInit {
         this.url = event.target.result;
       }
     }
+  }
+
+  removeImage() {
+    document.getElementById('imgPreview')!.removeAttribute('src');
+    this.myInputVariable.nativeElement.value = ''; // clear uploaded image
+    this.url = null;
   }
 
 }
