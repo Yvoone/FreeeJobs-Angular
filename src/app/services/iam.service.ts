@@ -37,7 +37,8 @@ export class IAMService {
       "dob": user.dob,
       "aboutMe": user.aboutMe,
       "skills": user.skills,
-      "linkedInAcct": user.linkedInAcct
+      "linkedInAcct": user.linkedInAcct,
+      "professionalTitle": user.professionalTitle
       }
 
     return this.httpClient.post<any>(URL, reqBody);

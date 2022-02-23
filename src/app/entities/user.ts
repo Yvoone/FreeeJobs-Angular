@@ -11,9 +11,10 @@ export class User {
     aboutMe: string;
     skills: string;
     linkedInAcct: string;
+    professionalTitle: string;
 
     constructor(id: number, password: string, firstName: string, lastName: string, email: string,contactNo: string, gender: string, dob: string,
-        aboutMe: string, skills: string, linkedInAcct: string) {
+        aboutMe: string, skills: string, linkedInAcct: string, professionalTitle: string) {
         this.id = id;
         this.password = password;
         this.firstName = firstName;
@@ -25,5 +26,6 @@ export class User {
         this.aboutMe = aboutMe;
         this.skills = skills;
         this.linkedInAcct = linkedInAcct;
+        this.professionalTitle = professionalTitle;
     }
 }
