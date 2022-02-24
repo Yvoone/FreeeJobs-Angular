@@ -7,6 +7,7 @@ import { IAMService } from 'src/app/services/iam.service';
 import { Rating } from 'src/app/entities/rating';
 import { RatingService } from 'src/app/services/rating.service';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 
 
@@ -18,7 +19,7 @@ import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 export class ProfileComponent implements OnInit {
 
   user!: User;
-  jobListings: JobListing[] = [];
+  jobHistory: JobListing[] = [];
   ratings: Rating[] = [];
 
   profileType!: string;
@@ -30,6 +31,9 @@ export class ProfileComponent implements OnInit {
   reviewCount!: number;
   url!: any;
   selectedFile!: File;
+  alert!: string;
+
+  contactNumberRegEx = /^[689]\d{7}$/;
 
   @ViewChild('inputFile')
   myInputVariable!: ElementRef;
@@ -37,12 +41,19 @@ export class ProfileComponent implements OnInit {
   //hard coded
   imagePath = './assets/img/default.png';
 
+  // constructor(private route: ActivatedRoute, private router: Router) {
+  //   this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  // }
+
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private iamService: IAMService,
     private jobListingService: JobListingService,
-    private ratingService: RatingService) { }
+    private ratingService: RatingService) {
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+     }
 
   ngOnInit(): void {
     if (this.profileType == 'client') {
@@ -60,12 +71,34 @@ export class ProfileComponent implements OnInit {
 
     this.editProfileForm = this.formBuilder.group({
       firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      dateOfBirth: ['', [Validators.required]],
+      contactNo: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(8),
+        Validators.pattern(this.contactNumberRegEx)]],
+      emailAddress: ['', [Validators.required]],
+      professionalTitle: ['', [Validators.required]],
+      aboutMe: ['', [Validators.required]],
+      skills: ['', [Validators.required]]
     });
   }
 
   getCurrentUser(id: number) {
     this.iamService.getUserByUserId(id).subscribe(response => {
       this.user = response;
+      
+      this.editProfileForm.patchValue({
+        'firstName': this.user.firstName,
+        'lastName': this.user.lastName,
+        'dateOfBirth': this.user.dob,
+        'contactNo': this.user.contactNo,
+        // 'emailAddress': this.user.email,
+        'professionalTitle': this.user.professionalTitle,
+        'aboutMe': this.user.aboutMe,
+        'skills': this.user.skills
+      });
     }
     );
   }
@@ -81,8 +114,8 @@ export class ProfileComponent implements OnInit {
           completedJobs.push(job);
         }
       }
-      this.jobListings = completedJobs;
-      }
+      this.jobHistory = completedJobs;
+    }
     );
   }
 
@@ -97,7 +130,7 @@ export class ProfileComponent implements OnInit {
         for (let rating of allRatings) {
           sumRatings += rating.ratingScale;
         }
-        this.avgRating = (parseFloat((sumRatings/count).toString()).toFixed(1)) + "/5.0";
+        this.avgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
         this.reviewCount = count;
       } else {
         this.avgRating = "-";
@@ -144,4 +177,24 @@ export class ProfileComponent implements OnInit {
     this.url = null;
   }
 
+  submit() {
+    if(this.edit){
+      let editObj = {
+        id: this.user.id,
+        firstName: this.editProfileForm.value.firstName,
+        lastName: this.editProfileForm.value.lastName,
+        dob: this.editProfileForm.value.dateOfBirth,
+        contactNo: this.editProfileForm.value.contactNo,
+        professionalTitle: this.editProfileForm.value.professionalTitle,
+        aboutMe: this.editProfileForm.value.aboutMe,
+        skills: this.editProfileForm.value.skills
+      }
+
+      this.iamService.updateUser(editObj).subscribe((result) => {
+        this.alert = "Profile Updated Successfully!"
+      })
+
+    }
+    location.reload();
+  }
 }

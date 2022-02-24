@@ -74,4 +74,11 @@ ngb-rating {
     max-width: 15em;
     /* text-align: center; */
 }
-  
+
+.right {
+    float: right;
+}
+
+.spacingRight {
+    margin-right: 10px;
+}

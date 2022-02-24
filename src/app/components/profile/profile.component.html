@@ -1,4 +1,4 @@
-<div class="container mt-4" >
+<div class="container mt-4">
     <div class="row">
         <div class="col-auto mr-auto">
             <h4> {{ profileTitle }} </h4>
@@ -30,7 +30,8 @@
                     </div>
                     <div class="col">
                         <div class="editPofBtn">
-                            <button type="button" class="btn btn-info" (click)="editProfileClicked()">Edit Profile</button>
+                            <button type="button" class="btn btn-info" (click)="editProfileClicked()">Edit
+                                Profile</button>
                         </div>
                     </div>
                 </div>
@@ -70,81 +71,110 @@
                             <div class="form-group">
                                 <!-- <label>Upload new profile image</label> -->
                                 <div class="upload-container">
-                                  <div class="border-container">
-                                    <div class="icons fa-4x" *ngIf="!url">
-                                      <!-- <i class="fa fa-file-image-o"></i> -->
+                                    <div class="border-container">
+                                        <div class="icons fa-4x" *ngIf="!url">
+                                            <!-- <i class="fa fa-file-image-o"></i> -->
+                                        </div>
+                                        <img [src]="url" id="imgPreview">
+                                        <button type="button" class="close" aria-label="Close" (click)="removeImage()"
+                                            *ngIf="url">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <input type="file" (change)="onFileChanged($event)" #inputFile>
                                     </div>
-                                    <img [src]="url" id="imgPreview">
-                                    <button type="button" class="close" aria-label="Close" (click)="removeImage()" *ngIf="url">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <input type="file" (change)="onFileChanged($event)" #inputFile>
-                                  </div>
                                 </div>
-                              </div>
+                            </div>
                         </div>
                         <div class="col-9">
-                            <div class="row">
-                                <div class="col-2">
+                            <div class="form-group row">
+                                <div class="col">
                                     <label>First Name</label>
+                                    <div class="input-group">
+                                        <input name="firstName" formControlName="firstName" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['firstName'].errors?.['required'] && getEditProfileFormControl['firstName'].touched" class="alert alert-danger">
+                                        First Name is required
+                                    </div> -->
                                 </div>
-                                <div class="col-10">
-                                    <input name="firstName" class="form-control" maxlength="100">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-2">
+                                <div class="col">
                                     <label>Last Name</label>
-                                </div>
-                                <div class="col-10">
-                                    <input name="lastName" class="form-control" maxlength="100">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-2">
-                                    <label>Email Address</label>
-                                </div>
-                                <div class="col-10">
-                                    <input name="emailAddress" class="form-control" maxlength="100">
+                                    <div class="input-group">
+                                        <input name="lastName" formControlName="lastName" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['lastName'].errors?.['required'] && getEditProfileFormControl['lastName'].touched" class="alert alert-danger">
+                                        Last Name is required
+                                    </div> -->
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-2">
-                                    <label>Gender</label>
-                                </div>
-                                <div class="col-10">
-                                    <input name="gender" class="form-control" maxlength="100">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-2">
+                            <div class="form-group row">
+                                <div class="col">
                                     <label>Date of Birth</label>
+                                    <div class="input-group">
+                                        <input name="dateOfBirth" formControlName="dateOfBirth" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['dateOfBirth'].errors?.['required'] && getEditProfileFormControl['dateOfBirth'].touched" class="alert alert-danger">
+                                        First Name is required
+                                    </div> -->
                                 </div>
-                                <div class="col-10">
-                                    <input name="dateOfBirth" class="form-control" maxlength="100">
+                                <div class="col">
+                                    <label>Contact Number</label>
+                                    <div class="input-group">
+                                        <input name="contactNo" formControlName="contactNo" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['contactNo'].errors?.['required'] && getEditProfileFormControl['contactNo'].touched" class="alert alert-danger">
+                                        Last Name is required
+                                    </div> -->
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-3">
-                                    <label>Professional Title</label>
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label>Email Address</label>
+                                    <div class="input-group">
+                                        <input name="emailAddress" formControlName="emailAddress" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['emailAddress'].errors?.['required'] && getEditProfileFormControl['emailAddress'].touched" class="alert alert-danger">
+                                        First Name is required
+                                    </div> -->
                                 </div>
-                                <div class="col-9">
-                                    <input name="professionalTitle" class="form-control" maxlength="100">
+                            </div>
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label>Professional Title</label>
+                                    <div class="input-group">
+                                        <input name="professionalTitle" formControlName="professionalTitle" class="form-control"
+                                            maxlength="100">
+                                    </div>
+                                    <!-- <div *ngIf="getEditProfileFormControl['gender'].errors?.['required'] && getEditProfileFormControl['gender'].touched" class="alert alert-danger">
+                                        Last Name is required
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <label>About Me</label>
-                        <textarea name="aboutMe" class="form-control" rows="4"></textarea>
+                    <div class="form-group row">
+                        <div class="col">
+                            <label>About Me</label>
+                            <textarea name="aboutMe" formControlName="aboutMe" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <label>Skills</label>
+                            <textarea name="skills" formControlName="skills" class="form-control" rows="4"></textarea>
+                        </div>
                     </div>
                     <div class="row">
-                        <label>Skills</label>
-                        <textarea name="skills" class="form-control" rows="4"></textarea>
-                    </div>
-                    <div class="row">
-                        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
-                        <button type="submit" class="btn btn-secondary">Save</button>
+                        <div class="col">
+                            <div class="right">
+                                <button type="button" class="btn btn-secondary spacingRight" (click)="cancel()">Cancel</button>
+                                <button type="submit" class="btn btn-secondary" (click)="submit()">Save</button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </ng-template>
@@ -153,20 +183,23 @@
             <a ngbNavLink> {{ jobSecTitle }}</a>
             <!-- Second content -->
             <ng-template ngbNavContent>
-                <div class="card mb-4" *ngFor="let jobListing of jobListings">
-                    <div class="card-body" *ngIf="jobListings.length > 0">
+                <div class="card mb-4" *ngFor="let job of jobHistory">
+                    <div class="card-body" *ngIf="jobHistory.length > 0">
                         <div class="d-flex">
                             <h4 class="card-title btn-link text-secondary p-2 flex-fill"
-                                (click)="openListing('/jobListing/'+jobListing.id)"> {{ jobListing.title }} </h4>
-                            <div class="card-text p-2 flex-fill text-right"> {{ jobListing.status }} </div>
+                                (click)="openListing('/jobListing/'+job.id)"> {{ job.title }} </h4>
+                            <div class="card-text p-2 flex-fill text-right"> {{ job.status }} </div>
                         </div>
                         <div class="d-flex">
-                            <div class="card-text p-2 flex-fill"> {{ jobListing.details }} </div>
+                            <div class="card-text p-2 flex-fill"> {{ job.details }} </div>
                             <div class="card-text p-2 flex-fill"></div>
-                            <div class="card-text p-2 flex-fill text-right"> {{ jobListing.rate }}{{ jobListing.rateType }}
+                            <div class="card-text p-2 flex-fill text-right"> {{ job.rate }}{{ job.rateType }}
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body" *ngIf="jobHistory.length == 0">
+                    <div class="no-content">&ndash; No Job History &ndash;</div>
                 </div>
             </ng-template>
         </li>
@@ -174,7 +207,8 @@
             <a ngbNavLink>Reviews</a>
             <!-- Third content -->
             <ng-template ngbNavContent>
-                <div class="totalRatings">Overall Rating: {{ avgRating }} <span class="review">({{ reviewCount }} Reviews)</span></div>
+                <div class="totalRatings" *ngIf="ratings.length > 0">Overall Rating: {{ avgRating }} <span
+                        class="review">({{ reviewCount }} Reviews)</span></div>
                 <div class="card mb-4" *ngFor="let rating of ratings">
                     <div class="card-body" *ngIf="ratings.length > 0">
                         <div class="d-flex">
@@ -188,6 +222,9 @@
                             <div class="card-text p-2 flex-fill"></div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body" *ngIf="ratings.length == 0">
+                    <div class="no-content">&ndash; No reviews yet &ndash;</div>
                 </div>
             </ng-template>
         </li>
