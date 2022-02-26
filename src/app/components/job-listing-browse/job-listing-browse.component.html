@@ -9,10 +9,9 @@
             <h4 class="card-title btn-link text-secondary p-2 flex-fill" (click)="openListing('/jobListing/'+jobListing.id)">{{jobListing.title}}</h4>
             <div class="card-text p-2 flex-fill text-right">{{jobListing.status}}</div>
           </div>
-          <div class="d-flex">
-            <div class="card-text p-2 flex-fill">{{jobListing.details}}</div>
-              <div class="card-text p-2 flex-fill"></div>
-            <div class="card-text p-2 flex-fill text-right">{{jobListing.rate}}{{jobListing.rateType}}</div>
+          <div class="row">
+            <div class="col-9 card-text ">{{jobListing.details}}</div>
+            <div class="col-3 card-text text-right">${{jobListing.rate}} {{jobListing.rateType}}</div>
           </div>
         </div>
       </div>

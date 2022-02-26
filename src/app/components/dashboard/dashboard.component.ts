@@ -4,6 +4,7 @@ import { JobListingService } from 'src/app/services/job-listing.service';
 import { Application } from 'src/app/entities/application';
 import { JobApplicationService } from 'src/app/services/job-application.service';
 import { Router } from '@angular/router';
+import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -69,6 +70,9 @@ export class DashboardComponent implements OnInit {
     this.jobListingService.getJobListingByUser(authorId).subscribe(response => {
       console.log(response);
         this.jobListings = response;
+        this.jobListings.forEach((element) => {
+          element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+        });
       }
     );
   }
