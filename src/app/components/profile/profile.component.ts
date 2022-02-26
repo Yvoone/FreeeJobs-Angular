@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { JobListing } from 'src/app/entities/job-listing';
 import { JobListingService } from 'src/app/services/job-listing.service';
+import { Application } from 'src/app/entities/application';
+import { JobApplicationService } from 'src/app/services/job-application.service';
 import { User } from 'src/app/entities/user';
 import { IAMService } from 'src/app/services/iam.service';
 import { Rating } from 'src/app/entities/rating';
@@ -20,12 +22,14 @@ export class ProfileComponent implements OnInit {
 
   user!: User;
   jobHistory: JobListing[] = [];
+  jobListings: JobListing[] = [];
+  displayJobListings: JobListing[] = [];
   ratings: Rating[] = [];
 
-  profileType!: string;
   profileTitle!: string;
   jobSecTitle!: string;
   edit = false;
+  clientProfile = false;
   editProfileForm!: FormGroup;
   avgRating!: string;
   reviewCount!: number;
@@ -41,33 +45,22 @@ export class ProfileComponent implements OnInit {
   //hard coded
   imagePath = './assets/img/default.png';
 
-  // constructor(private route: ActivatedRoute, private router: Router) {
-  //   this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-  // }
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private iamService: IAMService,
     private jobListingService: JobListingService,
+    private jobApplicationService: JobApplicationService,
     private ratingService: RatingService) {
-      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-     }
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit(): void {
-    if (this.profileType == 'client') {
-      this.jobSecTitle = "Job Listing";
-      this.profileTitle = 'Client Profile';
-      this.getCurrentUser(3);
-    } else {
-      this.jobSecTitle = "Job History";
-      this.profileTitle = 'Freelancer Profile';
-      this.getCurrentUser(3);
-    }
-
-    this.getJobHistory(1);
+    this.getCurrentUser(3);
     this.getRatings(3);
+
+    this.initiateProfile();
 
     this.editProfileForm = this.formBuilder.group({
       firstName: ['', [Validators.required]],
@@ -88,7 +81,7 @@ export class ProfileComponent implements OnInit {
   getCurrentUser(id: number) {
     this.iamService.getUserByUserId(id).subscribe(response => {
       this.user = response;
-      
+
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
         'lastName': this.user.lastName,
@@ -103,18 +96,36 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  getJobHistory(authorId: number) {
-    this.jobListingService.getJobListingByUser(authorId).subscribe(response => {
+  getJobHistory(applicantId: number) {
+    this.jobApplicationService.getAcceptedApplicationsByApplicantId(applicantId).subscribe(response => {
       console.log(response);
 
-      let jobListings: JobListing[] = response;
+      let applications: Application[] = response;
       let completedJobs: JobListing[] = [];
-      for (let job of jobListings) {
-        if (job.status == 'Completed') {
-          completedJobs.push(job);
+      for (let appln of applications) {
+        this.jobListingService.getCompletedJobListingById(appln.jobId).subscribe(response => {
+          console.log(response);
+          if (response) {
+            response.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === response.status)?.[1] || '';
+            completedJobs.push(response);
+          }
         }
+        );
       }
       this.jobHistory = completedJobs;
+      this.displayJobListings = this.jobHistory;
+    }
+    );
+  }
+
+  getJobListingByOwner(authorId: number) {
+    this.jobListingService.getJobListingByUser(authorId).subscribe(response => {
+      console.log(response);
+      this.jobListings = response;
+      this.jobListings.forEach((element) => {
+        element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1] || '';
+      });
+      this.displayJobListings = this.jobListings;
     }
     );
   }
@@ -152,6 +163,36 @@ export class ProfileComponent implements OnInit {
     this.edit = true;
   }
 
+  initiateProfile() {
+    if (this.clientProfile == false) {
+      this.switchToFreelancerProfile();
+    } else if (this.clientProfile == true) {
+      this.switchToClientProfile();
+    }
+  }
+
+  switchToClientProfile() {
+    this.clientProfile = true;
+    this.profileTitle = "Client Profile";
+    this.jobSecTitle = "Job Listing";
+    this.getJobListingByOwner(3);
+  }
+
+  switchToFreelancerProfile() {
+    this.clientProfile = false;
+    this.profileTitle = "Freelancer Profile";
+    this.jobSecTitle = "Job History";
+    this.getJobHistory(3);
+  }
+
+  switchProfile() {
+    if (this.clientProfile == false) {
+      this.switchToClientProfile();
+    } else if (this.clientProfile == true) {
+      this.switchToFreelancerProfile();
+    }
+  }
+
   cancel() {
     this.edit = false;
   }
@@ -178,7 +219,7 @@ export class ProfileComponent implements OnInit {
   }
 
   submit() {
-    if(this.edit){
+    if (this.edit) {
       let editObj = {
         id: this.user.id,
         firstName: this.editProfileForm.value.firstName,
@@ -195,6 +236,10 @@ export class ProfileComponent implements OnInit {
       })
 
     }
+    this.refresh();
+  }
+
+  refresh() {
     location.reload();
   }
 }

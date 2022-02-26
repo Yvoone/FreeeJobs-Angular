@@ -61,6 +61,15 @@ export class JobListingService {
     const URL = this.jobListingUrl + '/' + jobId + '/updateJobListingStatus';
     return this.httpClient.put<any>(URL, status);
   }
+
+  getCompletedJobListingById(listingId: number): Observable<JobListing> {
+    const URL = this.jobListingUrl + '/getCompletedJobListing/';
+
+    let params = new HttpParams()
+      .set('listingId', listingId.toString());
+
+    return this.httpClient.get<JobListing>(URL, {params});
+  }
 }
 
 
