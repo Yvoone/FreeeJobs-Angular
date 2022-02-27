@@ -85,4 +85,13 @@ export class JobApplicationService {
 
     return this.httpClient.get<Application[]>(URL, {params});
   }
+
+  getAcceptedApplicationsByApplicantId(applicantId: number): Observable<Application[]> {
+    const URL = this.jobApplicationUrl + '/listAcceptedJobApplicationByApplicantId';
+
+    let params = new HttpParams()
+      .set('applicantId', applicantId.toString());
+
+    return this.httpClient.get<Application[]>(URL, {params});
+  }
 }
