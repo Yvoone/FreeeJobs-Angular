@@ -195,8 +195,8 @@ export class JobListingDetailsComponent implements OnInit {
     return (this.jobListing.status==JobListingStatusEnum.C)&&(this.ratingForUserAndJob.length==0)
   }
   getReviewsDoneByUser(){
-    //check if authorId and listing Id in rating table
-    this.ratingService.getRatingsByUserIdJobId(this.userId, this.id).subscribe(response =>{
+    //check if user alr submitted rating for this job listing
+    this.ratingService.getRatingsByReviewerIdJobId(this.userId, this.id).subscribe(response =>{
       this.ratingForUserAndJob= response;
       console.log(this.ratingForUserAndJob.length);
     });
@@ -211,9 +211,18 @@ export class JobListingDetailsComponent implements OnInit {
   submitRating(review: String, rating: String) {
     console.log(review);
     console.log(rating);
+    let targetId: Number| undefined = undefined;
+    if(this.jobListing.authorId==this.userId){
+      //target of the rating is for freelancer
+      targetId = this.applicants[0].id;
+    }else{
+      //target of the rating is for employer
+      targetId = this.jobListing.authorId;
+    }
     let newRating = {
       jobId: this.id,
-      userId: this.userId,
+      reviewerId: this.userId,
+      targetId: targetId,
       reviewTitle: this.reviewTitle,
       review: review,
       ratingScale: Number(rating)

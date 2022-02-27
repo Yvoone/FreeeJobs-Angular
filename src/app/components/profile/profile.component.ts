@@ -120,7 +120,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getRatings(userId: number) {
-    this.ratingService.getRatingsByUserId(userId).subscribe(response => {
+    this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
       console.log(response);
 
       let allRatings: Rating[] = response;
