@@ -16,20 +16,29 @@ export class RatingService {
     return this.httpClient.post<any>(createUrl, newRating);
   }
 
-  getRatingsByUserId(userId: number): Observable<Rating[]> {
-    const URL = this.ratingUrl + '/getRatingsByUserId';
+  getRatingsByTargetId(targetId: number): Observable<Rating[]> {
+    const URL = this.ratingUrl + '/getRatingsByTargetId';
 
     let params = new HttpParams()
-      .set('userId', userId.toString());
+      .set('targetId', targetId.toString());
 
     return this.httpClient.get<Rating[]>(URL, {params});
   }
 
-  getRatingsByUserIdJobId(userId: number, jobId:number): Observable<Rating[]> {
-    const URL = this.ratingUrl + '/getRatingsByUserIdJobId';
+  getRatingsByReviewerId(reviewerId: number): Observable<Rating[]> {
+    const URL = this.ratingUrl + '/getRatingsByReviewerId';
 
     let params = new HttpParams()
-      .set('userId', userId.toString())
+      .set('reviewerId', reviewerId.toString());
+
+    return this.httpClient.get<Rating[]>(URL, {params});
+  }
+
+  getRatingsByReviewerIdJobId(userId: number, jobId:number): Observable<Rating[]> {
+    const URL = this.ratingUrl + '/getRatingsByReviewerIdJobId';
+
+    let params = new HttpParams()
+      .set('reviewerId', userId.toString())
       .set('jobId', jobId.toString());
 
     return this.httpClient.get<Rating[]>(URL, {params});
