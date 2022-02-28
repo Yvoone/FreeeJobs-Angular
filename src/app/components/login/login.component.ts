@@ -73,8 +73,8 @@ export class LoginComponent implements OnInit {
       console.log("submitted")
       this.submitted = true;
       
-      // this.authService.login(this.loginForm.value);   // {1}  Login with API
-      this.authService.login(this.control.email.value, this.control.password.value); // {1}  Login WITHOUT API
+      this.authService.login(this.loginForm.value);   // {1}  Login with API
+      // this.authService.login(this.control.email.value, this.control.password.value); // {1}  Login WITHOUT API
 
       this.submitEM.emit(this.loginForm.value);
 
@@ -97,11 +97,14 @@ export class LoginComponent implements OnInit {
 
   //check session storage
   loginemail!: string
+  loginID!:string
   checkSession(){
     this.loginemail = this.sessionStorageService.getEmail('email');
+    this.loginID = this.sessionStorageService.getID('id');
   }
   clearSession(){
     this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeID('id');
   }
 
 }

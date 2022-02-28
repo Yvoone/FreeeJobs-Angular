@@ -17,10 +17,12 @@ import { Observable, of } from 'rxjs';
 export class TopbarComponent implements OnInit {
 
   email!: string;
+  id!:any;
   display_topbar!: boolean;
   isLoggedIn$!: Observable<boolean>; 
   islogin!:boolean
-
+  loginemail!: string;
+  loginID!: string;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
@@ -29,10 +31,13 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoggedIn$ = this.authService.isLoggedIn;
+    this.checkEmailSession();
+    // console.log(this.isLoggedIn$)
   }
 
   onLogout(){
     this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeID('id');
     this.authService.logout();                      // {3}
     console.log("logout action")
     this.islogin=false;
@@ -40,6 +45,7 @@ export class TopbarComponent implements OnInit {
 
   checkEmailSession(){
     this.email = this.sessionStorageService.getEmail('email');
+    this.id = this.sessionStorageService.getID('id');
     console.log(this.email)
     if (this.email){
       console.log("topbar")
@@ -49,6 +55,11 @@ export class TopbarComponent implements OnInit {
       console.log("no topbar")
       this.display_topbar =false;
     }
+  }
+
+  checkSession(){
+    this.loginemail = this.sessionStorageService.getEmail('email');
+    this.loginID = this.sessionStorageService.getID('id');
   }
 
 }

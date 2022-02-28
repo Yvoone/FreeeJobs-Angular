@@ -23,8 +23,11 @@ export class AuthService {
   get isLoggedIn() {
     let email: any;
     email= this.sessionStorageService.getEmail('email');
+    let id:any;
+    id= this.sessionStorageService.getEmail('id');
+    
     console.log(email)
-    if (email) {
+    if (email && id) {
       this.loggedIn.next(true);
     } else {
       this.loggedIn.next(false)
@@ -33,8 +36,8 @@ export class AuthService {
   }
 
   gettoken(){
-    console.log(sessionStorage.getItem("email"))
-    if(sessionStorage.getItem("email") !=null){
+    console.log(sessionStorage.getItem("id"))
+    if(sessionStorage.getItem("id") !=null){
       return true;
     } else {
       return false;
@@ -51,49 +54,52 @@ export class AuthService {
     private alertService: AlertService
   ) {}
 
-  // //Login with API
-  // login(user:User){
-  // // login(email: string, password: string){
-  //   console.log("auth service login in")
-  //   this.IAMService.login(user).subscribe(e=>{
-  //     console.log(e)
-  //     // if (user.email !== '' && user.password !== '' ) { // {3}
-  //     if (e.loginStatus == 1) {
-  //       this.loggedIn.next(true);
-  //       this.loggedIn2.next('loggin');
-  //       sessionStorage.clear();
-  //       console.log(this.sessionStorageService.getEmail('email'));
-  //       this.sessionStorageService.setEmail('email', user.email);
-  //       this.router.navigate(['/dashboard']);
-  //       // this.router.navigateByUrl("")
-  //     } else if(e.loginStatus == 0) {
-  //       this.alertService.error('Login Fail', true);
-  //     }
-  //   })
-  // }
-  
-  //Login WITHOUT API
-  login(email: string, password: string){
+  //Login with API
+  login(user:User){
+  // login(email: string, password: string){
     console.log("auth service login in")
-      if (email !== '' && password !== '' ) { // {3}
-      
+    this.IAMService.login(user).subscribe(e=>{
+      console.log(e)
+      if (e.loginStatus == 1) {
         this.loggedIn.next(true);
         this.loggedIn2.next('loggin');
         sessionStorage.clear();
         console.log(this.sessionStorageService.getEmail('email'));
-        this.sessionStorageService.setEmail('email', email);
-        this.router.navigate(['/dashboard']);
+        this.sessionStorageService.setEmail('email', user.email);
+        this.sessionStorageService.setID('id', e.userId)
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 100);
         // this.router.navigateByUrl("")
-      } else {
+      } else if(e.loginStatus == 0) {
         this.alertService.error('Login Fail', true);
       }
+    })
   }
+  
+  // //Login WITHOUT API
+  // login(email: string, password: string){
+  //   console.log("auth service login in")
+  //     if (email !== '' && password !== '' ) { // {3}
+      
+  //       this.loggedIn.next(true);
+  //       this.loggedIn2.next('loggin');
+  //       sessionStorage.clear();
+  //       console.log(this.sessionStorageService.getEmail('email'));
+  //       this.sessionStorageService.setEmail('email', email);
+  //       this.router.navigate(['/dashboard']);
+  //       // this.router.navigateByUrl("")
+  //     } else {
+  //       this.alertService.error('Login Fail', true);
+  //     }
+  // }
 
   logout() {                            // {4}
     console.log("logout?")
     this.loggedIn.next(false);
-    sessionStorage.clear;
+    sessionStorage.clear();
     this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeID('id');
     this.router.navigate(['login']);
   }
 

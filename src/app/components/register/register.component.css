@@ -3,11 +3,13 @@
     justify-content: center;
     margin: 100px 0px;
   }
-
+  .mat-card{
+    max-width: 400px;
+  }
   .mat-form-field {
     width: 100%;
     min-width: 300px;
-    max-width: 600px;
+    max-width: 400px;
   }
 
   mat-card-title,

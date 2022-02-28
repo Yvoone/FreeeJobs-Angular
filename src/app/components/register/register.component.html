@@ -3,138 +3,187 @@
         <mat-card-title>Register</mat-card-title>
         <mat-card-content>
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-                <mat-form-field >
-                    <mat-label>Email</mat-label>
-                    <input matInput type="text" formControlName="email">
+                <ng-container *ngIf="next">
+                    <mat-form-field >
+                        <mat-label>Email *</mat-label>
+                        <input matInput type="text" formControlName="email">
+    
+                        <mat-error *ngIf="!submitted && email_require">
+                            <mat-error *ngIf="control.email.errors.required">Email is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>Password *</mat-label>
+                        <input matInput type="text" formControlName="password">
+    
+                        <mat-error *ngIf="!submitted && pw_require">
+                            <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>First Name *</mat-label>
+                        <input matInput type="text" formControlName="firstName">
+                        <mat-error *ngIf="!submitted && fn_require">
+                            <mat-error *ngIf="control.firstName.errors.required">First Name is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>Last Name *</mat-label>
+                        <input matInput type="text" formControlName="lastName">
+                        <mat-error *ngIf="!submitted && ln_require">
+                            <mat-error *ngIf="control.lastName.errors.required">Last Name is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>Contact Number *</mat-label>
+                        <input matInput type="text" formControlName="contactNo">
+                        <mat-error *ngIf="!submitted && no_require">
+                            <mat-error *ngIf="control.contactNo.errors.required">Contact Number is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>Gender *</mat-label>
+                        <mat-select formControlName="gender">
+                            <mat-option *ngFor="let value of gender" [value]="value.value">
+                              {{ value.viewValue }}
+                            </mat-option>
+                        </mat-select>
+                        <!-- <input matInput type="text" formControlName="gender"> -->
+                        <mat-error *ngIf="!submitted && gender_require">
+                            <mat-error *ngIf="control.gender.status == 'INVALID' ">Gender is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field >
+                        <mat-label>Date of Birth *</mat-label>
+                        <input matInput type="text" formControlName="dob">
+                        <mat-error *ngIf="!submitted && dob_require">
+                            <mat-error *ngIf="control.dob.errors.required">Date of Birth is required</mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <br>
+                    <!-- <a routerLink="/login" class="btn btn-link" style="float: right; color: blue; cursor: pointer; font-size: 12px">Cancel</a> -->
+                </ng-container>
+                
 
-                    <mat-error *ngIf="!submitted && email_require">
-                        <mat-error *ngIf="control.email.errors.required">Email is required</mat-error>
-                    </mat-error>
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Password</mat-label>
-                    <input matInput type="text" formControlName="password">
+                <!-- next page for registration -->
+                <ng-container *ngIf="next">
 
-                    <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error>
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>First Name</mat-label>
-                    <input matInput type="text" formControlName="firstName">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Last Name</mat-label>
-                    <input matInput type="text" formControlName="lastName">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Contact Number</mat-label>
-                    <input matInput type="text" formControlName="contactNo">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender">
-                        <mat-option *ngFor="let value of gender" [value]="value.value">
-                          {{ value.viewValue }}
-                        </mat-option>
-                    </mat-select>
-                    <!-- <input matInput type="text" formControlName="gender"> -->
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Date of Birth</mat-label>
-                    <input matInput type="text" formControlName="dob">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>About Me</mat-label>
-                    <input matInput type="text" formControlName="aboutMe">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>Skills</mat-label>
-                    <input matInput type="text" formControlName="skills">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-                <br>
-                <mat-form-field >
-                    <mat-label>LinkedIn</mat-label>
-                    <input matInput type="text" formControlName="linkedInAcct">
-
-                    <!-- <mat-error *ngIf="!submitted && pw_require">
-                        <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
-                    </mat-error> -->
-                </mat-form-field>
-
-
-
-
-
-
-
-
-
-
-                <!-- <button class="btn btn-primary">
-                    Update
-                </button>
-                <button class="btn btn-primary">
-                    Cancel
-                </button> -->
-
-                <!-- <button [disabled]="loading" class="btn btn-primary">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Login
-                </button> -->
-                <!-- <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div> -->
-
-                <mat-card-actions>
-                    <button mat-stroked-button [disabled]="loading"color='primary' style="width:100%">
-                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                        Register
-                    </button>
-                    <!-- <div style="padding-bottom: 10px;"></div> -->
-                    <a routerLink="/login" class="btn btn-link" style="float: right; color: blue; cursor: pointer; font-size: 12px">Cancel</a>
+                    <mat-form-field >
+                        <mat-label>Role</mat-label>
+                        <mat-select name="role" >
+                            <mat-option *ngFor="let role of role" [value]="role.value" (click)="selectRole(role.value)">
+                              {{ role.viewValue }}
+                            </mat-option>
+                        </mat-select>
+                        <!-- <mat-error *ngIf="!submitted && role_require">
+                            <mat-error *ngIf="control.userRole.status == 'INVALID' ">Role is required</mat-error>
+                        </mat-error> -->
+                    </mat-form-field>
                     
-                    <!-- <button (click)="routeToLanding('/admin-landing',email_admin)">Login</button> -->
+                    <ng-container *ngIf="selected_freelancer">
+                        <mat-form-field >
+                            <mat-label>Professional Title</mat-label>
+                            <input matInput type="text" formControlName="professionalTitle">
+        
+                            <!-- <mat-error *ngIf="!submitted && pw_require">
+                                <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                            </mat-error> -->
+                        </mat-form-field>
 
-                    <!-- <button mat-raised-button color='primary' (click)="onSubmit('user_type')">login</button> -->
-                    <!-- <button  mat-raised-button color='warn' (click)="backClicked()">Cancel</button> -->
-                </mat-card-actions>
+                        <mat-form-field hintLabel="Max 200 characters" appearance="outline">
+                            <mat-label>Describe Yourself as Freelancer</mat-label>
+                            <textarea matInput #input formControlName="aboutMe" maxlength="200" style="min-height: 80px;">
+                            </textarea>
+                            <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+
+                            <!-- <mat-error *ngIf="!submitted && pw_require">
+                                <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                            </mat-error> -->
+                        </mat-form-field>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="selected_client">
+                        <mat-form-field hintLabel="Max 200 characters" appearance="outline">
+                            <mat-label>Describe Yourself as Client</mat-label>
+                            <textarea matInput #input formControlName="aboutMeClient" maxlength="200" style="min-height: 80px;">
+                            </textarea>
+                            <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+
+        
+                            <!-- <mat-error *ngIf="!submitted && pw_require">
+                                <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                            </mat-error> -->
+                        </mat-form-field>
+                    </ng-container>
+                    
+
+                    <br>
+                    <mat-form-field hintLabel="Max 200 characters" appearance="outline">
+                        <mat-label>Skills</mat-label>
+                        <textarea matInput #input formControlName="skills" maxlength="200" style="min-height: 80px;">
+                        </textarea>
+                        <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+    
+                        <!-- <mat-error *ngIf="!submitted && pw_require">
+                            <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                        </mat-error> -->
+                    </mat-form-field>
+                    <br>
+                    
+
+                    <!-- <a class="btn btn-link" style="float: left; color: blue; cursor: pointer; font-size: 12px; padding-bottom: 30px;" (click)="nextPage('previous')">Previous Page</a> -->
+
+
+                    <mat-card-actions>
+                        <button mat-stroked-button [disabled]="loading"color='primary' style="width:100%">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                            Register
+                        </button>
+                        <!-- <div style="padding-bottom: 10px;"></div> -->
+                        
+                        
+                        <!-- <button (click)="routeToLanding('/admin-landing',email_admin)">Login</button> -->
+    
+                        <!-- <button mat-raised-button color='primary' (click)="onSubmit('user_type')">login</button> -->
+                        <!-- <button  mat-raised-button color='warn' (click)="backClicked()">Cancel</button> -->
+                    </mat-card-actions>
+                    <br>
+                    <strong>OR</strong>
+                    <br>
+    
+                    <mat-form-field>
+                        <mat-label>LinkedIn</mat-label>
+                        <input matInput type="text" formControlName="linkedInAcct">
+    
+                        <!-- <mat-error *ngIf="!submitted && pw_require">
+                            <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
+                        </mat-error> -->
+                    </mat-form-field>
+                    <button type="button" class="btn btn-outline-info" >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-linkedin" viewBox="0 0 16 16">
+                            <path
+                                d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z" />
+                        </svg>
+                        <span class="alignWithSvgRight">&nbsp; Link with LinkedIn Profile</span>
+                    </button>
+                    <br><br>
+                    <a routerLink="/login" class="btn btn-link" style="float: right; color: blue; cursor: pointer; font-size: 12px">Cancel</a>
+                </ng-container>
+
+
+
+                
             </form>
         </mat-card-content>
+
+        
         <mat-card-footer>
             <!-- <button class="btn btn-primary" (click)="checkSession()">
                 Session Stored?

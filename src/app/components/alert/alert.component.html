@@ -1,1 +1,8 @@
-<div *ngIf="message" [ngClass]="message.cssClass">{{message.text}}</div>
+<div align="center">
+    <ng-container *ngIf="showSuccessMsg">
+        <div *ngIf="message" align="center" [class.visible]="isVisible"  class="alert alert-success" >{{message.text}}</div>
+    </ng-container>
+    <ng-container *ngIf="showErrorMsg">
+        <div *ngIf="message" align="center" [class.visible]="isVisible"  class="alert alert-danger" >{{message.text}}</div>
+    </ng-container>
+</div>

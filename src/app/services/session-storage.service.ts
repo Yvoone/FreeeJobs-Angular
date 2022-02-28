@@ -15,9 +15,12 @@ export class SessionStorageService {
   public setEmail(key: string, value: string): void {
     sessionStorage.setItem(key, value);
   }
+  public setID(key:string, value:string):void{
+    sessionStorage.setItem(key,value);
+  }
 
   public getEmail(key: string): string {
-    let temp2 = sessionStorage.getItem(key);
+    let email_temp = sessionStorage.getItem(key);
     // let temp = JSON.parse(sessionStorage.getItem(key)!)
     // this.email_temp = JSON.stringify(sessionStorage.getItem(key));
     // console.log("session com", this.email_temp)
@@ -27,11 +30,21 @@ export class SessionStorageService {
     //   return this.email_temp;
     // } else { return "{}" }
 
-    return temp2!
+    return email_temp!
+  }
+
+  public getID(key:string): string {
+    let id_temp = sessionStorage.getItem(key);
+    return id_temp!;
   }
 
   public removeEmail(key:string){
-    console.log("remove?")
+    console.log("remove email?")
+    sessionStorage.removeItem(key);
+  }
+
+  public removeID(key:string){
+    console.log("remove id?")
     sessionStorage.removeItem(key);
   }
 

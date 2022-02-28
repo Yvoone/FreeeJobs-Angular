@@ -45,6 +45,7 @@ export class AuthGuard implements CanActivate {
         state: RouterStateSnapshot): boolean | Promise<boolean>  {
         console.log(this.authService.gettoken())
         console.log(sessionStorage.getItem('email'));
+        console.log(sessionStorage.getItem('id'));
         if (this.authService.gettoken()) {
             console.log("true")
             return this.authService.gettoken();
