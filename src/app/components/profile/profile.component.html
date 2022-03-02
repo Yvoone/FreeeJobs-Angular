@@ -25,8 +25,9 @@
                     <div class="col-7">
                         <div class="name"> {{ user.firstName }} {{ user.lastName }} </div>
                         <div *ngIf="!clientProfile"> {{ user.professionalTitle }} </div>
-                        <div class="aboutMeTitle">About Me</div>
-                        <div class="aboutMe"> {{ user.aboutMe }} </div>
+                        <div class="aboutMeTitle"> {{ aboutMeTitle }} </div>
+                        <div class="aboutMe" *ngIf="!clientProfile"> {{ user.aboutMe }} </div>
+                        <div class="aboutMe" *ngIf="clientProfile"> {{ user.aboutMeClient }} </div>
                     </div>
                     <div class="col">
                         <div class="editPofBtn">
@@ -160,6 +161,12 @@
                         <div class="col">
                             <label>About Me</label>
                             <textarea name="aboutMe" formControlName="aboutMe" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <label>About Client</label>
+                            <textarea name="aboutMeClient" formControlName="aboutMeClient" class="form-control" rows="4"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">

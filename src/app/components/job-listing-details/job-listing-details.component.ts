@@ -58,10 +58,11 @@ export class JobListingDetailsComponent implements OnInit {
   selectedUser!: User;
   selectedDesc!: String;
 
-  ratings: string[] = ['1','2','3','4','5'];
+  currentRating = 0;
+  // ratings: string[] = ['1','2','3','4','5'];
   review!:string;
   reviewTitle!:string;
-  selectedRating!:string
+  // selectedRating!:string
   ratingForUserAndJob!: Rating[];
   postedDays!: number;
 
@@ -205,9 +206,9 @@ export class JobListingDetailsComponent implements OnInit {
     console.log(this.applicants);
     this.modalService.open(content, {centered: true });
   }
-  onSelectRating(rating:string){
-    this.selectedRating=rating;
-  }
+  // onSelectRating(rating:string){
+  //   this.selectedRating=rating;
+  // }
   submitRating(review: String, rating: String) {
     console.log(review);
     console.log(rating);

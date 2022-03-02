@@ -28,6 +28,7 @@ export class ProfileComponent implements OnInit {
 
   profileTitle!: string;
   jobSecTitle!: string;
+  aboutMeTitle!: string;
   edit = false;
   clientProfile = false;
   editProfileForm!: FormGroup;
@@ -74,6 +75,7 @@ export class ProfileComponent implements OnInit {
       emailAddress: ['', [Validators.required]],
       professionalTitle: ['', [Validators.required]],
       aboutMe: ['', [Validators.required]],
+      aboutMeClient: ['', [Validators.required]],
       skills: ['', [Validators.required]]
     });
   }
@@ -90,6 +92,7 @@ export class ProfileComponent implements OnInit {
         // 'emailAddress': this.user.email,
         'professionalTitle': this.user.professionalTitle,
         'aboutMe': this.user.aboutMe,
+        'aboutMeClient': this.user.aboutMeClient,
         'skills': this.user.skills
       });
     }
@@ -175,6 +178,7 @@ export class ProfileComponent implements OnInit {
     this.clientProfile = true;
     this.profileTitle = "Client Profile";
     this.jobSecTitle = "Job Listing";
+    this.aboutMeTitle = "About Client";
     this.getJobListingByOwner(3);
   }
 
@@ -182,6 +186,7 @@ export class ProfileComponent implements OnInit {
     this.clientProfile = false;
     this.profileTitle = "Freelancer Profile";
     this.jobSecTitle = "Job History";
+    this.aboutMeTitle = "About Me";
     this.getJobHistory(3);
   }
 
@@ -228,6 +233,7 @@ export class ProfileComponent implements OnInit {
         contactNo: this.editProfileForm.value.contactNo,
         professionalTitle: this.editProfileForm.value.professionalTitle,
         aboutMe: this.editProfileForm.value.aboutMe,
+        aboutMeClient: this.editProfileForm.value.aboutMeClient,
         skills: this.editProfileForm.value.skills
       }
 

@@ -57,11 +57,6 @@ svg {
     font-weight: bold;
 }
 
-ngb-rating {
-    color: #fcba03;
-    font-size: 30px;
-}
-
 .review {
     color:gray;
     font-weight: lighter;

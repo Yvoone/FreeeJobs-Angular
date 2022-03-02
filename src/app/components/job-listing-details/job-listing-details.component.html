@@ -182,6 +182,9 @@
                 <div class="form-group" align='left'>
                     <label for="ratingScale" style="text-align: left;">Rating: 1 (Not at All Satisfied) - 5 (Extremely Satisfied) </label>
                     <div class="input-group">
+                        <ngb-rating [max]="5" [(rate)]="currentRating"></ngb-rating>
+                    </div>
+                    <!-- <div class="input-group">
                         <div ngbDropdown class="d-inline-block">
                             <button class="btn btn-secondary" id="rateTypeDropdown" ngbDropdownToggle>
                                 {{this.selectedRating}}
@@ -191,7 +194,7 @@
                               >{{rating}}</button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="form-group" align='left'>
                     <label for="review" style="text-align: left;">Review</label>
@@ -201,7 +204,7 @@
 
                 <mat-card-actions>
                     <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
-                    <button type="button" class="btn btn-dark" (click)="submitRating(review, selectedRating)">Submit</button>
+                    <button type="button" class="btn btn-dark" (click)="submitRating(review, currentRating.toString())">Submit</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>

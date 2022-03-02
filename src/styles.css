@@ -8,3 +8,8 @@
     text-align: center;
     color: darkgrey;
 }
+
+ngb-rating {
+    color: #fcba03;
+    font-size: 30px;
+}
