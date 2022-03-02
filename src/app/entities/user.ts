@@ -12,9 +12,10 @@ export class User {
     skills: string;
     linkedInAcct: string;
     professionalTitle: string;
+    aboutMeClient: string;
 
     constructor(id: number, password: string, firstName: string, lastName: string, email: string,contactNo: string, gender: string, dob: string,
-        aboutMe: string, skills: string, linkedInAcct: string, professionalTitle: string) {
+        aboutMe: string, skills: string, linkedInAcct: string, professionalTitle: string, aboutMeClient: string) {
         this.id = id;
         this.password = password;
         this.firstName = firstName;
@@ -27,5 +28,6 @@ export class User {
         this.skills = skills;
         this.linkedInAcct = linkedInAcct;
         this.professionalTitle = professionalTitle;
+        this.aboutMeClient = aboutMeClient;
     }
 }
