@@ -11,6 +11,7 @@ import { RatingService } from 'src/app/services/rating.service';
 import { Rating } from 'src/app/entities/rating';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
   selector: 'app-job-listing-details',
@@ -20,7 +21,7 @@ import { JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
 export class JobListingDetailsComponent implements OnInit {
 
   id!: number;
-  userId!: number;
+  userId!: any;
   jobListing!: JobListing;
   userType!: number;
   appDesc!: String;
@@ -72,18 +73,28 @@ export class JobListingDetailsComponent implements OnInit {
     private modalService: NgbModal,
     private jobApplicationService: JobApplicationService,
     private iamService: IAMService,
-    private ratingService: RatingService
+    private ratingService: RatingService,
+    private sessionStorageService: SessionStorageService
   ) {}
 
   ngOnInit(): void {
     console.log("open listing details");
     //Temp hardcoded
-    this.userId = 1;
+    this.userId = this.getLoggedInUserId();
 
     this.id = this.activatedRoute.snapshot.params['id'];
     this.getJobDetails(this.id);
     this.getReviewsDoneByUser();
 
+  }
+
+  getLoggedInUserId(): any {
+    let userId = this.sessionStorageService.getID('id');
+    if(userId==null){
+      //TODO throw error say no userId
+    }else{
+      return userId;
+    }
   }
 
   getJobDetails(id: number) {

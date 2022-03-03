@@ -13,11 +13,12 @@ export class JobApplicationService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getApplicationByUser(authorId: number): Observable<Application[]> {
-    const URL = this.jobApplicationUrl + '/listApplication/' + encodeURIComponent(authorId);
+  getApplicationByUser(applicantId: number, status: String): Observable<Application[]> {
+    const URL = this.jobApplicationUrl + '/listJobApplicationByApplicantIdAndStatus';
 
     let params = new HttpParams()
-      .set('authorId', authorId.toString());
+      .set('applicantId', applicantId.toString())
+      .set('status', status.toString());
 
     return this.httpClient.get<Application[]>(URL, {params});
   }

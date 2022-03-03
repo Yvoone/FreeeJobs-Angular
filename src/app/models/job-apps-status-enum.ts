@@ -7,3 +7,10 @@ export enum JobAppsStatusEnum {
     ACC = 'A',
     CLS = 'C'
 }
+
+export enum JobAppsReturnStatusEnum{
+    PA = 'Pending Acceptance',
+    A = 'Accepted',
+    C = 'Closed',
+    R = 'Rejected'
+}

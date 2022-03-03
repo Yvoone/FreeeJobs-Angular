@@ -7,7 +7,7 @@ import { JobListing } from 'src/app/entities/job-listing';
 @Injectable({
   providedIn: 'root'
 })
-export class JobListingService {  
+export class JobListingService {
   private jobListingUrl = 'http://localhost:8083/jobListing';
 
   constructor(private httpClient: HttpClient) {}
@@ -39,6 +39,16 @@ export class JobListingService {
 
     return this.httpClient.get<JobListing[]>(URL, {params});
   }
+
+  getJobListingByUserAndStatus(authorId: number, status: String) {
+    const URL = this.jobListingUrl + '/listJobListingByAuthorIdAndStatus';
+
+    let params = new HttpParams()
+      .set('authorId', authorId.toString())
+      .set('status', status.toString());
+
+    return this.httpClient.get<JobListing[]>(URL, {params});
+  }  
 
   getJobListingById(listingId: number): Observable<JobListing> {
     const URL = this.jobListingUrl + '/getJobListing/';

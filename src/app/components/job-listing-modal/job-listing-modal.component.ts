@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobListing } from 'src/app/entities/job-listing';
 import { User } from 'src/app/entities/user';
+import { IAMService } from 'src/app/services/iam.service';
 import { JobListingService } from 'src/app/services/job-listing.service';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
   selector: 'app-job-listing-modal',
@@ -29,14 +31,16 @@ export class JobListingModalComponent implements OnInit {
   updateFieldsMessage!: string;
   allRequiredFieldsEnteredMessage!: string;
   accessErrorMessage!: string;
-  //user!: User;
   message!: string;
 
   jobListing!: JobListing;
   originalJobListing!: JobListing;
 
+  
+  userId!: any;
+
   //hardcode user
-  user : User = {
+  user1 : User = {
     id: 5,
     password: "",
     firstName: "David",
@@ -57,9 +61,13 @@ export class JobListingModalComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private jobListingService: JobListingService,
     private formBuilder: FormBuilder,
-    private modal: NgbModal) { }
+    private modal: NgbModal,
+    private router: Router,
+    private sessionStorageService: SessionStorageService,
+    private iamService: IAMService) { }
 
   ngOnInit(): void {
+    this.userId = this.getLoggedInUserId();
     this.modalType = this.activatedRoute.snapshot.params['type'];
     this.rateTypes= ['Per Hour', 'Per Job'];
     this.editForm = this.formBuilder.group({
@@ -79,6 +87,15 @@ export class JobListingModalComponent implements OnInit {
     
   }
 
+  getLoggedInUserId(): any {
+    let userId = this.sessionStorageService.getID('id');
+    if(userId==null){
+      //TODO throw error say no userId
+    }else{
+      return userId;
+    }
+  }
+
   get getEditFormControl() {
     return this.editForm.controls;
   }
@@ -92,7 +109,7 @@ export class JobListingModalComponent implements OnInit {
     this.jobListingService.getJobListingById(id).subscribe(response => {
         this.originalJobListing = response;
         //check if author of joblisting is user
-        if(this.user.id!=this.originalJobListing.authorId){
+        if(this.userId!=this.originalJobListing.authorId){
           this.modal.open(this.accessErrorModal)
           this.accessErrorMessage = "You are not allowed to edit another user's job listing.";
           //return to previous page
@@ -156,7 +173,7 @@ export class JobListingModalComponent implements OnInit {
         details: this.editForm.value.details,
         rate: this.editForm.value.rate,
         rateType: this.selectedRateType,
-        authorId: this.user.id
+        authorId: this.userId
       }
       this.jobListingService.create(editObj).subscribe((result) => {
         this.modal.open(this.successModal);
@@ -167,6 +184,20 @@ export class JobListingModalComponent implements OnInit {
         
       });
     }
+  }
+
+  back(){
+    if(this.modalType=='edit'){
+      this.id = this.activatedRoute.snapshot.params['id'];
+      this.openListing('/jobListing/'+this.id);
+    }else{
+      this.router.navigate(["/dashboard"]);
+    }
+  }
+
+  openListing(listingUrl: String) {
+    let source = window.location.origin;
+    this.router.navigate([listingUrl]);
   }
 
   

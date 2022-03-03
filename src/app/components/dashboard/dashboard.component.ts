@@ -5,6 +5,8 @@ import { Application } from 'src/app/entities/application';
 import { JobApplicationService } from 'src/app/services/job-application.service';
 import { Router } from '@angular/router';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { JobAppsReturnStatusEnum, JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,8 +39,12 @@ export class DashboardComponent implements OnInit {
   ];
 
   jobListings: JobListing[] = [];
+  jobApplications: Application[] = [];
+  loggedInUserId!:any;
+  jobListingStatuses: String [] = [];
+  jobApplicationStatuses: String [] = [];
 
-  jobApplications: Application[] = [
+  jobApplications1: Application[] = [
     {
       id: 1,
       jobListing: this.jobListings[0],
@@ -56,20 +62,46 @@ export class DashboardComponent implements OnInit {
       status: 'Pending'
     }
   ];
+  selectedJobListingStatus!: String;
+  selectedJobAppStatus!: String;
 
   constructor(private router: Router,
-    private jobListingService: JobListingService) { }
+    private jobListingService: JobListingService,
+    private jobApplicationService: JobApplicationService,
+    private sessionStorageService: SessionStorageService) { }
 
   ngOnInit(): void {
     // this.getUserInfo(this.token.getUsername()).then((resolve: any) => {
     //   this.getJobListingByUser(this.user.id);
     // });
+    this.loggedInUserId=this.getLoggedInUserId();
+    this.setFilters();
+    this.getJobApplicationByUser(this.loggedInUserId, Object.entries(JobAppsReturnStatusEnum).find(([key, val]) => val === this.selectedJobAppStatus)?.[0]|| '');
+    this.getJobListingByUser(this.loggedInUserId, Object.entries(JobListingStatusEnum).find(([key, val]) => val === this.selectedJobListingStatus)?.[0]|| '');
+  }
+  getLoggedInUserId(): any {
+    let userId = this.sessionStorageService.getID('id');
+    if(userId==null){
+      //TODO throw error say no userId
+    }else{
+      return userId;
+    }
+  }
+  getJobApplicationByUser(userId: number, status: String) {
+    this.jobApplicationService.getApplicationByUser(userId, status).subscribe(response => {
+      this.jobApplications = response;
+      this.jobApplications.forEach((element) => {
+        this.jobListingService.getJobListingById(element.jobId).subscribe(response => {
+          element.jobListing = response;
+          element.status = Object.entries(JobAppsReturnStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+        })
 
-    this.getJobListingByUser(1);
+      });
+    });
   }
 
-  getJobListingByUser(authorId: number) {
-    this.jobListingService.getJobListingByUser(authorId).subscribe(response => {
+  getJobListingByUser(authorId: number, status: String) {
+    this.jobListingService.getJobListingByUserAndStatus(authorId, status).subscribe(response => {
       console.log(response);
         this.jobListings = response;
         this.jobListings.forEach((element) => {
@@ -79,11 +111,42 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  setFilters(){
+    this.jobListingStatuses.push("All");
+    this,this.jobApplicationStatuses.push("All");
+    for (let item in JobListingStatusEnum) {
+      this.jobListingStatuses.push(Object.entries(JobListingStatusEnum).find(([key, val]) => key === item)?.[1]|| '')
+    }
+
+    for (let item in JobAppsReturnStatusEnum) {
+      this.jobApplicationStatuses.push(Object.entries(JobAppsReturnStatusEnum).find(([key, val]) => key === item)?.[1]|| '')
+    }
+
+    this.selectedJobAppStatus = this.jobApplicationStatuses[0];
+    this.selectedJobListingStatus = this.jobListingStatuses[0];
+  }
+
   openListing(listingUrl: String) {
     console.log("open listing called"+listingUrl);
     let source = window.location.origin;
     console.log("source: " + source)
     this.router.navigate([listingUrl]);
+  }
+
+  onSelectJobListingFilter(selectedJobListingStatus: String) {
+    console.log(selectedJobListingStatus);
+    this.selectedJobListingStatus = selectedJobListingStatus;
+    this.refreshListings();
+  }
+  onSelectJobAppFilter(selectedJobAppStatus: String) {
+    console.log(selectedJobAppStatus);
+    this.selectedJobAppStatus = selectedJobAppStatus;
+    this.refreshListings();
+  }
+
+  refreshListings(){
+    this.getJobApplicationByUser(this.loggedInUserId, Object.entries(JobAppsReturnStatusEnum).find(([key, val]) => val === this.selectedJobAppStatus)?.[0]|| '');
+    this.getJobListingByUser(this.loggedInUserId, Object.entries(JobListingStatusEnum).find(([key, val]) => val === this.selectedJobListingStatus)?.[0]|| '');
   }
 
 }
