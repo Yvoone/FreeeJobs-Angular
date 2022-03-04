@@ -58,6 +58,8 @@ export class JobListingDetailsComponent implements OnInit {
 
   selectedUser!: User;
   selectedDesc!: String;
+  aboutClient: String = "";
+  applicantStatus: String = "";
 
   currentRating = 0;
   // ratings: string[] = ['1','2','3','4','5'];
@@ -84,6 +86,7 @@ export class JobListingDetailsComponent implements OnInit {
 
     this.id = this.activatedRoute.snapshot.params['id'];
     this.getJobDetails(this.id);
+
     this.getReviewsDoneByUser();
 
   }
@@ -113,6 +116,10 @@ export class JobListingDetailsComponent implements OnInit {
             this.getApplicants(this.id);
           }
         }
+        else {
+          this.getApplicantStatus();
+        }
+        this.getClientData();
       }
     );
   }
@@ -144,6 +151,7 @@ export class JobListingDetailsComponent implements OnInit {
 
     this.jobApplicationService.applyJob(this.id, this.userId, desc).subscribe(response => {
       console.log(response);
+      this.applicantStatus = JobAppsStatusEnum.PA;
       this.modalService.dismissAll();
       }
     );
@@ -163,6 +171,14 @@ export class JobListingDetailsComponent implements OnInit {
         this.populateApplicants(response);
       }
     );
+  }
+
+  getApplicantStatus() {
+    this.jobApplicationService.getUserApplicationStatus(this.id, this.userId).subscribe(response => {
+      console.log(response);
+      this.applicantStatus = response["status"];
+     }
+   );
   }
 
   populateApplicants(response: any ) {
@@ -187,6 +203,22 @@ export class JobListingDetailsComponent implements OnInit {
       this.applicants = listApplicants;
   }
 
+  getClientData() {
+    this.iamService.getUserByUserId(this.jobListing.authorId).subscribe(response => {
+      console.log(response);
+      let clientDesc = "";
+      if(response && response["aboutMeClient"] && response["aboutMeClient"] !== ""){
+          clientDesc = response["aboutMeClient"];
+      }
+      this.aboutClient = clientDesc;
+
+    });
+  }
+
+  isThereClientDesc() {
+      return "" !== this.aboutClient;
+  }
+
   isOwnerOfPostIsUser() {
     return this.jobListing.authorId==this.userId;
   }
@@ -205,6 +237,12 @@ export class JobListingDetailsComponent implements OnInit {
   isPendingRating(){
     //to return status==C and no ratings in table
     return (this.jobListing.status==JobListingStatusEnum.C)&&(this.ratingForUserAndJob.length==0)
+  }
+  isThereApplicants(){
+    return this.applicants.length > 0;
+  }
+  hasApplicantApplied() {
+    return this.applicantStatus !== "";
   }
   getReviewsDoneByUser(){
     //check if user alr submitted rating for this job listing
@@ -258,6 +296,7 @@ export class JobListingDetailsComponent implements OnInit {
   completeJob() {
     this.jobListingService.updateJobStatus('C', this.jobListing.id).subscribe(response => {
       console.log(response);
+      this.getJobDetails(this.id);
       this.modalService.dismissAll();
     }
     );
@@ -265,12 +304,14 @@ export class JobListingDetailsComponent implements OnInit {
 
   setApplicantsStatus(status: String, applicantId: number) {
     let validStats = true;
+    let updateDone = 0;
     if (status === "ACC") {
       status = JobAppsStatusEnum.ACC;
 
       this.jobListingService.updateJobStatus('PC', this.jobListing.id).subscribe(response => {
         console.log(response);
-        this.modalService.dismissAll();
+        updateDone = updateDone + 1;
+        this.updatePageAfterApplicantionProcess(status, updateDone);
       }
       );
     }
@@ -283,16 +324,30 @@ export class JobListingDetailsComponent implements OnInit {
     if (validStats) {
       this.jobApplicationService.setApplicantsStatus(this.id, applicantId, status).subscribe(response => {
         console.log(response);
-        this.modalService.dismissAll();
+        updateDone = updateDone + 1;
+        this.updatePageAfterApplicantionProcess(status, updateDone);
       }
       );
     }
 
   }
+  updatePageAfterApplicantionProcess(status: String, updateDone: number) {
+
+      if(status === JobAppsStatusEnum.REJ) {
+        this.getApplicants(this.id);
+      }
+      else {
+        if(updateDone > 1) {
+          this.getJobDetails(this.id);
+        }
+      }
+      this.modalService.dismissAll();
+  }
 
   deleteJob() {
     this.jobListingService.updateJobStatus('R', this.jobListing.id).subscribe(response => {
       console.log(response);
+      this.getJobDetails(this.id);
       this.modalService.dismissAll();
     }
     );

@@ -95,4 +95,14 @@ export class JobApplicationService {
 
     return this.httpClient.get<Application[]>(URL, {params});
   }
+
+  getUserApplicationStatus(jobId: number, userId: number) {
+    const URL = this.jobApplicationUrl + '/getUserApplicationStatus';
+
+    let params = new HttpParams()
+      .set('jobId', jobId.toString())
+      .set('userId', userId.toString());
+
+    return this.httpClient.get<any>(URL, {params});
+  }
 }

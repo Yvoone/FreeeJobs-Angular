@@ -14,10 +14,10 @@
           ${{jobListing.rate}} {{jobListing.rateType}}
         </h5>
         <div *ngIf="isListingOpen()">
-            <div class="row justify-content-end" *ngIf="!isOwnerOfPostIsUser()" >
+            <div class="row justify-content-end" *ngIf="!isOwnerOfPostIsUser() && isListingOpen() && !hasApplicantApplied()" >
                 <button type="button" class="btn btn-dark" (click) = "showPopUp(subApp, -1)">Apply Now</button>
             </div>
-            <div class="row justify-content-end mb-1" *ngIf="isOwnerOfPostIsUser()">
+            <div class="row justify-content-end mb-1" *ngIf="isOwnerOfPostIsUser() && !isThereApplicants()">
                 <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
             </div>
             <div class="row justify-content-end" *ngIf="isOwnerOfPostIsUser()">
@@ -51,7 +51,8 @@
             <div class="card">
                 <h5 class="card-header">About The Client</h5>
                 <div class="card-body">
-                <p class="card-text">whowhowho</p>
+                <p class="card-text" *ngIf="isThereClientDesc()">{{aboutClient}}</p>
+                <p class="no-content" *ngIf="!isThereClientDesc()">&ndash; No information provided by client &ndash;</p>
                 </div>
             </div>
         </div>
@@ -62,7 +63,7 @@
             <div class="card">
                 <h5 class="card-header">Applicants ({{applicants.length}}) </h5>
                 <div class="card" *ngFor="let applicant of applicants">
-                    <div class="card-body" *ngIf="applicants.length > 0">
+                    <div class="card-body" *ngIf="isThereApplicants()">
                         <div class="row">
                             <div class="col-8">
                                 <h4 class="card-title btn-link text-secondary flex-fill" >{{applicant.firstName}} {{applicant.lastName}}</h4>
@@ -81,7 +82,7 @@
                         </div>
                     </div>
                   </div>
-                  <div class="card-body" *ngIf="applicants.length == 0">
+                  <div class="card-body" *ngIf="!isThereApplicants()">
                     <div class="no-content">&ndash; No Applicants &ndash;</div>
                 </div>
             </div>
