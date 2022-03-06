@@ -80,7 +80,8 @@ export class DashboardComponent implements OnInit {
     this.getJobListingByUser(this.loggedInUserId, Object.entries(JobListingStatusEnum).find(([key, val]) => val === this.selectedJobListingStatus)?.[0]|| '');
   }
   getLoggedInUserId(): any {
-    let userId = this.sessionStorageService.getID('id');
+    //let userId = this.sessionStorageService.getID('id');
+    let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
       //TODO throw error say no userId
     }else{
@@ -126,10 +127,11 @@ export class DashboardComponent implements OnInit {
     this.selectedJobListingStatus = this.jobListingStatuses[0];
   }
 
-  openListing(listingUrl: String) {
+  openListing(listingUrl: String, jobId: number) {
     console.log("open listing called"+listingUrl);
     let source = window.location.origin;
-    console.log("source: " + source)
+    console.log("source: " + source);
+    this.sessionStorageService.setSessionStorage('jobId', jobId);
     this.router.navigate([listingUrl]);
   }
 

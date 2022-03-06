@@ -15,12 +15,11 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'dashboard', component: DashboardComponent , canActivate: [ AuthGuard]},
-  {path: 'jobListing/:id', component: JobListingDetailsComponent, canActivate: [ AuthGuard]},
+  {path: 'jobListing/details', component: JobListingDetailsComponent, canActivate: [ AuthGuard]},
   {path: 'jobListingBrowse', component: JobListingBrowseComponent, canActivate: [ AuthGuard] },
   {path: 'profile', component: ProfileComponent, canActivate: [ AuthGuard]},
   {path: 'admin', component: AdminComponent, canActivate: [ AuthGuard]},
   {path: 'listing/:type', component: JobListingModalComponent, canActivate: [ AuthGuard]},
-  {path: 'listing/:type/:id', component: JobListingModalComponent, canActivate: [ AuthGuard]},
   { path: '**', redirectTo: ''}
 ];
 

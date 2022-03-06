@@ -22,10 +22,12 @@ export class AuthService {
 
   get isLoggedIn() {
     let email: any;
-    email= this.sessionStorageService.getEmail('email');
+    //email= this.sessionStorageService.getEmail('email');
+    email= this.sessionStorageService.getSessionStorage('email');
     let id:any;
-    id= this.sessionStorageService.getEmail('id');
-    
+    //id= this.sessionStorageService.getEmail('id');
+    id= this.sessionStorageService.getSessionStorage('id');
+
     console.log(email)
     if (email && id) {
       this.loggedIn.next(true);
@@ -64,9 +66,12 @@ export class AuthService {
         this.loggedIn.next(true);
         this.loggedIn2.next('loggin');
         sessionStorage.clear();
-        console.log(this.sessionStorageService.getEmail('email'));
-        this.sessionStorageService.setEmail('email', user.email);
-        this.sessionStorageService.setID('id', e.userId)
+        console.log(this.sessionStorageService.getSessionStorage('email'));
+        //this.sessionStorageService.setEmail('email', user.email);
+        this.sessionStorageService.setSessionStorage('email', user.email);
+        //this.sessionStorageService.setID('id', e.userId)
+        this.sessionStorageService.setSessionStorage('id', e.userId);
+        this.sessionStorageService.setSessionStorage('jobId', 0);
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 100);
@@ -76,12 +81,12 @@ export class AuthService {
       }
     })
   }
-  
+
   // //Login WITHOUT API
   // login(email: string, password: string){
   //   console.log("auth service login in")
   //     if (email !== '' && password !== '' ) { // {3}
-      
+
   //       this.loggedIn.next(true);
   //       this.loggedIn2.next('loggin');
   //       sessionStorage.clear();
@@ -98,8 +103,10 @@ export class AuthService {
     console.log("logout?")
     this.loggedIn.next(false);
     sessionStorage.clear();
-    this.sessionStorageService.removeEmail('email');
-    this.sessionStorageService.removeID('id');
+    //this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeSessionStorage('email');
+    //this.sessionStorageService.removeID('id');
+    this.sessionStorageService.removeSessionStorage('id');
     this.router.navigate(['login']);
   }
 

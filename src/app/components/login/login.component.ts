@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       console.log("submitted")
       this.submitted = true;
-      
+
       this.authService.login(this.loginForm.value);   // {1}  Login with API
       // this.authService.login(this.control.email.value, this.control.password.value); // {1}  Login WITHOUT API
 
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
       //navigete to other page
       // this.router.navigateByUrl("");
 
-    } else { 
+    } else {
       this.submitted = false;
       console.log("no submit")
     }
@@ -99,12 +99,16 @@ export class LoginComponent implements OnInit {
   loginemail!: string
   loginID!:string
   checkSession(){
-    this.loginemail = this.sessionStorageService.getEmail('email');
-    this.loginID = this.sessionStorageService.getID('id');
+    //this.loginemail = this.sessionStorageService.getEmail('email');
+    this.loginemail = this.sessionStorageService.getSessionStorage('email');
+    //this.loginID = this.sessionStorageService.getID('id');
+    this.loginID = this.sessionStorageService.getSessionStorage('id');
   }
   clearSession(){
-    this.sessionStorageService.removeEmail('email');
-    this.sessionStorageService.removeID('id');
+    //this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeSessionStorage('email');
+    //this.sessionStorageService.removeID('id');
+    this.sessionStorageService.removeSessionStorage('id');
   }
 
 }

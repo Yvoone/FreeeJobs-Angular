@@ -19,7 +19,7 @@ export class TopbarComponent implements OnInit {
   email!: string;
   id!:any;
   display_topbar!: boolean;
-  isLoggedIn$!: Observable<boolean>; 
+  isLoggedIn$!: Observable<boolean>;
   islogin!:boolean
   loginemail!: string;
   loginID!: string;
@@ -36,20 +36,24 @@ export class TopbarComponent implements OnInit {
   }
 
   onLogout(){
-    this.sessionStorageService.removeEmail('email');
-    this.sessionStorageService.removeID('id');
+    //this.sessionStorageService.removeEmail('email');
+    this.sessionStorageService.removeSessionStorage('email');
+    // this.sessionStorageService.removeID('id');
+    this.sessionStorageService.removeSessionStorage('id');
     this.authService.logout();                      // {3}
     console.log("logout action")
     this.islogin=false;
   }
 
   checkEmailSession(){
-    this.email = this.sessionStorageService.getEmail('email');
-    this.id = this.sessionStorageService.getID('id');
+    //this.email = this.sessionStorageService.getEmail('email');
+    this.email = this.sessionStorageService.getSessionStorage('email');
+    //this.id = this.sessionStorageService.getID('id');
+    this.id = this.sessionStorageService.getSessionStorage('id');
     console.log(this.email)
     if (this.email){
       console.log("topbar")
-      
+
       this.display_topbar =true;
     } else {
       console.log("no topbar")
@@ -58,8 +62,10 @@ export class TopbarComponent implements OnInit {
   }
 
   checkSession(){
-    this.loginemail = this.sessionStorageService.getEmail('email');
-    this.loginID = this.sessionStorageService.getID('id');
+    //this.loginemail = this.sessionStorageService.getEmail('email');
+    this.loginemail = this.sessionStorageService.getSessionStorage('email');
+    //this.loginID = this.sessionStorageService.getID('id');
+    this.loginID = this.sessionStorageService.getSessionStorage('id');
   }
 
 }

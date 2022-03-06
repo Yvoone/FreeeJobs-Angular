@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { JobListing } from 'src/app/entities/job-listing';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { JobListingService } from 'src/app/services/job-listing.service';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
   selector: 'app-job-listing-browse',
@@ -14,15 +15,16 @@ export class JobListingBrowseComponent implements OnInit {
   jobListings: JobListing[] = [];
   totalJobListing!: number;
   listingSearch!: string;
-  
+
   constructor(private router: Router,
-    private jobListingService: JobListingService) {}
+    private jobListingService: JobListingService,
+    private sessionStorageService: SessionStorageService) {}
 
   ngOnInit(): void {
     this.listingSearch = "";
     this.getJobListingToBrowseTotal(this.listingSearch);
     this.getJobListingToBrowse(this.p, this.listingSearch);
-    
+
   }
   // initializing page number to one
   p: number = 1;
@@ -47,10 +49,11 @@ export class JobListingBrowseComponent implements OnInit {
     );
   }
 
-  openListing(listingUrl: String) {
+  openListing(listingUrl: String, jobId: number) {
     console.log("open listing called"+listingUrl);
     let source = window.location.origin;
-    console.log("source: " + source)
+    console.log("source: " + source);
+    this.sessionStorageService.setSessionStorage('jobId', jobId);
     this.router.navigate([listingUrl]);
   }
 

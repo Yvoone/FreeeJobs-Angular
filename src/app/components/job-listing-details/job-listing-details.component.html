@@ -18,7 +18,7 @@
                 <button type="button" class="btn btn-dark" (click) = "showPopUp(subApp, -1)">Apply Now</button>
             </div>
             <div class="row justify-content-end mb-1" *ngIf="isOwnerOfPostIsUser() && !isThereApplicants()">
-                <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/'+jobListing.id)">Edit Job</button>
+                <button type="button" class="btn btn-dark" (click)="openEditPage('listing/edit/')">Edit Job</button>
             </div>
             <div class="row justify-content-end" *ngIf="isOwnerOfPostIsUser()">
                 <button type="button" class="btn btn-dark" (click)="deleteJob()">Delete Job</button>

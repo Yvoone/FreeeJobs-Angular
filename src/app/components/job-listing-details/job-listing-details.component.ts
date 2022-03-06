@@ -84,7 +84,12 @@ export class JobListingDetailsComponent implements OnInit {
     //Temp hardcoded
     this.userId = this.getLoggedInUserId();
 
-    this.id = this.activatedRoute.snapshot.params['id'];
+    // this.id = this.activatedRoute.snapshot.params['id'];
+    this.id = this.sessionStorageService.getSessionStorage('jobId');
+    if (this.id == 0) {
+      console.log("Invalid jobId");
+      //TODO Redirect page
+    }
     this.getJobDetails(this.id);
 
     this.getReviewsDoneByUser();
@@ -92,7 +97,8 @@ export class JobListingDetailsComponent implements OnInit {
   }
 
   getLoggedInUserId(): any {
-    let userId = this.sessionStorageService.getID('id');
+    //let userId = this.sessionStorageService.getID('id');
+    let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
       //TODO throw error say no userId
     }else{

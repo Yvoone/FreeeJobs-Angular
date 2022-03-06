@@ -36,7 +36,7 @@ export class JobListingModalComponent implements OnInit {
   jobListing!: JobListing;
   originalJobListing!: JobListing;
 
-  
+
   userId!: any;
 
   //hardcode user
@@ -55,7 +55,7 @@ export class JobListingModalComponent implements OnInit {
     professionalTitle: "",
     aboutMeClient: "",
   };
-  
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -76,19 +76,21 @@ export class JobListingModalComponent implements OnInit {
       rate: ['', [Validators.required, Validators.pattern("^[0-9]*$")]]
     });
     if(this.modalType=='edit'){
-      this.id = this.activatedRoute.snapshot.params['id'];
+      //this.id = this.activatedRoute.snapshot.params['id'];
+      this.id = this.sessionStorageService.getSessionStorage('jobId');
       this.modalTitle='Edit';
       this.getJobDetails(this.id);
     }else{
       this.modalTitle='Create';
       this.selectedRateType=this.rateTypes[0];
     }
-    
-    
+
+
   }
 
   getLoggedInUserId(): any {
-    let userId = this.sessionStorageService.getID('id');
+    //let userId = this.sessionStorageService.getID('id');
+    let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
       //TODO throw error say no userId
     }else{
@@ -113,13 +115,13 @@ export class JobListingModalComponent implements OnInit {
           this.modal.open(this.accessErrorModal)
           this.accessErrorMessage = "You are not allowed to edit another user's job listing.";
           //return to previous page
-          
+
         }else{
           this.setJobDetails(response);
         }
       }
     );
-    
+
   }
 
   setJobDetails(jobListing: JobListing){
@@ -130,7 +132,7 @@ export class JobListingModalComponent implements OnInit {
     })
     //this.selectedRateType = this.rateTypes[Number(jobListing.rateType)];
     this.selectedRateType = this.rateTypes[Number("1")];
-    
+
   }
 
   submit() {
@@ -181,25 +183,27 @@ export class JobListingModalComponent implements OnInit {
         setTimeout(() => {
           location.reload();
         }, 3000);
-        
+
       });
     }
   }
 
   back(){
     if(this.modalType=='edit'){
-      this.id = this.activatedRoute.snapshot.params['id'];
-      this.openListing('/jobListing/'+this.id);
+      //this.id = this.activatedRoute.snapshot.params['id'];
+      this.id = this.sessionStorageService.getSessionStorage('jobId');
+      this.openListing('/jobListing/details', this.id);
     }else{
       this.router.navigate(["/dashboard"]);
     }
   }
 
-  openListing(listingUrl: String) {
+  openListing(listingUrl: String, jobId: number) {
     let source = window.location.origin;
+    this.sessionStorageService.setSessionStorage('jobId', jobId);
     this.router.navigate([listingUrl]);
   }
 
-  
+
 
 }
