@@ -281,21 +281,21 @@ export class ProfileComponent implements OnInit {
 
   submit() {
     if (this.edit) {
-      // let editObj = {
-      //   id: this.user.id,
-      //   firstName: this.editProfileForm.value.firstName,
-      //   lastName: this.editProfileForm.value.lastName,
-      //   dob: this.editProfileForm.value.dateOfBirth,
-      //   contactNo: this.editProfileForm.value.contactNo,
-      //   professionalTitle: this.editProfileForm.value.professionalTitle,
-      //   aboutMe: this.editProfileForm.value.aboutMe,
-      //   aboutMeClient: this.editProfileForm.value.aboutMeClient,
-      //   skills: this.editProfileForm.value.skills
-      // }
+      let editObj = {
+        id: this.user.id,
+        firstName: this.editProfileForm.value.firstName,
+        lastName: this.editProfileForm.value.lastName,
+        email: this.editProfileForm.value.emailAddress,
+        contactNo: this.editProfileForm.value.contactNo,
+        professionalTitle: this.editProfileForm.value.professionalTitle,
+        aboutMe: this.editProfileForm.value.aboutMe,
+        aboutMeClient: this.editProfileForm.value.aboutMeClient,
+        skills: this.editProfileForm.value.skills,
+      }
 
-      // this.iamService.updateUser(editObj).subscribe((result) => {
-      //   this.alert = "Profile Updated Successfully!"
-      // })
+      this.iamService.updateUser(editObj).subscribe((result) => {
+        this.alert = "Profile Updated Successfully!"
+      })
 
     }
     this.refresh();
