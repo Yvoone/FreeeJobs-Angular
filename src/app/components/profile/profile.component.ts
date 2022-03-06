@@ -11,6 +11,7 @@ import { RatingService } from 'src/app/services/rating.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 
 @Component({
@@ -20,11 +21,14 @@ import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 })
 export class ProfileComponent implements OnInit {
 
+  loggedInUserId!: any;
   user!: User;
   jobHistory: JobListing[] = [];
   jobListings: JobListing[] = [];
   displayJobListings: JobListing[] = [];
-  ratings: Rating[] = [];
+  displayRatings: Rating[] = [];
+  clientRatings: Rating[] = [];
+  freelancerRatings: Rating[] = [];
 
   profileTitle!: string;
   jobSecTitle!: string;
@@ -34,6 +38,10 @@ export class ProfileComponent implements OnInit {
   editProfileForm!: FormGroup;
   avgRating!: string;
   reviewCount!: number;
+  clientAvgRating!: string;
+  clientReviewCount!: number;
+  freelancerAvgRating!: string;
+  freelancerReviewCount!: number;
   url!: any;
   selectedFile!: File;
   alert!: string;
@@ -53,14 +61,14 @@ export class ProfileComponent implements OnInit {
     private iamService: IAMService,
     private jobListingService: JobListingService,
     private jobApplicationService: JobApplicationService,
-    private ratingService: RatingService) {
+    private ratingService: RatingService,
+    private sessionStorageService: SessionStorageService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
-    this.getCurrentUser(3);
-    this.getRatings(3);
-
+    this.loggedInUserId = this.getLoggedInUserId();
+    this.getCurrentUserDetails(this.loggedInUserId);
     this.initiateProfile();
 
     this.editProfileForm = this.formBuilder.group({
@@ -80,8 +88,17 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getCurrentUser(id: number) {
-    this.iamService.getUserByUserId(id).subscribe(response => {
+  getLoggedInUserId(): any {
+    let userId = this.sessionStorageService.getID('id');
+    if (userId == null) {
+      //TODO throw error say no userId
+    } else {
+      return userId;
+    }
+  }
+
+  getCurrentUserDetails(id: number) {
+    this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
       this.user = response;
 
       this.editProfileForm.patchValue({
@@ -89,7 +106,7 @@ export class ProfileComponent implements OnInit {
         'lastName': this.user.lastName,
         'dateOfBirth': this.user.dob,
         'contactNo': this.user.contactNo,
-        // 'emailAddress': this.user.email,
+        'emailAddress': this.user.email,
         'professionalTitle': this.user.professionalTitle,
         'aboutMe': this.user.aboutMe,
         'aboutMeClient': this.user.aboutMeClient,
@@ -133,26 +150,63 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  getRatings(userId: number) {
+  getClientRatings(userId: number) {
     this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
       console.log(response);
 
       let allRatings: Rating[] = response;
-      if (allRatings.length > 0) {
-        const count = allRatings.length;
-        let sumRatings = 0;
-        for (let rating of allRatings) {
-          sumRatings += rating.ratingScale;
+      let tmpClientRatings: Rating[] = [];
+      for (let rating of allRatings) {
+        this.jobListingService.getJobListingById(rating.jobId).subscribe(response => {
+          if (response.authorId == rating.targetId) {
+            tmpClientRatings.push(rating);
+          }
         }
-        this.avgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
-        this.reviewCount = count;
-      } else {
-        this.avgRating = "-";
-        this.reviewCount = 0;
+        );
+      }
+      this.clientRatings = tmpClientRatings
+      this.displayRatings = this.clientRatings;
+
+      // if (this.displayRatings.length > 0) {
+      //   const count = this.displayRatings.length;
+      //   let sumRatings = 0;
+      //   for (let rating of this.displayRatings) {
+      //     sumRatings += rating.ratingScale;
+      //   }
+      //   this.clientAvgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
+      //   this.clientReviewCount = count;
+      // }
+    });
+  }
+
+  getFreelancerRatings(userId: number) {
+    this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
+      console.log(response);
+
+      let allRatings: Rating[] = response;      
+      let tmpFreelancerRatings: Rating[] = [];
+      for (let rating of allRatings) {
+        this.jobListingService.getJobListingById(rating.jobId).subscribe(response => {
+          if (response.authorId != rating.targetId) {
+            tmpFreelancerRatings.push(rating);
+          }
+        }
+        );
       }
 
-      this.ratings = response;
-    })
+      this.freelancerRatings = tmpFreelancerRatings;
+      this.displayRatings = this.freelancerRatings;
+
+      // if (this.displayRatings.length > 0) {
+      //   const count = this.displayRatings.length;
+      //   let sumRatings = 0;
+      //   for (let rating of this.displayRatings) {
+      //     sumRatings += rating.ratingScale;
+      //   }
+      //   this.avgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
+      //   this.reviewCount = count;
+      // }
+    });
   }
 
   openListing(listingUrl: String) {
@@ -179,7 +233,8 @@ export class ProfileComponent implements OnInit {
     this.profileTitle = "Client Profile";
     this.jobSecTitle = "Job Listing";
     this.aboutMeTitle = "About Client";
-    this.getJobListingByOwner(3);
+    this.getJobListingByOwner(this.loggedInUserId);
+    this.getClientRatings(this.loggedInUserId);
   }
 
   switchToFreelancerProfile() {
@@ -187,7 +242,8 @@ export class ProfileComponent implements OnInit {
     this.profileTitle = "Freelancer Profile";
     this.jobSecTitle = "Job History";
     this.aboutMeTitle = "About Me";
-    this.getJobHistory(3);
+    this.getJobHistory(this.loggedInUserId);
+    this.getFreelancerRatings(this.loggedInUserId);
   }
 
   switchProfile() {
@@ -225,21 +281,21 @@ export class ProfileComponent implements OnInit {
 
   submit() {
     if (this.edit) {
-      let editObj = {
-        id: this.user.id,
-        firstName: this.editProfileForm.value.firstName,
-        lastName: this.editProfileForm.value.lastName,
-        dob: this.editProfileForm.value.dateOfBirth,
-        contactNo: this.editProfileForm.value.contactNo,
-        professionalTitle: this.editProfileForm.value.professionalTitle,
-        aboutMe: this.editProfileForm.value.aboutMe,
-        aboutMeClient: this.editProfileForm.value.aboutMeClient,
-        skills: this.editProfileForm.value.skills
-      }
+      // let editObj = {
+      //   id: this.user.id,
+      //   firstName: this.editProfileForm.value.firstName,
+      //   lastName: this.editProfileForm.value.lastName,
+      //   dob: this.editProfileForm.value.dateOfBirth,
+      //   contactNo: this.editProfileForm.value.contactNo,
+      //   professionalTitle: this.editProfileForm.value.professionalTitle,
+      //   aboutMe: this.editProfileForm.value.aboutMe,
+      //   aboutMeClient: this.editProfileForm.value.aboutMeClient,
+      //   skills: this.editProfileForm.value.skills
+      // }
 
-      this.iamService.updateUser(editObj).subscribe((result) => {
-        this.alert = "Profile Updated Successfully!"
-      })
+      // this.iamService.updateUser(editObj).subscribe((result) => {
+      //   this.alert = "Profile Updated Successfully!"
+      // })
 
     }
     this.refresh();
@@ -247,5 +303,14 @@ export class ProfileComponent implements OnInit {
 
   refresh() {
     location.reload();
+  }
+
+  keyPress(event: any) {
+    const pattern = /[0-9\+\-\ ]/;
+
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.keyCode != 8 && !pattern.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 }

@@ -43,11 +43,26 @@ export class IAMService {
 
     return this.httpClient.post<any>(URL, reqBody);
   }
-  
-  updateUser(updatedUser: any) {
-    const URL = this.IAMUrl + '/' + updatedUser.id + '/edit';
-    return this.httpClient.put<any>(URL, updatedUser);
+
+  // updateUser(updatedUser: any) {
+  //   const URL = this.IAMUrl + '/' + updatedUser.id + '/edit';
+  //   return this.httpClient.put<any>(URL, updatedUser);
+  // }
+
+  getUserProfileWithEmailByUserId(userId: number): Observable<User> {
+    const URL = this.IAMUrl + '/userProfileWithEmail';
+
+    let params = new HttpParams()
+      .set('userId', userId.toString());
+
+    return this.httpClient.get<User>(URL, { params });
   }
+
+  updateUser(user: User): Observable<any>  {
+    const URL = this.IAMUrl + '/' + user.id + '/edit';
+    return this.httpClient.put<any>(URL, user);
+  }
+
 
   login(user: User): Observable<any> {
     const URL = this.IAMUrl + '/login';

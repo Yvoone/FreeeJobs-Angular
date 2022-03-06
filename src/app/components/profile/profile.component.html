@@ -114,7 +114,7 @@
                                     <label>Date of Birth</label>
                                     <div class="input-group">
                                         <input name="dateOfBirth" formControlName="dateOfBirth" class="form-control"
-                                            maxlength="100">
+                                            maxlength="100" readonly="true">
                                     </div>
                                     <!-- <div *ngIf="getEditProfileFormControl['dateOfBirth'].errors?.['required'] && getEditProfileFormControl['dateOfBirth'].touched" class="alert alert-danger">
                                         First Name is required
@@ -124,7 +124,7 @@
                                     <label>Contact Number</label>
                                     <div class="input-group">
                                         <input name="contactNo" formControlName="contactNo" class="form-control"
-                                            maxlength="100">
+                                            maxlength="8" (keypress)="keyPress($event)">
                                     </div>
                                     <!-- <div *ngIf="getEditProfileFormControl['contactNo'].errors?.['required'] && getEditProfileFormControl['contactNo'].touched" class="alert alert-danger">
                                         Last Name is required
@@ -166,7 +166,8 @@
                     <div class="form-group row">
                         <div class="col">
                             <label>About Client</label>
-                            <textarea name="aboutMeClient" formControlName="aboutMeClient" class="form-control" rows="4"></textarea>
+                            <textarea name="aboutMeClient" formControlName="aboutMeClient" class="form-control"
+                                rows="4"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -215,10 +216,10 @@
             <a ngbNavLink>Reviews</a>
             <!-- Third content -->
             <ng-template ngbNavContent>
-                <div class="totalRatings" *ngIf="ratings.length > 0">Overall Rating: {{ avgRating }} <span
+                <div class="totalRatings" *ngIf="displayRatings.length > 0">Overall Rating: {{ avgRating }} <span
                         class="review">({{ reviewCount }} Reviews)</span></div>
-                <div class="card mb-4" *ngFor="let rating of ratings">
-                    <div class="card-body" *ngIf="ratings.length > 0">
+                <div class="card mb-4" *ngFor="let rating of displayRatings">
+                    <div class="card-body" *ngIf="displayRatings.length > 0">
                         <div class="d-flex">
                             <h4 class="card-title text-secondary p-2 flex-fill"> {{ rating.reviewTitle }} </h4>
                             <div class="card-text p-2 flex-fill text-right">
@@ -231,7 +232,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body" *ngIf="ratings.length == 0">
+                <div class="card-body" *ngIf="displayRatings.length == 0">
                     <div class="no-content">&ndash; No reviews yet &ndash;</div>
                 </div>
             </ng-template>
