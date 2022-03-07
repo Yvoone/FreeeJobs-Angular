@@ -78,6 +78,10 @@ export class AuthService {
         // this.router.navigateByUrl("")
       } else if(e.loginStatus == 0) {
         this.alertService.error('Login Fail', true);
+      } else if(e.loginStatus == 2){
+        console.log("login status == 2")
+      } else if(e.loginStatus == 3){
+        this.alertService.error('The Account is locked after 3 fail attempts. Please contact admin.', true)
       }
     })
   }

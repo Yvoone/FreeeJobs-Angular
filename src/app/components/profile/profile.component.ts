@@ -89,7 +89,8 @@ export class ProfileComponent implements OnInit {
   }
 
   getLoggedInUserId(): any {
-    let userId = this.sessionStorageService.getID('id');
+    // let userId = this.sessionStorageService.getID('id');
+    let userId = this.sessionStorageService.getSessionStorage('id');  // added by John
     if (userId == null) {
       //TODO throw error say no userId
     } else {
@@ -100,11 +101,12 @@ export class ProfileComponent implements OnInit {
   getCurrentUserDetails(id: number) {
     this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
       this.user = response;
+      let dateOfBirth = new Date(this.user.dob)  // added by John
 
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
         'lastName': this.user.lastName,
-        'dateOfBirth': this.user.dob,
+        'dateOfBirth': dateOfBirth,  // modified by John
         'contactNo': this.user.contactNo,
         'emailAddress': this.user.email,
         'professionalTitle': this.user.professionalTitle,

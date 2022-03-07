@@ -113,8 +113,10 @@
                                 <div class="col">
                                     <label>Date of Birth</label>
                                     <div class="input-group">
-                                        <input name="dateOfBirth" formControlName="dateOfBirth" class="form-control"
-                                            maxlength="100" readonly="true">
+                                        <input matInput name="dateOfBirth" formControlName="dateOfBirth" class="form-control" [matDatepicker]="picker"
+                                            maxlength="100" [disabled]="true">
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
                                     </div>
                                     <!-- <div *ngIf="getEditProfileFormControl['dateOfBirth'].errors?.['required'] && getEditProfileFormControl['dateOfBirth'].touched" class="alert alert-danger">
                                         First Name is required

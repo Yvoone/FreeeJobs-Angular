@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSliderModule } from '@angular/material/';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [],
@@ -45,7 +46,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDividerModule,
     MatSliderModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MomentDateModule
   ],
   exports: [
     MatButtonModule,

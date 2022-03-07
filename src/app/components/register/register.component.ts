@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import { AuthService } from "../../services/auth.service";
 import { IAMService } from "../../services/iam.service";
 import { AlertService } from "../../services/alert.service";
+import { User } from "../../entities/user";
 
 @Component({
   selector: 'app-register',
@@ -46,25 +47,40 @@ export class RegisterComponent implements OnInit {
     { value: 'client', viewValue: 'Client'},
     { value: 'freelancer', viewValue: 'Freelancer'},
     { value: 'both', viewValue: 'Client & Freelancer'}
-  ]
+  ];
+
+  minDate!: Date;
+  maxDate!: Date;
+
+  user!: User;
+
+  emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  pwRegEx = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-8])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}/;
+  // contactNumberRegEx = /^[689]\d{7}$/;^(?:\+65)?[689][0-9]{7}$;
+  contactNumberRegEx = /^(?:\+65)?[689][0-9]{7}$/;
+
 
   constructor(
     private formBuilder: FormBuilder,
     private IAMService: IAMService,
     private router: Router,
     private authenticationService: AuthService,
-    private alertService: AlertService
+    private alertService: AlertService,
     // private userService: UserService,
     // private alertService: AlertService
-  ) { }
-
+  ) { 
+    const currentYear = new Date().getFullYear();
+    this.minDate = new Date(currentYear - 100, 0, 1);
+    this.maxDate = new Date
+  }
+  
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      contactNo: ['', Validators.required],
+      email: ['', [ Validators.pattern(this.emailRegEx)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(this.pwRegEx)]],
+      contactNo: ['', [Validators.required, Validators.pattern(this.contactNumberRegEx)]],
       gender: ['', Validators.required],
       dob: ['', Validators.required],
       // userRole: ['', Validators.required],
@@ -78,14 +94,13 @@ export class RegisterComponent implements OnInit {
       linkedInAcct: ['']
     });
 
-
   }
 
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    console.log(this.registerForm.value)
-    console.log(this.registerForm.controls)
+    // console.log(this.registerForm.value)
+    // console.log(this.registerForm.controls)
     this.loading = true;
 
     this.control = this.registerForm.controls;
@@ -99,14 +114,17 @@ export class RegisterComponent implements OnInit {
     // this.role_require = this.control.userRole.status;
     // this.submitted = true;
 
+    console.log(this.control.dob.value);
     // stop here if form is invalid
     if (this.registerForm.invalid) {
       console.log("false")
       this.loading = false;
       return;
     }
-    console.log(this.registerForm.value);
-    this.IAMService.registerUser(this.registerForm.value)
+    // console.log(this.registerForm.value);
+    this.user = this.registerForm.value
+    console.log(this.user)
+    this.IAMService.registerUser(this.user)
       .pipe(first())
       .subscribe(e =>{
         this.alertService.success('Registration Successful', true);

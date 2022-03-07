@@ -25,6 +25,10 @@ import { RegisterComponent } from './components/register/register.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { AdminComponent } from './components/admin/admin.component';
 
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MY_DATE_FORMATS } from './models/date-formats';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +59,7 @@ import { AdminComponent } from './components/admin/admin.component';
   exports: [
     NgbModule
   ],
-  providers: [AuthService, AuthGuard],
+  providers: [AuthService, AuthGuard, { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

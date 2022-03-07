@@ -4,16 +4,20 @@
         <mat-card-content>
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
                 <ng-container *ngIf="next">
-                    <mat-form-field >
+                    <mat-form-field hintLabel="eg. xx@xx.com">
                         <mat-label>Email *</mat-label>
                         <input matInput type="text" formControlName="email">
     
                         <mat-error *ngIf="!submitted && email_require">
                             <mat-error *ngIf="control.email.errors.required">Email is required</mat-error>
                         </mat-error>
+                        <!-- <mat-error *ngIf="f.email.errors?.pattern">
+                            EMAIL INVALID
+                        </mat-error> -->
+                        
                     </mat-form-field>
                     <br>
-                    <mat-form-field >
+                    <mat-form-field hintLabel="At least 8 characters in length, Lowercase & Uppercase letters, Numbers & Special characters">
                         <mat-label>Password *</mat-label>
                         <input matInput type="text" formControlName="password">
     
@@ -38,9 +42,9 @@
                         </mat-error>
                     </mat-form-field>
                     <br>
-                    <mat-form-field >
+                    <mat-form-field hintLabel="eg. +65........">
                         <mat-label>Contact Number *</mat-label>
-                        <input matInput type="text" formControlName="contactNo">
+                        <input matInput type="text" formControlName="contactNo" >
                         <mat-error *ngIf="!submitted && no_require">
                             <mat-error *ngIf="control.contactNo.errors.required">Contact Number is required</mat-error>
                         </mat-error>
@@ -59,13 +63,23 @@
                         </mat-error>
                     </mat-form-field>
                     <br>
-                    <mat-form-field >
+                    <!-- <mat-form-field >
                         <mat-label>Date of Birth *</mat-label>
                         <input matInput type="text" formControlName="dob">
                         <mat-error *ngIf="!submitted && dob_require">
                             <mat-error *ngIf="control.dob.errors.required">Date of Birth is required</mat-error>
                         </mat-error>
-                    </mat-form-field>
+                    </mat-form-field> -->
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Date of Birth *</mat-label>
+                        <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" formControlName="dob">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="!submitted && dob_require">
+                            <mat-error *ngIf="control.dob.errors.required">Date of Birth is required</mat-error>
+                        </mat-error>
+                      </mat-form-field>
                     <br>
                     <!-- <a routerLink="/login" class="btn btn-link" style="float: right; color: blue; cursor: pointer; font-size: 12px">Cancel</a> -->
                 </ng-container>
