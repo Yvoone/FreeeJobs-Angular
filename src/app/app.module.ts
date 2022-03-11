@@ -24,6 +24,10 @@ import { AuthGuard } from './services/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { LogService } from './services/log.service';
+import { LogPublishersService } from './services/log-publishers.service';
+import { PageNotFoundComponent } from './components/common/page-not-found/page-not-found.component';
+import { AccessDeniedComponent } from './components/common/access-denied/access-denied.component';
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MY_DATE_FORMATS } from './models/date-formats';
@@ -41,7 +45,9 @@ import { MY_DATE_FORMATS } from './models/date-formats';
     TopbarComponent,
     RegisterComponent,
     AlertComponent,
-    AdminComponent
+    AdminComponent,
+    PageNotFoundComponent,
+    AccessDeniedComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -59,7 +65,7 @@ import { MY_DATE_FORMATS } from './models/date-formats';
   exports: [
     NgbModule
   ],
-  providers: [AuthService, AuthGuard, { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }],
+  providers: [AuthService, AuthGuard, { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, LogService, LogPublishersService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

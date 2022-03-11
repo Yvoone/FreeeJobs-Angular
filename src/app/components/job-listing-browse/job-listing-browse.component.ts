@@ -43,8 +43,11 @@ export class JobListingBrowseComponent implements OnInit {
   //get number of joblisting  for pagination
   getJobListingToBrowseTotal(searchValue: string) {
     this.jobListingService.getJobListingToBrowseTotal(searchValue).subscribe(response => {
-      console.log(response);
+      console.log('totalll'+response);
         this.totalJobListing = response;
+        if(typeof this.totalJobListing!="number"){
+          //throw error
+        }
       }
     );
   }

@@ -4,8 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobListing } from 'src/app/entities/job-listing';
 import { User } from 'src/app/entities/user';
+import { ErrorMessageEnum } from 'src/app/models/error-message-enum';
+import { CommonService } from 'src/app/services/common.service';
 import { IAMService } from 'src/app/services/iam.service';
 import { JobListingService } from 'src/app/services/job-listing.service';
+import { LogService } from 'src/app/services/log.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
@@ -36,7 +39,7 @@ export class JobListingModalComponent implements OnInit {
   jobListing!: JobListing;
   originalJobListing!: JobListing;
 
-
+  classname: string = JobListingModalComponent.name;
   userId!: any;
 
   //hardcode user
@@ -55,7 +58,7 @@ export class JobListingModalComponent implements OnInit {
     professionalTitle: "",
     aboutMeClient: "",
   };
-
+  
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -64,7 +67,9 @@ export class JobListingModalComponent implements OnInit {
     private modal: NgbModal,
     private router: Router,
     private sessionStorageService: SessionStorageService,
-    private iamService: IAMService) { }
+    private iamService: IAMService,
+    private loggerService: LogService,
+    private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.userId = this.getLoggedInUserId();
@@ -84,15 +89,16 @@ export class JobListingModalComponent implements OnInit {
       this.modalTitle='Create';
       this.selectedRateType=this.rateTypes[0];
     }
-
-
+    
+    
   }
 
   getLoggedInUserId(): any {
     //let userId = this.sessionStorageService.getID('id');
     let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
-      //TODO throw error say no userId
+      this.loggerService.error(ErrorMessageEnum.emptyUserId, this.classname);
+      this.router.navigate(["/accessDenied"]);
     }else{
       return userId;
     }
@@ -114,17 +120,19 @@ export class JobListingModalComponent implements OnInit {
         if(this.userId!=this.originalJobListing.authorId){
           this.modal.open(this.accessErrorModal)
           this.accessErrorMessage = "You are not allowed to edit another user's job listing.";
-          //return to previous page
-
+          //redirect to access denied page and log error
+          this.loggerService.accessDenied(this.userId, this.accessErrorMessage);
+          this.router.navigate(["/accessDenied"]);
         }else{
           this.setJobDetails(response);
         }
       }
     );
-
+    
   }
 
   setJobDetails(jobListing: JobListing){
+    this.commonService.checkFormContentsBeforeDisplay(jobListing.title, jobListing.details, jobListing.rate, this.classname);
     this.editForm.patchValue({
       title: jobListing.title,
       details: jobListing.details,
@@ -132,7 +140,7 @@ export class JobListingModalComponent implements OnInit {
     })
     //this.selectedRateType = this.rateTypes[Number(jobListing.rateType)];
     this.selectedRateType = this.rateTypes[Number("1")];
-
+    
   }
 
   submit() {
@@ -183,14 +191,13 @@ export class JobListingModalComponent implements OnInit {
         setTimeout(() => {
           location.reload();
         }, 3000);
-
+        
       });
     }
   }
 
   back(){
     if(this.modalType=='edit'){
-      //this.id = this.activatedRoute.snapshot.params['id'];
       this.id = this.sessionStorageService.getSessionStorage('jobId');
       this.openListing('/jobListing/details', this.id);
     }else{
@@ -204,6 +211,6 @@ export class JobListingModalComponent implements OnInit {
     this.router.navigate([listingUrl]);
   }
 
-
+  
 
 }

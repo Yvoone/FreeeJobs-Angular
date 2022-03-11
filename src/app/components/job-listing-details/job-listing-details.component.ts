@@ -108,7 +108,7 @@ export class JobListingDetailsComponent implements OnInit {
 
   getJobDetails(id: number) {
     this.jobListingService.getJobListingById(id).subscribe(response => {
-        console.log(response);
+        console.log('responseee'+response.id);
         this.jobListing = response;
         this.jobListing.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === this.jobListing.status)?.[1]|| '';
         this.jobListing.dateCreated=new Date(response.dateCreated);
