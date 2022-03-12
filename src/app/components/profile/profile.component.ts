@@ -38,10 +38,6 @@ export class ProfileComponent implements OnInit {
   editProfileForm!: FormGroup;
   avgRating!: string;
   reviewCount!: number;
-  clientAvgRating!: string;
-  clientReviewCount!: number;
-  freelancerAvgRating!: string;
-  freelancerReviewCount!: number;
   url!: any;
   selectedFile!: File;
   alert!: string;
@@ -89,8 +85,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getLoggedInUserId(): any {
-    // let userId = this.sessionStorageService.getID('id');
-    let userId = this.sessionStorageService.getSessionStorage('id');  // added by John
+    let userId = this.sessionStorageService.getSessionStorage('id');
     if (userId == null) {
       //TODO throw error say no userId
     } else {
@@ -101,12 +96,11 @@ export class ProfileComponent implements OnInit {
   getCurrentUserDetails(id: number) {
     this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
       this.user = response;
-      let dateOfBirth = new Date(this.user.dob)  // added by John
 
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
         'lastName': this.user.lastName,
-        'dateOfBirth': dateOfBirth,  // modified by John
+        'dateOfBirth': this.user.dob,
         'contactNo': this.user.contactNo,
         'emailAddress': this.user.email,
         'professionalTitle': this.user.professionalTitle,
@@ -152,62 +146,69 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  getClientRatings(userId: number) {
+  noCount: number = 0;
+  total_avg: number = 0;
+  getFreelancerRatings(userId: number) {
+    let allRatings = [];
+    let sum = 0;
+    let count = 0;
+    let tmpFreelancerRatings: Rating[] = [];
+
     this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
       console.log(response);
+      allRatings = response;
+      console.log(allRatings.length);
 
-      let allRatings: Rating[] = response;
-      let tmpClientRatings: Rating[] = [];
-      for (let rating of allRatings) {
-        this.jobListingService.getJobListingById(rating.jobId).subscribe(response => {
-          if (response.authorId == rating.targetId) {
-            tmpClientRatings.push(rating);
+      sum = 0;
+      count = 0;
+
+      allRatings.forEach((e, index) => {
+        this.jobListingService.getJobListingById(e.jobId).subscribe(JobListing => {
+          // console.log(JobListing);
+          if (JobListing.authorId != e.targetId) {
+            tmpFreelancerRatings.push(e);
+            count = count + 1;
+            sum = e.ratingScale + sum;
           }
-        }
-        );
-      }
-      this.clientRatings = tmpClientRatings
-      this.displayRatings = this.clientRatings;
 
-      // if (this.displayRatings.length > 0) {
-      //   const count = this.displayRatings.length;
-      //   let sumRatings = 0;
-      //   for (let rating of this.displayRatings) {
-      //     sumRatings += rating.ratingScale;
-      //   }
-      //   this.clientAvgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
-      //   this.clientReviewCount = count;
-      // }
+          this.total_avg = sum / count;
+          this.avgRating = this.total_avg.toFixed(1) + "/5.0";
+          // this.noCount = count;
+          this.reviewCount = count;
+        });
+        //To display
+        this.freelancerRatings = tmpFreelancerRatings;
+        this.displayRatings = this.freelancerRatings;
+      });
     });
   }
 
-  getFreelancerRatings(userId: number) {
+  getClientRatings(userId: number) {
     this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
-      console.log(response);
+      // console.log(response);
 
-      let allRatings: Rating[] = response;      
-      let tmpFreelancerRatings: Rating[] = [];
-      for (let rating of allRatings) {
-        this.jobListingService.getJobListingById(rating.jobId).subscribe(response => {
-          if (response.authorId != rating.targetId) {
-            tmpFreelancerRatings.push(rating);
+      let allRatings: Rating[] = response;
+      let tmpClientRatings: Rating[] = [];
+      let ratingCount = 0;
+
+      let sum = 0;
+      let count = 0;
+
+      allRatings.forEach(e => {
+        this.jobListingService.getJobListingById(e.jobId).subscribe(Joblisting => {
+          if (Joblisting.authorId == e.targetId) {
+            tmpClientRatings.push(e);
+            count = count + 1;
+            sum = e.ratingScale + sum;
           }
-        }
-        );
-      }
-
-      this.freelancerRatings = tmpFreelancerRatings;
-      this.displayRatings = this.freelancerRatings;
-
-      // if (this.displayRatings.length > 0) {
-      //   const count = this.displayRatings.length;
-      //   let sumRatings = 0;
-      //   for (let rating of this.displayRatings) {
-      //     sumRatings += rating.ratingScale;
-      //   }
-      //   this.avgRating = (parseFloat((sumRatings / count).toString()).toFixed(1)) + "/5.0";
-      //   this.reviewCount = count;
-      // }
+          this.total_avg = (sum / count);
+          this.avgRating = this.total_avg.toFixed(1) + "/5.0";
+          this.reviewCount = count;
+        })
+        this.clientRatings = tmpClientRatings;
+        this.displayRatings = this.clientRatings;
+      });
+      console.log(tmpClientRatings)
     });
   }
 
@@ -249,6 +250,8 @@ export class ProfileComponent implements OnInit {
   }
 
   switchProfile() {
+    this.total_avg = 0;
+    this.noCount = 0;
     if (this.clientProfile == false) {
       this.switchToClientProfile();
     } else if (this.clientProfile == true) {
