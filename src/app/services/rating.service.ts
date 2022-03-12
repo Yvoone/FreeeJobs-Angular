@@ -1,7 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable, Subject } from 'rxjs';
+import { IAPIResponse } from '../entities/apiresponse';
 import { Rating } from '../entities/rating';
+import { CommonService } from './common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +12,24 @@ import { Rating } from '../entities/rating';
 export class RatingService {
   private ratingUrl = 'http://localhost:8085/rating';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient,
+    private commonService: CommonService,
+    private modalService: NgbModal) {}
 
   create(newRating: any): Observable<Rating[]> {
     const createUrl = this.ratingUrl + '/create';
-    return this.httpClient.post<any>(createUrl, newRating);
+    var data = new Subject<Rating[]>();
+    this.httpClient.post<IAPIResponse<Rating[]>>(createUrl, newRating).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        this.modalService.dismissAll();
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
   }
 
   getRatingsByTargetId(targetId: number): Observable<Rating[]> {
@@ -30,8 +46,17 @@ export class RatingService {
 
     let params = new HttpParams()
       .set('reviewerId', reviewerId.toString());
-
-    return this.httpClient.get<Rating[]>(URL, {params});
+    var data = new Subject<Rating[]>();
+    this.httpClient.get<IAPIResponse<Rating[]>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+      });
+    return data.asObservable();
   }
 
   getRatingsByReviewerIdJobId(userId: number, jobId:number): Observable<Rating[]> {
@@ -40,8 +65,18 @@ export class RatingService {
     let params = new HttpParams()
       .set('reviewerId', userId.toString())
       .set('jobId', jobId.toString());
-
-    return this.httpClient.get<Rating[]>(URL, {params});
+      
+      var data = new Subject<Rating[]>();
+      this.httpClient.get<IAPIResponse<Rating[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
 }
