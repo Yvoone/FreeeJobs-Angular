@@ -37,8 +37,18 @@ export class RatingService {
 
     let params = new HttpParams()
       .set('targetId', targetId.toString());
-
-    return this.httpClient.get<Rating[]>(URL, {params});
+    
+      var data = new Subject<Rating[]>();
+      this.httpClient.get<IAPIResponse<Rating[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   getRatingsByReviewerId(reviewerId: number): Observable<Rating[]> {
