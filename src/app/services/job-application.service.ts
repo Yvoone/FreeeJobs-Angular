@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 
 import { Application } from '../entities/application';
+import { CommonService } from './common.service';
+import { IAPIResponse } from '../entities/apiresponse';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,9 @@ export class JobApplicationService {
 
   private jobApplicationUrl = 'http://localhost:8084/jobApplication';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient,
+    private commonService: CommonService,
+    private modalService: NgbModal) {}
 
   getApplicationByUser(applicantId: number, status: String): Observable<Application[]> {
     const URL = this.jobApplicationUrl + '/listJobApplicationByApplicantIdAndStatus';
@@ -20,7 +25,17 @@ export class JobApplicationService {
       .set('applicantId', applicantId.toString())
       .set('status', status.toString());
 
-    return this.httpClient.get<Application[]>(URL, {params});
+      var data = new Subject<Application[]>();
+      this.httpClient.get<IAPIResponse<Application[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   getApplicantsByJobId(jobId: number): Observable<Application[]> {
@@ -29,7 +44,17 @@ export class JobApplicationService {
     let params = new HttpParams()
       .set('jobId', jobId.toString());
 
-    return this.httpClient.get<Application[]>(URL, {params});
+      var data = new Subject<Application[]>();
+      this.httpClient.get<IAPIResponse<Application[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   getAcceptedApplicantsByJobId(jobId: number): Observable<Application[]> {
@@ -38,7 +63,17 @@ export class JobApplicationService {
     let params = new HttpParams()
       .set('jobId', jobId.toString());
 
-    return this.httpClient.get<Application[]>(URL, {params});
+      var data = new Subject<Application[]>();
+      this.httpClient.get<IAPIResponse<Application[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   applyJob(jobId: number, userId: number, description: String): Observable<any> {
@@ -49,8 +84,18 @@ export class JobApplicationService {
       "applicantId":userId,
       "description": description
     }
-
-    return this.httpClient.post<any>(URL, reqBody);
+    var data = new Subject<any>();
+    this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        this.modalService.dismissAll();
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+      });
+    return data.asObservable();
   }
 
   setApplicantsStatus(jobId: number, userId: number, status: String) {
@@ -62,7 +107,17 @@ export class JobApplicationService {
       "status": status
     }
 
-    return this.httpClient.post<any>(URL, reqBody);
+    var data = new Subject<any>();
+    this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+      });
+    return data.asObservable();
 
   }
 
@@ -74,7 +129,17 @@ export class JobApplicationService {
       "status": status
     }
 
-    return this.httpClient.post<any>(URL, reqBody);
+    var data = new Subject<any>();
+    this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+      });
+    return data.asObservable();
 
   }
 
@@ -83,8 +148,17 @@ export class JobApplicationService {
 
     let params = new HttpParams()
       .set('listingId', listingId.toString());
-
-    return this.httpClient.get<Application[]>(URL, {params});
+      var data = new Subject<Application[]>();
+      this.httpClient.get<IAPIResponse<Application[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   getAcceptedApplicationsByApplicantId(applicantId: number): Observable<Application[]> {
@@ -92,8 +166,17 @@ export class JobApplicationService {
 
     let params = new HttpParams()
       .set('applicantId', applicantId.toString());
-
-    return this.httpClient.get<Application[]>(URL, {params});
+      var data = new Subject<Application[]>();
+      this.httpClient.get<IAPIResponse<Application[]>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 
   getUserApplicationStatus(jobId: number, userId: number) {
@@ -103,6 +186,16 @@ export class JobApplicationService {
       .set('jobId', jobId.toString())
       .set('userId', userId.toString());
 
-    return this.httpClient.get<any>(URL, {params});
+      var data = new Subject<any>();
+      this.httpClient.get<IAPIResponse<any>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+        });
+      return data.asObservable();
   }
 }
