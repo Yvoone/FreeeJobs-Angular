@@ -32,6 +32,9 @@ export class CommonService {
     this.logService.error(errors.statusCode!+': '+errors.statusText+', '+errors.message);
     this.router.navigate(["/pageNotFound"]);
   }
+  backendErrorLoginOnly(errors: APIResponseStatus){
+    this.logService.error(errors.statusCode!+': '+errors.statusText+', '+errors.message);
+  }
   logInfo(info: APIResponseStatus){
     this.logService.info(info.statusCode!+': '+info.statusText+', '+info.message);
   }

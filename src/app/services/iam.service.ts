@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { Application } from '../entities/application';
 import { User } from '../entities/user';
+import { CommonService } from './common.service';
+import { IAPIResponse } from '../entities/apiresponse';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ export class IAMService {
 
   private IAMUrl = 'http://localhost:8082/iam';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private commonService: CommonService) { }
 
   getUserByUserId(userId: number): Observable<User> {
     const URL = this.IAMUrl + '/userProfile';
@@ -20,7 +23,17 @@ export class IAMService {
     let params = new HttpParams()
       .set('userId', userId.toString());
 
-    return this.httpClient.get<User>(URL, { params });
+      var data = new Subject<User>();
+      this.httpClient.get<IAPIResponse<User>>(URL, {params}).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+      });
+      return data.asObservable();
   }
 
   registerUser(user: User): Observable<any> {
@@ -41,7 +54,17 @@ export class IAMService {
       "professionalTitle": user.professionalTitle
     }
 
-    return this.httpClient.post<any>(URL, reqBody);
+    var data = new Subject<any>();
+      this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+        if(response.status!.statusCode!=200){
+          this.commonService.backendError(response.status!);
+          return;
+        }else{
+          this.commonService.logInfo(response.status!);
+          data.next(response.data!);
+        }
+      });
+      return data.asObservable();
   }
 
   // updateUser(updatedUser: any) {
@@ -54,8 +77,17 @@ export class IAMService {
 
     let params = new HttpParams()
       .set('userId', userId.toString());
-
-    return this.httpClient.get<User>(URL, { params });
+    var data = new Subject<User>();
+    this.httpClient.get<IAPIResponse<User>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
   }
 
   updateUser(user: any): Observable<any>  {
@@ -73,8 +105,17 @@ export class IAMService {
       "skills": user.skills,
       "professionalTitle": user.professionalTitle
     }
-
-    return this.httpClient.put<any>(URL, reqBody);
+    var data = new Subject<any>();
+    this.httpClient.put<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
   }
 
   login(user: User): Observable<any> {
@@ -84,8 +125,17 @@ export class IAMService {
       "password": user.password,
       "email": user.email
     }
-
-    return this.httpClient.post<any>(URL, reqBody);
+    var data = new Subject<any>();
+    this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendErrorLoginOnly(response.status!);
+        data.next(response.data!);
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
   }
 
 }
