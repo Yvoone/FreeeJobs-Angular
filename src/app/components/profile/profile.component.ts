@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { JobListing } from 'src/app/entities/job-listing';
 import { JobListingService } from 'src/app/services/job-listing.service';
@@ -19,9 +19,9 @@ import { SessionStorageService } from 'src/app/services/session-storage.service'
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 
-  loggedInUserId!: any;
+  profileUserId!: any;
   user!: User;
   jobHistory: JobListing[] = [];
   jobListings: JobListing[] = [];
@@ -61,10 +61,10 @@ export class ProfileComponent implements OnInit {
     private sessionStorageService: SessionStorageService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
-
+  
   ngOnInit(): void {
-    this.loggedInUserId = this.getLoggedInUserId();
-    this.getCurrentUserDetails(this.loggedInUserId);
+    this.profileUserId = this.getProfileUserId();
+    this.getCurrentUserDetails(this.profileUserId);
     this.initiateProfile();
 
     this.editProfileForm = this.formBuilder.group({
@@ -84,8 +84,28 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getLoggedInUserId(): any {
-    let userId = this.sessionStorageService.getSessionStorage('id');
+  profileUrl = ["/applicantProfile", "/profile"];
+  editable!: boolean;
+
+  getProfileUserId(): any {
+    let userId;
+
+    //Added by John
+    console.log("LoggedUserId", this.sessionStorageService.getSessionStorage('id'));
+    console.log("viewApplicantId", this.sessionStorageService.getSessionStorage('applicantProfileId'));
+    
+    if ( this.router.url == this.profileUrl[0]){
+      userId = this.sessionStorageService.getSessionStorage('applicantProfileId');
+      this.editable = false;
+    } else if (this.router.url == this.profileUrl[1]){
+      userId = this.sessionStorageService.getSessionStorage('id');
+      this.editable = true;
+    }
+    console.log("applicantProfileId",this.sessionStorageService.getSessionStorage('applicantProfileId'));
+    console.log("id",this.sessionStorageService.getSessionStorage('id'));
+    //End here
+    
+
     if (userId == null) {
       //TODO throw error say no userId
     } else {
@@ -93,14 +113,26 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  //Added by John
+  // @HostListener('window:beforeunload')
+  // doSomethingBe() {
+  //   console.log("HostListener");
+  //   this.sessionStorageService.removeSessionStorage('applicantProfileId');
+  // } // do right before leaving this component
+  
+  ngOnDestroy(): void {
+    // this.sessionStorageService.removeSessionStorage('applicantProfileId');
+  }
+  //End here
+
   getCurrentUserDetails(id: number) {
     this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
       this.user = response;
-
+      let dateOfBirth = new Date(this.user.dob)  // added by John
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
         'lastName': this.user.lastName,
-        'dateOfBirth': this.user.dob,
+        'dateOfBirth': dateOfBirth,  // modified by John
         'contactNo': this.user.contactNo,
         'emailAddress': this.user.email,
         'professionalTitle': this.user.professionalTitle,
@@ -236,8 +268,8 @@ export class ProfileComponent implements OnInit {
     this.profileTitle = "Client Profile";
     this.jobSecTitle = "Job Listing";
     this.aboutMeTitle = "About Client";
-    this.getJobListingByOwner(this.loggedInUserId);
-    this.getClientRatings(this.loggedInUserId);
+    this.getJobListingByOwner(this.profileUserId);
+    this.getClientRatings(this.profileUserId);
   }
 
   switchToFreelancerProfile() {
@@ -245,8 +277,8 @@ export class ProfileComponent implements OnInit {
     this.profileTitle = "Freelancer Profile";
     this.jobSecTitle = "Job History";
     this.aboutMeTitle = "About Me";
-    this.getJobHistory(this.loggedInUserId);
-    this.getFreelancerRatings(this.loggedInUserId);
+    this.getJobHistory(this.profileUserId);
+    this.getFreelancerRatings(this.profileUserId);
   }
 
   switchProfile() {

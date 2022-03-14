@@ -144,7 +144,19 @@ export class JobListingDetailsComponent implements OnInit {
       console.log(this.selectedUser);
       this.selectedDesc = appValue["desc"];
     }
+
+    console.log("LoggedUserId", this.sessionStorageService.getSessionStorage('id'));
+    console.log("viewApplicantId", this.sessionStorageService.getSessionStorage('applicantProfileId'));
   }
+
+  //John Edit
+  routeToApplicantProfile(){
+    this.sessionStorageService.removeSessionStorage('applicantProfileId');
+
+    this.sessionStorageService.setSessionStorage('applicantProfileId', this.selectedUser.id);
+    this.router.navigate(['/applicantProfile']);
+  }
+  //End here
 
   getApplicantDesc(id: number) {
     let appValue = this.applicantMap.get(id);
@@ -364,6 +376,7 @@ export class JobListingDetailsComponent implements OnInit {
     }
     );
   }
+
 
 
 }

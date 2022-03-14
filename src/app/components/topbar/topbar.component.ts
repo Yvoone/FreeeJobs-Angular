@@ -26,13 +26,20 @@ export class TopbarComponent implements OnInit {
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.isLoggedIn$ = this.authService.isLoggedIn;
     this.checkEmailSession();
     // console.log(this.isLoggedIn$)
+  }
+
+  routeToProfile(){
+    this.router.navigate(['/profile']);
+    
+    // this.sessionStorageService.removeSessionStorage('applicantProfileId');
   }
 
   onLogout(){

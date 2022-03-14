@@ -30,7 +30,7 @@
                         <div class="aboutMe" *ngIf="clientProfile"> {{ user.aboutMeClient }} </div>
                     </div>
                     <div class="col">
-                        <div class="editPofBtn">
+                        <div class="editPofBtn" *ngIf="editable">
                             <button type="button" class="btn btn-info" (click)="editProfileClicked()">Edit
                                 Profile</button>
                         </div>

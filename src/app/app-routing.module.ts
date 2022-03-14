@@ -20,6 +20,7 @@ const routes: Routes = [
   {path: 'jobListing/details', component: JobListingDetailsComponent, canActivate: [ AuthGuard]},
   {path: 'jobListingBrowse', component: JobListingBrowseComponent, canActivate: [ AuthGuard] },
   {path: 'profile', component: ProfileComponent, canActivate: [ AuthGuard]},
+  {path: 'applicantProfile', component: ProfileComponent, canActivate: [ AuthGuard]},
   {path: 'admin', component: AdminComponent, canActivate: [ AuthGuard]},
   {path: 'listing/:type', component: JobListingModalComponent, canActivate: [ AuthGuard]},
   {path: 'pageNotFound', component: PageNotFoundComponent},

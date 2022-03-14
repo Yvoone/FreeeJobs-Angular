@@ -110,7 +110,7 @@
                     <h6>{{selectedUser.lastName}}</h6>
                 </div>
                 <div class="form-group" align='left'>
-                    <button type="button" class="btn btn-dark">View Applicant Profile</button>
+                    <button type="button" class="btn btn-dark" (click)="routeToApplicantProfile()" (click)="modal.dismiss('Cross click')">View Applicant Profile</button>
                 </div>
                 <div class="form-group" align='left'>
                     <label for="name" style="text-align: left;">Email Address</label>
