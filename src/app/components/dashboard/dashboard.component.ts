@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { JobAppsReturnStatusEnum, JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
+import { CommonService } from 'src/app/services/common.service';
+import { LogService } from 'src/app/services/log.service';
+import { ErrorMessageEnum } from 'src/app/models/error-message-enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,6 +47,8 @@ export class DashboardComponent implements OnInit {
   jobListingStatuses: String [] = [];
   jobApplicationStatuses: String [] = [];
 
+  classname: string = DashboardComponent.name;
+
   jobApplications1: Application[] = [
     {
       id: 1,
@@ -68,7 +73,9 @@ export class DashboardComponent implements OnInit {
   constructor(private router: Router,
     private jobListingService: JobListingService,
     private jobApplicationService: JobApplicationService,
-    private sessionStorageService: SessionStorageService) { }
+    private sessionStorageService: SessionStorageService, 
+    private commonService: CommonService,
+    private loggerService: LogService) { }
 
   ngOnInit(): void {
     // this.getUserInfo(this.token.getUsername()).then((resolve: any) => {
@@ -83,7 +90,8 @@ export class DashboardComponent implements OnInit {
     //let userId = this.sessionStorageService.getID('id');
     let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
-      //TODO throw error say no userId
+      this.loggerService.error(ErrorMessageEnum.emptyUserId, this.classname);
+      this.router.navigate(["/accessDenied"]);
     }else{
       return userId;
     }
@@ -95,6 +103,7 @@ export class DashboardComponent implements OnInit {
         this.jobListingService.getJobListingById(element.jobId).subscribe(response => {
           element.jobListing = response;
           element.status = Object.entries(JobAppsReturnStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+          this.commonService.checkJobAppBeforeDisplay(element.jobListing.title, element.jobListing.details, element.status, element.id, this.classname);
         })
 
       });
@@ -107,7 +116,9 @@ export class DashboardComponent implements OnInit {
         this.jobListings = response;
         this.jobListings.forEach((element) => {
           element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+          this.commonService.checkJobListingBeforeDisplay(element.title, element.details, element.rate, element.status, element.id, this.classname);
         });
+        
       }
     );
   }

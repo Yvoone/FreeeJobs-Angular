@@ -12,6 +12,9 @@ import { Rating } from 'src/app/entities/rating';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { JobAppsStatusEnum } from 'src/app/models/job-apps-status-enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { CommonService } from 'src/app/services/common.service';
+import { LogService } from 'src/app/services/log.service';
+import { ErrorMessageEnum } from 'src/app/models/error-message-enum';
 
 @Component({
   selector: 'app-job-listing-details',
@@ -69,6 +72,8 @@ export class JobListingDetailsComponent implements OnInit {
   ratingForUserAndJob!: Rating[];
   postedDays!: number;
 
+  classname: string = JobListingDetailsComponent.name;
+
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private jobListingService: JobListingService,
@@ -76,7 +81,9 @@ export class JobListingDetailsComponent implements OnInit {
     private jobApplicationService: JobApplicationService,
     private iamService: IAMService,
     private ratingService: RatingService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private commonService: CommonService,
+    private loggerService: LogService
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +107,8 @@ export class JobListingDetailsComponent implements OnInit {
     //let userId = this.sessionStorageService.getID('id');
     let userId = this.sessionStorageService.getSessionStorage('id');
     if(userId==null){
-      //TODO throw error say no userId
+      this.loggerService.error(ErrorMessageEnum.emptyUserId, this.classname);
+      this.router.navigate(["/accessDenied"]);
     }else{
       return userId;
     }
@@ -112,6 +120,7 @@ export class JobListingDetailsComponent implements OnInit {
         this.jobListing = response;
         this.jobListing.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === this.jobListing.status)?.[1]|| '';
         this.jobListing.dateCreated=new Date(response.dateCreated);
+        this.commonService.checkJobListingDetailsBeforeDisplay(this.jobListing, this.classname);
         this.postedDays = Math.floor(Math.floor((new Date).valueOf()- this.jobListing.dateCreated.valueOf())/(1000 * 60 * 60 * 24));
         if (this.isOwnerOfPostIsUser()) {
           //TODO: access management - if status of job is closed, check if user is author or accepted applicant, in case hacker hardcode jobId value
@@ -204,6 +213,7 @@ export class JobListingDetailsComponent implements OnInit {
       let listApplicants : User[] = [];
       let appInd = 0;
       for (let app of applications) {
+        this.commonService.checkAppicationBeforeDisplay(app, this.classname);
         this.iamService.getUserByUserId(app["applicantId"]).subscribe(response => {
             console.log(response);
             listApplicants.push(response);
@@ -228,6 +238,7 @@ export class JobListingDetailsComponent implements OnInit {
       if(response && response["aboutMeClient"] && response["aboutMeClient"] !== ""){
           clientDesc = response["aboutMeClient"];
       }
+      this.commonService.checkIfString(clientDesc, "client description", this.classname);
       this.aboutClient = clientDesc;
 
     });

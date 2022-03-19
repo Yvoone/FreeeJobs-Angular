@@ -12,6 +12,9 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { CommonService } from 'src/app/services/common.service';
+import { LogService } from 'src/app/services/log.service';
+import { ErrorMessageEnum } from 'src/app/models/error-message-enum';
 
 
 @Component({
@@ -38,9 +41,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   editProfileForm!: FormGroup;
   avgRating!: string;
   reviewCount!: number;
+  clientAvgRating!: string;
+  clientReviewCount!: number;
+  freelancerAvgRating!: string;
+  freelancerReviewCount!: number;
   url!: any;
   selectedFile!: File;
   alert!: string;
+
+  classname: string = ProfileComponent.name;
 
   contactNumberRegEx = /^[689]\d{7}$/;
 
@@ -58,7 +67,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private jobListingService: JobListingService,
     private jobApplicationService: JobApplicationService,
     private ratingService: RatingService,
-    private sessionStorageService: SessionStorageService) {
+    private sessionStorageService: SessionStorageService,
+    private commonService: CommonService,
+    private loggerService: LogService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
   
@@ -104,11 +115,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     console.log("applicantProfileId",this.sessionStorageService.getSessionStorage('applicantProfileId'));
     console.log("id",this.sessionStorageService.getSessionStorage('id'));
     //End here
-    
-
     if (userId == null) {
-      //TODO throw error say no userId
-    } else {
+      this.loggerService.error(ErrorMessageEnum.emptyUserId, this.classname);
+      this.router.navigate(["/accessDenied"]);
+    }else{
       return userId;
     }
   }
@@ -127,8 +137,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getCurrentUserDetails(id: number) {
     this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
+      this.commonService.checkUserInfoBeforeDisplay(response, this.classname);
       this.user = response;
       let dateOfBirth = new Date(this.user.dob)  // added by John
+
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
         'lastName': this.user.lastName,
@@ -155,6 +167,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           console.log(response);
           if (response) {
             response.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === response.status)?.[1] || '';
+            this.commonService.checkJobListingBeforeDisplay(response.title, response.details, response.rate, response.status, response.id, this.classname);
             completedJobs.push(response);
           }
         }
@@ -172,6 +185,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.jobListings = response;
       this.jobListings.forEach((element) => {
         element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1] || '';
+        this.commonService.checkJobListingBeforeDisplay(element.title, element.details, element.rate, element.status, element.id, this.classname);
       });
       this.displayJobListings = this.jobListings;
     }
@@ -195,6 +209,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       count = 0;
 
       allRatings.forEach((e, index) => {
+        this.commonService.checkRatingBeforeDisplay(e, this.classname);
         this.jobListingService.getJobListingById(e.jobId).subscribe(JobListing => {
           // console.log(JobListing);
           if (JobListing.authorId != e.targetId) {
@@ -218,7 +233,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getClientRatings(userId: number) {
     this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
       // console.log(response);
-
       let allRatings: Rating[] = response;
       let tmpClientRatings: Rating[] = [];
       let ratingCount = 0;
@@ -227,6 +241,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       let count = 0;
 
       allRatings.forEach(e => {
+        this.commonService.checkRatingBeforeDisplay(e, this.classname);
         this.jobListingService.getJobListingById(e.jobId).subscribe(Joblisting => {
           if (Joblisting.authorId == e.targetId) {
             tmpClientRatings.push(e);

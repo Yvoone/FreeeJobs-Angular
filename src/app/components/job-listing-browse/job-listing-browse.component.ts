@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JobListing } from 'src/app/entities/job-listing';
 import { JobListingStatusEnum } from 'src/app/models/job-listing-status-enum';
+import { CommonService } from 'src/app/services/common.service';
 import { JobListingService } from 'src/app/services/job-listing.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 
@@ -16,9 +17,12 @@ export class JobListingBrowseComponent implements OnInit {
   totalJobListing!: number;
   listingSearch!: string;
 
+  classname: string = JobListingBrowseComponent.name;
+
   constructor(private router: Router,
     private jobListingService: JobListingService,
-    private sessionStorageService: SessionStorageService) {}
+    private sessionStorageService: SessionStorageService,
+    private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.listingSearch = "";
@@ -35,6 +39,7 @@ export class JobListingBrowseComponent implements OnInit {
         this.jobListings = response;
         this.jobListings.forEach((element) => {
           element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1]|| '';
+          this.commonService.checkJobListingBeforeDisplay(element.title, element.details, element.rate, element.status, element.id, this.classname);
         });
       }
     );
@@ -45,9 +50,7 @@ export class JobListingBrowseComponent implements OnInit {
     this.jobListingService.getJobListingToBrowseTotal(searchValue).subscribe(response => {
       console.log('totalll'+response);
         this.totalJobListing = response;
-        if(typeof this.totalJobListing!="number"){
-          //throw error
-        }
+        this.commonService.checkIfNumber(this.totalJobListing, "Total JobListing", this.classname)
       }
     );
   }
