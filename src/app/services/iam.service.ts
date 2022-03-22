@@ -41,7 +41,7 @@ export class IAMService {
 
     let reqBody: any = {
       "id": "",
-      "password": user.password,
+      "password": this.commonService.encryptValue(user.password),
       "firstName": user.firstName,
       "lastName": user.lastName,
       "email": user.email,
@@ -120,9 +120,8 @@ export class IAMService {
 
   login(user: User): Observable<any> {
     const URL = this.IAMUrl + '/login';
-
     let reqBody: any = {
-      "password": user.password,
+      "password": this.commonService.encryptValue(user.password),
       "email": user.email
     }
     var data = new Subject<any>();
