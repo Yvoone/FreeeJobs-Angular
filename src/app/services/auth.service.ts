@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { IAMService } from "../services/iam.service";
 import { AlertService } from "../services/alert.service";
+import { LogService } from './log.service';
 
 
 
@@ -53,7 +54,8 @@ export class AuthService {
     private IAMService: IAMService,
     private router: Router,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private logService: LogService
   ) {}
 
   //Login with API
@@ -112,6 +114,7 @@ export class AuthService {
     //this.sessionStorageService.removeID('id');
     this.sessionStorageService.removeSessionStorage('id');
     this.router.navigate(['login']);
+    this.logService.clear();
   }
 
 }

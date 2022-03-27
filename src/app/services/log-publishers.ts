@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { LogEntry } from './log.service';
 
 export abstract class LogPublisher {
-    location: string | undefined;
+    location!: string;
     abstract log(record: LogEntry):
     Observable<boolean>
     abstract clear(): Observable<boolean>;
@@ -35,11 +35,11 @@ export class LogLocalStorage extends LogPublisher {
     // Append log entry to local storage
     log(entry: LogEntry): Observable<boolean> {
         let ret: boolean = false;
-        let logEntryValues: LogEntry[]=[];
+        let logEntryValues: LogEntry[];
         
         try {
             // Get previous values from local storage
-            logEntryValues = JSON.parse(localStorage.getItem(this.location|| '{}')|| '{}') || [];            
+            logEntryValues = JSON.parse(localStorage.getItem(this.location)!)||[];  
             
             // Add new log entry to array
             logEntryValues.push(entry);

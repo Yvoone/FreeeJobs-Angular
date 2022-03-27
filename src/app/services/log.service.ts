@@ -58,6 +58,15 @@ export class LogService {
     this.writeToLog("user "+userId+" denied access: error msg shown is '"+msg+"'", LogLevel.AccessDenied, optionalParams);
   }
 
+  clear(){
+    this.shouldClear();
+  }
+
+  private shouldClear(){
+    for (let logger of this.publishers) {
+      logger.clear();
+  }
+  }
   private writeToLog(msg: string, level: LogLevel, params: any[]) {
     if (this.shouldLog(level)) {
         let entry: LogEntry = new LogEntry();
