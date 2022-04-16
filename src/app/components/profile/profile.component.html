@@ -21,7 +21,10 @@
             <!-- First content -->
             <ng-template ngbNavContent class="tab-content" *ngIf="!edit">
                 <div class="row">
-                    <div class="col"><img alt="Profile Picture" src="{{ imagePath }}" /></div>
+                    <div class="col">
+                        <!-- <img alt="Profile Picture" src="{{ imagePath }}" /> -->
+                        <img alt="Profile Picture" src="{{ showImage }}" />
+                    </div>
                     <div class="col-7">
                         <div class="name"> {{ user.firstName }} {{ user.lastName }} </div>
                         <div *ngIf="!clientProfile"> {{ user.professionalTitle }} </div>
@@ -76,14 +79,40 @@
                                         <div class="icons fa-4x" *ngIf="!url">
                                             <!-- <i class="fa fa-file-image-o"></i> -->
                                         </div>
-                                        <img [src]="url" id="imgPreview">
-                                        <button type="button" class="close" aria-label="Close" (click)="removeImage()"
+                                        <ng-container *ngIf="uploadImagePending">
+                                            <img [src]="url" id="imgPreview">
+                                        </ng-container>
+                                        <ng-container *ngIf="!uploadImagePending">
+                                            <img src="{{ showImage }}" id="imgPreview">
+                                        </ng-container>
+                                        
+                                        <button type="button" class="close" aria-label="Close" (click)="removeImage('image')"
                                             *ngIf="url">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                         <input type="file" (change)="onFileChanged($event)" #inputFile>
                                     </div>
                                 </div>
+                                
+                                <!-- <div class="upload-container">
+                                    <div class="border-container">
+                                        <div class="icons fa-4x" *ngIf="!pdfUrl">
+                                        </div>
+                                        <ng-container *ngIf="uploadPDFPending">
+                                            <div id="pdfPreview">{{pdfUrl}}</div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!uploadPDFPending">
+                                            <div id="pdfPreview">{{showPDF}}</div>
+                                        </ng-container>
+                                        
+                                        <button type="button" class="close" aria-label="Close" (click)="removeImage('PDF')"
+                                            *ngIf="pdfUrl">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <input type="file" (change)="onPDFChanged($event)" #inputFile>
+                                    </div>
+                                </div> -->
+                                
                             </div>
                         </div>
                         <div class="col-9">

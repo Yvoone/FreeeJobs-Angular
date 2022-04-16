@@ -13,6 +13,7 @@ import { IAPIResponse } from '../entities/apiresponse';
 export class IAMService {
 
   private IAMUrl = 'http://localhost:8082/iam';
+  // private IAMUrl = 'https://freeejobs-iamms.herokuapp.com/iam'; //Cloud URL
 
   constructor(private httpClient: HttpClient,
     private commonService: CommonService) { }
@@ -118,6 +119,37 @@ export class IAMService {
     });
     return data.asObservable();
   }
+
+  uploadImage(imageFile: any) : Observable<any> {
+    const URL = this.IAMUrl+'/upload';
+    var data = new Subject<any>();
+    this.httpClient.post<any>(URL, imageFile).subscribe(res=>{
+      console.log(res)
+      if(res.status!.statusCode!=200){
+        this.commonService.backendError(res.status!);
+        return;
+      }else{
+        this.commonService.logInfo(res.status!);
+        data.next(res.data!);
+      }
+    })
+    return data.asObservable();
+  }
+
+  // deleteImage(fileName: any, response: any) : Observable<any> {
+  //   const URL = this.IAMUrl+ '/delete'+'/'+ fileName;
+  //   var data = new Subject<any>();
+  //   this.httpClient.post<any>(URL, response).subscribe(res=>{
+  //     if(response.status!.statusCode!=200){
+  //       this.commonService.backendError(response.status!);
+  //       return;
+  //     }else{
+  //       this.commonService.logInfo(response.status!);
+  //       data.next(response.data!);
+  //     }
+  //   })
+  //   return data.asObservable();
+  // }
 
   login(user: User): Observable<any> {
     const URL = this.IAMUrl + '/login';

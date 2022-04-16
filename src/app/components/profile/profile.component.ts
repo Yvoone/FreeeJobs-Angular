@@ -47,7 +47,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   freelancerAvgRating!: string;
   freelancerReviewCount!: number;
   url!: any;
+  pdfUrl!:any;
   selectedFile!: File;
+  selectedPDFFile!: File;
+  selectedImageName!: string;
+  selectedPDFName!:string;
+  showImage!:string;
+  showPDF!: string;
   alert!: string;
 
   classname: string = ProfileComponent.name;
@@ -56,6 +62,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   @ViewChild('inputFile')
   myInputVariable!: ElementRef;
+  myInputPDF!: ElementRef;
 
   //hard coded
   imagePath = './assets/img/default.png';
@@ -104,8 +111,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let userId;
 
     //Added by John
-    console.log("LoggedUserId", this.sessionStorageService.getSessionStorage('id'));
-    console.log("viewApplicantId", this.sessionStorageService.getSessionStorage('applicantProfileId'));
+    // console.log("LoggedUserId", this.sessionStorageService.getSessionStorage('id'));
+    // console.log("viewApplicantId", this.sessionStorageService.getSessionStorage('applicantProfileId'));
     
     if ( this.router.url == this.profileUrl[0]){
       userId = this.sessionStorageService.getSessionStorage('applicantProfileId');
@@ -114,8 +121,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       userId = this.sessionStorageService.getSessionStorage('id');
       this.editable = true;
     }
-    console.log("applicantProfileId",this.sessionStorageService.getSessionStorage('applicantProfileId'));
-    console.log("id",this.sessionStorageService.getSessionStorage('id'));
+    // console.log("applicantProfileId",this.sessionStorageService.getSessionStorage('applicantProfileId'));
+    // console.log("id",this.sessionStorageService.getSessionStorage('id'));
     //End here
     if (userId == null) {
       this.loggerService.error(ErrorMessageEnum.emptyUserId, this.classname);
@@ -142,6 +149,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.commonService.checkUserInfoBeforeDisplay(response, this.classname);
       this.user = response;
       let dateOfBirth = new Date(this.user.dob)  // added by John
+      // TO DO pic/CV get from backend
+      console.log(this.user.profilePicUrl);
+      this.showImage = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      console.log(this.showImage)
+
+      this.showPDF = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
 
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
@@ -160,13 +173,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getJobHistory(applicantId: number) {
     this.jobApplicationService.getAcceptedApplicationsByApplicantId(applicantId).subscribe(response => {
-      console.log(response);
+      // console.log(response);
 
       let applications: Application[] = response;
       let completedJobs: JobListing[] = [];
       for (let appln of applications) {
         this.jobListingService.getCompletedJobListingById(appln.jobId).subscribe(response => {
-          console.log(response);
+          // console.log(response);
           if (response) {
             response.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === response.status)?.[1] || '';
             this.commonService.checkJobListingBeforeDisplay(response.title, response.details, response.rate, response.status, response.id, this.classname);
@@ -183,7 +196,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getJobListingByOwner(authorId: number) {
     this.jobListingService.getJobListingByUser(authorId).subscribe(response => {
-      console.log(response);
+      // console.log(response);
       this.jobListings = response;
       this.jobListings.forEach((element) => {
         element.status = Object.entries(JobListingStatusEnum).find(([key, val]) => key === element.status)?.[1] || '';
@@ -203,9 +216,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let tmpFreelancerRatings: Rating[] = [];
 
     this.ratingService.getRatingsByTargetId(userId).subscribe(response => {
-      console.log(response);
+      // console.log(response);
       allRatings = response;
-      console.log(allRatings.length);
+      // console.log(allRatings.length);
 
       sum = 0;
       count = 0;
@@ -257,19 +270,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.clientRatings = tmpClientRatings;
         this.displayRatings = this.clientRatings;
       });
-      console.log(tmpClientRatings)
+      // console.log(tmpClientRatings)
     });
   }
 
   openListing(listingUrl: String) {
-    console.log("open listing called" + listingUrl);
+    // console.log("open listing called" + listingUrl);
     let source = window.location.origin;
-    console.log("source: " + source)
+    // console.log("source: " + source)
     this.router.navigate([listingUrl]);
   }
 
   editProfileClicked() {
     this.edit = true;
+    this.url = '';
+    this.pdfUrl = '';
+    this.uploadImagePending = false;
+    this.uploadPDFPending = false;
   }
 
   initiateProfile() {
@@ -312,10 +329,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.edit = false;
   }
 
+  uploadImagePending: boolean = false;
   //Gets called when the user selects an image
   public onFileChanged(event: any) {
+    // console.log(event)
     //Select File
     this.selectedFile = event.target.files[0];
+    // this.selectedImageName = event.target.files[0].name;
+    this.selectedImageName = this.sessionStorageService.getSessionStorage('id') + '.jpg';
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
 
@@ -324,13 +345,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
       reader.onload = (event: any) => { // called once readAsDataURL is completed
         this.url = event.target.result;
       }
+      this.uploadImagePending = true;
+      // this.showImage = this.url
+    } else {
+      this.uploadImagePending = false;
     }
   }
 
-  removeImage() {
-    document.getElementById('imgPreview')!.removeAttribute('src');
-    this.myInputVariable.nativeElement.value = ''; // clear uploaded image
-    this.url = null;
+  uploadPDFPending: boolean = false;
+  onPDFChanged(event:any) {
+    console.log(event)
+    this.selectedPDFFile = event.target.files[0];
+    this.selectedPDFName = this.sessionStorageService.getSessionStorage('id') + '.pdf';
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      reader.onload = (event: any) => { // called once readAsDataURL is completed
+        this.pdfUrl = event.target.result;
+      }
+      this.uploadPDFPending = true;
+    } else {
+      this.uploadPDFPending = false;
+    }
+  }
+
+  removeImage(e:string) {
+    if(e == 'image') {
+      document.getElementById('imgPreview')!.removeAttribute('src');
+      this.myInputVariable.nativeElement.value = ''; // clear uploaded image
+      this.url = null;
+    } else if(e == 'PDF') {
+      document.getElementById('pdfPreview')!.removeAttribute('src');
+      this.myInputPDF.nativeElement.value = '';
+      this.pdfUrl = null;
+    }
+
   }
 
 
@@ -373,6 +424,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.alertService.success('Save Successfully', true);
         })
 
+        if(this.uploadImagePending) {
+          const uploadImageData = new FormData();
+          uploadImageData.append('imageFile', this.selectedFile, this.selectedImageName)
+          this.iamService.uploadImage(uploadImageData).subscribe((result) => {
+            this.alertService.success('Save Successfully', true);
+          })
+        }
+
+        if(this.uploadPDFPending) {
+          const uploadPDFData = new FormData();
+          uploadPDFData.append('imageFile', this.selectedPDFFile, this.selectedPDFName)
+          this.iamService.uploadImage(uploadPDFData).subscribe((result) => {
+            this.alertService.success('Save Successfully', true);
+          })
+        }
+
       } else {
         if(!this.contactNumber_valid) {
           this.alertService.error('Contact Number is not Valided. 8 Digit Valid SG Phone Number.', true);
@@ -394,9 +461,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     }
     
-    setTimeout(() => {
-      this.refresh();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.refresh();
+    // }, 1000);
   }
 
   refresh() {

@@ -91,7 +91,8 @@ export class RegisterComponent implements OnInit {
       aboutMeClient: ['', Validators.maxLength(200)],
       skills: ['', Validators.maxLength(200)],
       professionalTitle: [''],
-      linkedInAcct: ['']
+      linkedInAcct: [''],
+      profilePicUrl: ['']
     });
 
   }
@@ -133,6 +134,7 @@ export class RegisterComponent implements OnInit {
     }
     // console.log(this.registerForm.value);
     this.user = this.registerForm.value
+    this.user.profilePicUrl = './assets/img/default.png';
     console.log(this.user)
     this.IAMService.registerUser(this.user)
       .pipe(first())
