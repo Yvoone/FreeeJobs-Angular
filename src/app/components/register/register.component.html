@@ -19,7 +19,7 @@
                     <br>
                     <mat-form-field hintLabel="At least 8 characters in length, Lowercase & Uppercase letters, Numbers & Special characters">
                         <mat-label>Password *</mat-label>
-                        <input matInput type="text" formControlName="password">
+                        <input matInput type="password" formControlName="password">
     
                         <mat-error *ngIf="!submitted && pw_require">
                             <mat-error *ngIf="control.password.errors.required">Password is required</mat-error>
@@ -42,9 +42,12 @@
                         </mat-error>
                     </mat-form-field>
                     <br>
-                    <mat-form-field hintLabel="eg. +65........">
+                    <mat-form-field hintLabel="eg. 87654321. With Valid SG Phone Number">
                         <mat-label>Contact Number *</mat-label>
-                        <input matInput type="text" formControlName="contactNo" >
+                        <input matInput type="text" formControlName="contactNo" [(ngModel)]="contact_no" (ngModelChange)="checktextcontent()">
+                        <mat-error *ngIf="!contactNo_validation">
+                            8 Digit Valid SG Phone Number
+                        </mat-error>
                         <mat-error *ngIf="!submitted && no_require">
                             <mat-error *ngIf="control.contactNo.errors.required">Contact Number is required</mat-error>
                         </mat-error>

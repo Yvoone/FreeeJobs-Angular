@@ -54,7 +54,7 @@ export class RegisterComponent implements OnInit {
 
   user!: User;
 
-  emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  emailRegEx = /^(([^<>()[\]\\.,;:\s@!\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]{2,}\.)+[a-zA-Z]{2,}))$/;
   pwRegEx = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-8])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}/;
   // contactNumberRegEx = /^[689]\d{7}$/;^(?:\+65)?[689][0-9]{7}$;
   contactNumberRegEx = /^(?:\+65)?[689][0-9]{7}$/;
@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [ Validators.pattern(this.emailRegEx)]],
+      email: ['', [Validators.required, Validators.pattern(this.emailRegEx)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(this.pwRegEx)]],
       contactNo: ['', [Validators.required, Validators.pattern(this.contactNumberRegEx)]],
       gender: ['', Validators.required],
@@ -97,6 +97,16 @@ export class RegisterComponent implements OnInit {
   }
 
   get f() { return this.registerForm.controls; }
+
+  contact_no: any;
+  contactNo_validation?: boolean;
+  checktextcontent(){
+    // console.log(this.contact_no?.length)
+    if(this.contact_no?.length >= 8){
+      this.contactNo_validation = this.contactNumberRegEx.test(this.contact_no);
+    }
+    // console.log(this.contactNo_validation)
+  }
 
   onSubmit() {
     // console.log(this.registerForm.value)

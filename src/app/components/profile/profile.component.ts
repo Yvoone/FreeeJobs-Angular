@@ -15,6 +15,7 @@ import { SessionStorageService } from 'src/app/services/session-storage.service'
 import { CommonService } from 'src/app/services/common.service';
 import { LogService } from 'src/app/services/log.service';
 import { ErrorMessageEnum } from 'src/app/models/error-message-enum';
+import { AlertService } from "../../services/alert.service";
 
 
 @Component({
@@ -51,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   classname: string = ProfileComponent.name;
 
-  contactNumberRegEx = /^[689]\d{7}$/;
+  contactNumberRegEx = /^(?:\+65)?[689][0-9]{7}$/;
 
   @ViewChild('inputFile')
   myInputVariable!: ElementRef;
@@ -69,7 +70,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private ratingService: RatingService,
     private sessionStorageService: SessionStorageService,
     private commonService: CommonService,
-    private loggerService: LogService) {
+    private loggerService: LogService,
+    private alertService: AlertService,) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
   
@@ -331,26 +333,70 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.url = null;
   }
 
+
+  firstName_valid:boolean = true;
+  lastName_valid:boolean = true;
+  nameRegex = /^[a-zA-Z0-9]+$/;
+  email_valid:boolean = true;
+  emailRegEx = /^(([^<>()[\]\\.,;:\s@!\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]{2,}\.)+[a-zA-Z]{2,}))$/;
+  email_regex = new RegExp(this.emailRegEx);
+  contactNumber_valid:boolean = true;
+  contactNumber_regex = new RegExp(this.contactNumberRegEx);
+  
   submit() {
     if (this.edit) {
-      let editObj = {
-        id: this.user.id,
-        firstName: this.editProfileForm.value.firstName,
-        lastName: this.editProfileForm.value.lastName,
-        email: this.editProfileForm.value.emailAddress,
-        contactNo: this.editProfileForm.value.contactNo,
-        professionalTitle: this.editProfileForm.value.professionalTitle,
-        aboutMe: this.editProfileForm.value.aboutMe,
-        aboutMeClient: this.editProfileForm.value.aboutMeClient,
-        skills: this.editProfileForm.value.skills,
+      this.firstName_valid = this.nameRegex.test(this.editProfileForm.value.firstName);
+      this.lastName_valid =  this.nameRegex.test(this.editProfileForm.value.lastName);
+      this.email_valid = this.email_regex.test(this.editProfileForm.value.emailAddress);
+      this.contactNumber_valid = this.contactNumber_regex.test(this.editProfileForm.value.contactNo);
+
+      if(this.firstName_valid && this.lastName_valid && this.email_valid && this.contactNumber_valid){
+        let editObj = {
+          id: this.user.id,
+          firstName: this.editProfileForm.value.firstName,
+          lastName: this.editProfileForm.value.lastName,
+          email: this.editProfileForm.value.emailAddress,
+          contactNo: this.editProfileForm.value.contactNo,
+          professionalTitle: this.editProfileForm.value.professionalTitle,
+          aboutMe: this.editProfileForm.value.aboutMe,
+          aboutMeClient: this.editProfileForm.value.aboutMeClient,
+          skills: this.editProfileForm.value.skills,
+        }
+  
+        this.iamService.updateUser(editObj).subscribe((result) => {
+          window.scroll({ 
+            top: 0, 
+            left: 0, 
+            behavior: 'smooth' 
+          });
+          this.alert = "Profile Updated Successfully!";
+          this.alertService.success('Save Successfully', true);
+        })
+
+      } else {
+        if(!this.contactNumber_valid) {
+          this.alertService.error('Contact Number is not Valided. 8 Digit Valid SG Phone Number.', true);
+        } else if (!this.email_valid) {
+          this.alertService.error('Email is not valided. xx@xx.com', true);
+        } else if (!this.firstName_valid) {
+          this.alertService.error('First Name cannot be empty.', true);
+        } else if (!this.lastName_valid) {
+          this.alertService.error('last Name cannot be empty.', true);
+        } 
+       
+        window.scroll({ 
+          top: 0, 
+          left: 0, 
+          behavior: 'smooth' 
+        });
       }
 
-      this.iamService.updateUser(editObj).subscribe((result) => {
-        this.alert = "Profile Updated Successfully!"
-      })
 
     }
-    this.refresh();
+    
+    setTimeout(() => {
+      this.refresh();
+    }, 1000);
   }
 
   refresh() {

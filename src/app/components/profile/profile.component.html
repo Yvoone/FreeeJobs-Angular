@@ -90,7 +90,8 @@
                             <div class="form-group row">
                                 <div class="col">
                                     <label>First Name</label>
-                                    <div class="input-group">
+                                    <div class="input-group"
+                                    [ngStyle]="{'border':firstName_valid ? '0':'1px solid red'}">
                                         <input name="firstName" formControlName="firstName" class="form-control"
                                             maxlength="100">
                                     </div>
@@ -100,7 +101,8 @@
                                 </div>
                                 <div class="col">
                                     <label>Last Name</label>
-                                    <div class="input-group">
+                                    <div class="input-group"
+                                    [ngStyle]="{'border':lastName_valid ? '0':'1px solid red'}">
                                         <input name="lastName" formControlName="lastName" class="form-control"
                                             maxlength="100">
                                     </div>
@@ -124,7 +126,8 @@
                                 </div>
                                 <div class="col">
                                     <label>Contact Number</label>
-                                    <div class="input-group">
+                                    <div class="input-group"
+                                    [ngStyle]="{'border':contactNumber_valid ? '0':'1px solid red'}">
                                         <input name="contactNo" formControlName="contactNo" class="form-control"
                                             maxlength="8" (keypress)="keyPress($event)">
                                     </div>
@@ -136,7 +139,8 @@
                             <div class="form-group row">
                                 <div class="col">
                                     <label>Email Address</label>
-                                    <div class="input-group">
+                                    <div class="input-group"
+                                    [ngStyle]="{'border':email_valid ? '0':'1px solid red'}">
                                         <input name="emailAddress" formControlName="emailAddress" class="form-control"
                                             maxlength="100">
                                     </div>

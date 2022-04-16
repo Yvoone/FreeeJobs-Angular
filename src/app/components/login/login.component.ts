@@ -46,6 +46,11 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
     sessionStorage.clear();
 
     this.loginForm = this.formBuilder.group({
