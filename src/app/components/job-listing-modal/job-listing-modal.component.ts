@@ -57,6 +57,8 @@ export class JobListingModalComponent implements OnInit {
     linkedInAcct: "abc",
     professionalTitle: "",
     aboutMeClient: "",
+    profilePicUrl: "",
+    resumeUrl: ""
   };
   
 

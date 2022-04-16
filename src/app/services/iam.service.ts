@@ -49,6 +49,7 @@ export class IAMService {
       "gender": user.gender,
       "dob": user.dob,
       "aboutMe": user.aboutMe,
+      "aboutMeClient": user.aboutMeClient,
       "skills": user.skills,
       "linkedInAcct": user.linkedInAcct,
       "professionalTitle": user.professionalTitle
