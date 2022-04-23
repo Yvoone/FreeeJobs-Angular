@@ -11,7 +11,7 @@ import { response } from 'express';
   providedIn: 'root'
 })
 export class JobListingService {
-  private jobListingUrl = 'http://localhost:8083/jobListing';
+  private jobListingUrl = '/jobListing';
 
   constructor(private httpClient: HttpClient,
     private commonService: CommonService) {}

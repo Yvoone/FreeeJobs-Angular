@@ -37,7 +37,7 @@
               <div class="card mb-4" *ngFor="let jobListing of jobListings">
                 <div class="card-body" *ngIf="jobListings.length > 0">
                   <div class="d-flex">
-                    <h4 class="card-title btn-link text-secondary flex-fill" (click)="openListing('/jobListing/details', jobListing.id)">{{jobListing.title}}</h4>
+                    <h4 class="card-title btn-link text-secondary flex-fill" (click)="openListing('/listingDetails', jobListing.id)">{{jobListing.title}}</h4>
                     <div class="card-text flex-fill text-right">{{jobListing.status}}</div>
                   </div>
                   <div class="row">
@@ -59,7 +59,7 @@
               <div class="card mb-4" *ngFor="let jobApplication of jobApplications">
                 <div class="card-body" *ngIf="jobApplications.length > 0">
                   <div class="d-flex">
-                    <h4 class="card-title btn-link text-secondary flex-fill" (click)="openListing('/jobListing/details', jobApplication.jobListing.id)">{{jobApplication.jobListing.title}}</h4>
+                    <h4 class="card-title btn-link text-secondary flex-fill" (click)="openListing('/listingDetails', jobApplication.jobListing.id)">{{jobApplication.jobListing.title}}</h4>
                     <div class="card-text lex-fill text-right">{{jobApplication.status}}</div>
                   </div>
                   <div class="row">
