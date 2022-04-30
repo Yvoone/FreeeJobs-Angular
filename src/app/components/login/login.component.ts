@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { User } from 'src/app/entities/user';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras, Params } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
@@ -30,6 +30,8 @@ export class LoginComponent implements OnInit {
   email_require!: boolean;
   pw_require!: boolean;
 
+  linkedInToken = "";
+
   //////////////////////////////
   // form: FormGroup = new FormGroup({
   //   email: new FormControl(''),
@@ -42,7 +44,8 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private formBuilder: FormBuilder,
     private sessionStorageService: SessionStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +61,21 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    this.linkedInToken = this.route.snapshot.queryParams["code"];
+    console.log(this.linkedInToken)
+  }
+
+  linkedInCredentials = {
+    clientId: "86dyp3ax33yxnv",
+    redirectUrl: "http://localhost:4200/login",
+    scope: "r_liteprofile%20r_emailaddress" // To read basic user profile data and email
+  }
+
+  linkedin(){
+    window.location.href = `https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=${
+      this.linkedInCredentials.clientId
+    }&redirect_uri=${this.linkedInCredentials.redirectUrl}&scope=${this.linkedInCredentials.scope}`;
   }
 
   isFieldInvalid(field: string) { // {6}

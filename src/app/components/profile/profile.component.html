@@ -94,24 +94,25 @@
                                     </div>
                                 </div>
                                 
-                                <!-- <div class="upload-container">
+                                <div class="upload-container" style="padding-top: 10px;">
                                     <div class="border-container">
                                         <div class="icons fa-4x" *ngIf="!pdfUrl">
                                         </div>
-                                        <ng-container *ngIf="uploadPDFPending">
-                                            <div id="pdfPreview">{{pdfUrl}}</div>
+                                        <div>Upload Resume</div>
+                                        <ng-container *ngIf="uploadPDFPending" >
+                                            <!-- {{pdfUrl}}/1 -->
+                                            <div id="pdfPreview">{{uploadedPDFName}}</div>
                                         </ng-container>
-                                        <ng-container *ngIf="!uploadPDFPending">
-                                            <div id="pdfPreview">{{showPDF}}</div>
+                                        <ng-container *ngIf="!uploadPDFPending" id="pdfPreview">
+                                            {{showPDF}}
                                         </ng-container>
-                                        
                                         <button type="button" class="close" aria-label="Close" (click)="removeImage('PDF')"
                                             *ngIf="pdfUrl">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                        <input type="file" (change)="onPDFChanged($event)" #inputFile>
+                                        <input type="file" (change)="onPDFChanged($event)" #inputPDFFile>
                                     </div>
-                                </div> -->
+                                </div>
                                 
                             </div>
                         </div>
