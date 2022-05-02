@@ -170,4 +170,38 @@ export class IAMService {
     return data.asObservable();
   }
 
+  getSessionTimeout(userId: number): Observable<any> {
+    const URL = this.IAMUrl + '/getUserSessionTimeout';
+    let params = new HttpParams()
+      .set('userId', userId.toString());
+    var data = new Subject<any>();
+    this.httpClient.get<IAPIResponse<any>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
+  }
+
+  logout(userId: string): Observable<any> {
+    const URL = this.IAMUrl + '/logout';
+    let params = new HttpParams()
+      .set('userId', userId);
+    var data = new Subject<any>();
+    this.httpClient.get<IAPIResponse<any>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendError(response.status!);
+        return;
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response);
+      }
+    });
+    return data.asObservable();
+  }
+
 }

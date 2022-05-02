@@ -77,6 +77,10 @@ export class AuthService {
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 100);
+        this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
+          this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
+          console.log("sessiontimeout:"+sessionStorage.getItem("sessionTimeout"));
+        });
         // this.router.navigateByUrl("")
       } else if(e.loginStatus == 0) {
         this.alertService.error('Login Fail', true);
@@ -85,7 +89,7 @@ export class AuthService {
       } else if(e.loginStatus == 3){
         this.alertService.error('The Account is locked after 3 fail attempts. Please contact admin.', true)
       }
-    })
+    });
   }
 
   // //Login WITHOUT API
@@ -115,6 +119,7 @@ export class AuthService {
     this.sessionStorageService.removeSessionStorage('id');
     this.router.navigate(['login']);
     this.logService.clear();
+    
   }
 
 }

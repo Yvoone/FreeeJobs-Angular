@@ -8,6 +8,7 @@ import { environment } from "../../../environments/environment";
 import { SessionStorageService } from "../../services/session-storage.service";
 import { AuthService } from "../../services/auth.service";
 import { Observable, of } from 'rxjs';
+import { IAMService } from 'src/app/services/iam.service';
 
 @Component({
   selector: 'app-topbar',
@@ -28,6 +29,7 @@ export class TopbarComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService,
     private readonly authService: AuthService,
     private router: Router,
+    private iamService: IAMService
   ) { }
 
   ngOnInit(): void {
@@ -43,13 +45,18 @@ export class TopbarComponent implements OnInit {
   }
 
   onLogout(){
-    //this.sessionStorageService.removeEmail('email');
-    this.sessionStorageService.removeSessionStorage('email');
-    // this.sessionStorageService.removeID('id');
-    this.sessionStorageService.removeSessionStorage('id');
-    this.authService.logout();                      // {3}
-    console.log("logout action")
-    this.islogin=false;
+    this.iamService.logout(this.sessionStorageService.getSessionStorage('id')).subscribe(e=>{
+      if(e.status!.statusCode==200){
+        //this.sessionStorageService.removeEmail('email');
+        this.sessionStorageService.removeSessionStorage('email');
+        // this.sessionStorageService.removeID('id');
+        this.sessionStorageService.removeSessionStorage('id');
+        this.authService.logout();                      // {3}
+        console.log("logout action")
+        this.islogin=false;
+      }
+    });
+    
   }
 
   checkEmailSession(){
