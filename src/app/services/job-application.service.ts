@@ -12,7 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class JobApplicationService {
 
-  private jobApplicationUrl = 'http://localhost:8084/jobApplication';
+  private jobApplicationUrl = '/jobApplication';
 
   constructor(private httpClient: HttpClient,
     private commonService: CommonService,

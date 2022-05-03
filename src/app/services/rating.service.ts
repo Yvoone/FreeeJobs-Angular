@@ -10,7 +10,7 @@ import { CommonService } from './common.service';
   providedIn: 'root'
 })
 export class RatingService {
-  private ratingUrl = 'http://localhost:8085/rating';
+  private ratingUrl = '/rating';
 
   constructor(private httpClient: HttpClient,
     private commonService: CommonService,

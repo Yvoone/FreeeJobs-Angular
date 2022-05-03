@@ -194,6 +194,7 @@ export class JobListingDetailsComponent implements OnInit {
 
   getAcceptedApplicants(id: number) {
     this.jobApplicationService.getAcceptedApplicantsByJobId(id).subscribe(response => {
+       console.log("Accepted applicants"+response.length);
        console.log(response);
         this.populateApplicants(response);
       }
@@ -264,6 +265,7 @@ export class JobListingDetailsComponent implements OnInit {
     return this.jobListing.status==JobListingStatusEnum.OFA;
   }
   isPendingRating(){
+    console.log("rating for this user: "+this.ratingForUserAndJob.length);
     //to return status==C and no ratings in table
     return (this.jobListing.status==JobListingStatusEnum.C)&&(this.ratingForUserAndJob.length==0)
   }
@@ -277,7 +279,7 @@ export class JobListingDetailsComponent implements OnInit {
     //check if user alr submitted rating for this job listing
     this.ratingService.getRatingsByReviewerIdJobId(this.userId, this.id).subscribe(response =>{
       this.ratingForUserAndJob= response;
-      console.log(this.ratingForUserAndJob.length);
+      console.log("rating for this user: "+this.ratingForUserAndJob.length);
     });
   }
   showRatingPopUp(content:any) {
@@ -293,6 +295,8 @@ export class JobListingDetailsComponent implements OnInit {
     let targetId: Number| undefined = undefined;
     if(this.jobListing.authorId==this.userId){
       //target of the rating is for freelancer
+      console.log("applicant: "+this.applicants);
+      console.log("applicantId: "+this.applicants[0].id);
       targetId = this.applicants[0].id;
     }else{
       //target of the rating is for employer

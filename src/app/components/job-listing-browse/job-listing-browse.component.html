@@ -6,7 +6,7 @@
     <div class="card mb-4" *ngFor="let jobListing of jobListings | paginate: { itemsPerPage: 10, currentPage: p, totalItems: this.totalJobListing}">
         <div class="card-body" *ngIf="jobListings.length > 0">
           <div class="d-flex">
-            <h4 class="card-title btn-link text-secondary p-2 flex-fill" (click)="openListing('/jobListing/details', jobListing.id)">{{jobListing.title}}</h4>
+            <h4 class="card-title btn-link text-secondary p-2 flex-fill" (click)="openListing('/listingDetails', jobListing.id)">{{jobListing.title}}</h4>
             <div class="card-text p-2 flex-fill text-right">{{jobListing.status}}</div>
           </div>
           <div class="row">

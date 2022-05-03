@@ -1,0 +1,26 @@
+{
+    "/jobListing/*": {
+      "target": "http://localhost:8083",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true
+    },
+    "/jobApplication/*":{
+        "target": "http://localhost:8084",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/iam/*":{
+        "target": "http://localhost:8082",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/rating/*":{
+        "target": "http://localhost:8085",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+  }

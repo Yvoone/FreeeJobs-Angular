@@ -201,7 +201,7 @@ export class JobListingModalComponent implements OnInit {
   back(){
     if(this.modalType=='edit'){
       this.id = this.sessionStorageService.getSessionStorage('jobId');
-      this.openListing('/jobListing/details', this.id);
+      this.openListing('/listingDetails', this.id);
     }else{
       this.router.navigate(["/dashboard"]);
     }

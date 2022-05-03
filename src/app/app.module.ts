@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";  
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -7,7 +7,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule, HttpClientXsrfModule, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpXsrfTokenExtractor, HTTP_INTERCEPTORS} from "@angular/common/http";
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -31,8 +31,49 @@ import { AccessDeniedComponent } from './components/common/access-denied/access-
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MY_DATE_FORMATS } from './models/date-formats';
+import { Observable } from 'rxjs';
 
+@Injectable()
+export class XhrInterceptor implements HttpInterceptor {
 
+  constructor(private csrfTokenExtrator: HttpXsrfTokenExtractor,
+    ) { }
+    
+   intercept(request: HttpRequest<any>, next: HttpHandler):   Observable<HttpEvent<any>> {
+       // All HTTP requests are going to go through this method
+       console.log("document:"+document);
+       console.log("Cookie = ", document.cookie);
+       const token = this.csrfTokenExtrator.getToken() as string;
+       console.log("token = ", token);
+       console.log("method = ", request.method);
+       if ((request.method == "POST"||request.method == "PUT") && token != null) {
+        const modifiedRequest = request.clone({ 
+                headers: request.headers.set("X-XSRF-TOKEN", token),
+            });
+            console.log(modifiedRequest.headers);
+            return next.handle(modifiedRequest);
+        }
+       return next.handle(request);
+   }
+  }
+
+//   @Injectable()
+// export class HttpXSRFInterceptor implements HttpInterceptor {
+
+//   constructor(private tokenExtractor: HttpXsrfTokenExtractor) {
+//   }
+
+//   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+//     console.log(req.url.toLowerCase());
+//     const headerName = 'XSRF-TOKEN';
+//     const respHeaderName = 'X-XSRF-TOKEN';
+//     let token = this.tokenExtractor.getToken() as string;
+//     if (token !== null && !req.headers.has(headerName)) {
+//       req = req.clone({ headers: req.headers.set(respHeaderName, token) });
+//     }
+//     return next.handle(req);
+//   }
+// }
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,11 +102,14 @@ import { MY_DATE_FORMATS } from './models/date-formats';
     MatToolbarModule,
     MatIconModule,
     ReactiveFormsModule,
+    HttpClientXsrfModule.withOptions({cookieName: 'XSRF-TOKEN',
+    headerName: 'X-CSRF-TOKEN'}),
   ],
   exports: [
     NgbModule
   ],
-  providers: [AuthService, AuthGuard, { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, LogService, LogPublishersService],
+  providers: [AuthService, AuthGuard, { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, LogService, LogPublishersService
+    ,{ provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
