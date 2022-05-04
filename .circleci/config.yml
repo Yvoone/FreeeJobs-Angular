@@ -5,6 +5,7 @@ version: 2.1
 orbs:
   node: circleci/node@4.7.0
   heroku: circleci/heroku@1.2.6
+  sonarcloud: sonarsource/sonarcloud@1.0.3
   
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -26,9 +27,11 @@ jobs:
       - run:
           name: Run Build
           command: npm install
+      - sonarcloud/scan
       - heroku/deploy-via-git 
           
 workflows:
   angular:
     jobs:
-      - build-and-deploy
+      - build-and-deploy:
+          context: SonarCloud
