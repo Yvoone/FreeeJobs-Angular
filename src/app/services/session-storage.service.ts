@@ -63,6 +63,6 @@ export class SessionStorageService {
   }
 
   public clearAll(){
-    sessionStorage.clear;
+    sessionStorage.clear();
   }
 }

@@ -80,10 +80,10 @@
                                             <!-- <i class="fa fa-file-image-o"></i> -->
                                         </div>
                                         <ng-container *ngIf="uploadImagePending">
-                                            <img [src]="url" id="imgPreview">
+                                            <img [src]="url" id="imgPreview" alt="Uploading Profile Picture">
                                         </ng-container>
                                         <ng-container *ngIf="!uploadImagePending">
-                                            <img src="{{ showImage }}" id="imgPreview">
+                                            <img src="{{ showImage }}" id="imgPreview" alt="Uploaded Profile Picture">
                                         </ng-container>
                                         
                                         <button type="button" class="close" aria-label="Close" (click)="removeImage('image')"

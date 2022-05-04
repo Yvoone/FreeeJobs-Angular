@@ -125,7 +125,7 @@ export class DashboardComponent implements OnInit {
 
   setFilters(){
     this.jobListingStatuses.push("All");
-    this,this.jobApplicationStatuses.push("All");
+    this.jobApplicationStatuses.push("All");
     for (let item in JobListingStatusEnum) {
       this.jobListingStatuses.push(Object.entries(JobListingStatusEnum).find(([key, val]) => key === item)?.[1]|| '')
     }
