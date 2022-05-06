@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras, Params } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthService } from "../../services/auth.service";
@@ -53,6 +53,7 @@ export class RegisterComponent implements OnInit {
   maxDate!: Date;
 
   user!: User;
+  linkedInAuth = "";
 
   emailRegEx = /^(([^<>()[\]\\.,;:\s@!\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]{2,}\.)+[a-zA-Z]{2,}))$/;
   pwRegEx = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-8])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}/;
@@ -67,7 +68,8 @@ export class RegisterComponent implements OnInit {
     private authenticationService: AuthService,
     private alertService: AlertService,
     // private userService: UserService,
-    // private alertService: AlertService
+    // private alertService: AlertService,
+    private route: ActivatedRoute
   ) { 
     const currentYear = new Date().getFullYear();
     this.minDate = new Date(currentYear - 100, 0, 1);
@@ -95,6 +97,42 @@ export class RegisterComponent implements OnInit {
       profilePicUrl: ['']
     });
 
+
+    this.linkedInAuth = this.route.snapshot.queryParams["code"];
+    console.log(this.linkedInAuth)
+    console.log(this.route.snapshot.queryParams)
+    if(this.linkedInAuth){
+      console.log(this.linkedInAuth)
+      this.IAMService.getLinkedInAccess(this.linkedInAuth).subscribe(response => {
+        console.log(response)
+        if(response.access_token) {
+          this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
+            console.log(data)
+          })
+          this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
+            console.log(email)
+          })
+          this.IAMService.getLinkedInProfilePictrue(response.access_token).subscribe(pic => {
+            console.log(pic)
+          })
+
+        }
+      })
+    } else {
+      console.log("undefined")
+    }
+  }
+
+  linkedInCredentials = {
+    clientId: "86dyp3ax33yxnv",
+    redirectUrl: "http://localhost:4200/register",
+    scope: "r_liteprofile%20r_emailaddress%20w_member_social" // To read basic user profile data and email
+  }
+
+  linkedin(){
+    window.location.href = `https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=${
+      this.linkedInCredentials.clientId
+    }&redirect_uri=${this.linkedInCredentials.redirectUrl}&scope=${this.linkedInCredentials.scope}`;
   }
 
   get f() { return this.registerForm.controls; }
@@ -134,7 +172,7 @@ export class RegisterComponent implements OnInit {
     }
     // console.log(this.registerForm.value);
     this.user = this.registerForm.value
-    this.user.profilePicUrl = './assets/img/default.png';
+    this.user.profilePicUrl = 'assets/img/default.png';
     console.log(this.user)
     this.IAMService.registerUser(this.user)
       .pipe(first())

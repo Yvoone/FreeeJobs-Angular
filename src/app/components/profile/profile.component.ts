@@ -53,6 +53,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   selectedImageName!: string;
   selectedPDFName!:string;
   showImage!:string;
+  defaultPic: string = 'assets/img/default.png'
   showPDF!: string;
   alert!: string;
 
@@ -152,7 +153,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       let dateOfBirth = new Date(this.user.dob)  // added by John
       // TO DO pic/CV get from backend
       console.log(this.user.profilePicUrl);
-      this.showImage = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      // this.showImage = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      this.showImage = this.user.profilePicUrl;
+      if (!(this.showImage.includes('default'))){
+        this.showImage = this.user.profilePicUrl + this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      }
+      console.log(this.showImage.includes('default'))
       console.log(this.showImage)
 
       this.showPDF = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
@@ -423,6 +429,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           aboutMe: this.editProfileForm.value.aboutMe,
           aboutMeClient: this.editProfileForm.value.aboutMeClient,
           skills: this.editProfileForm.value.skills,
+          profilePicUrl: 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'
         }
   
         this.iamService.updateUser(editObj).subscribe((result) => {

@@ -53,7 +53,8 @@ export class IAMService {
       "aboutMeClient": user.aboutMeClient,
       "skills": user.skills,
       "linkedInAcct": user.linkedInAcct,
-      "professionalTitle": user.professionalTitle
+      "professionalTitle": user.professionalTitle,
+      "profilePicUrl": user.profilePicUrl
     }
 
     var data = new Subject<any>();
@@ -68,6 +69,43 @@ export class IAMService {
       });
       return data.asObservable();
   }
+
+  getLinkedInAccess(auth:any): Observable<any> {
+    var data = new Subject<any>()
+    const URL = 'https://www.linkedin.com/oauth/v2/accessToken';
+    // let params = new HttpParams().set('oauth2_access_token', 'AQXH_i1Ty7yYuf28dYDExWe_4Prx9CHitdfIh1GEyEeSxhsfHCfkLJ692vHnLjZakYzfF9KLpAkT8PLPimwtj0nC3voT6fRgLTXVtfFpJFv7rRb8JVLFkf7plIh1AfefXuUF71aYXJWIlK_qlBbORbyMmsf_cr5pfmknU8myFQBpFE5Lac26FGyXC186YtKFxGDGhA_h6yBaaOvknQTxVlJ82x46zIc12WM1FVlc5x0QoEsWcoo0cRbpFKUhx8FTGSKgM4erYAv7DtST2xbVFXQQaByDFe0N22XxNYEwxspRJtc_7VZs64ZAJY-ywZmLvHIn06CbLWJrVsZWWIBdaHuwJcrKkg');
+    let params = {
+      'grant_type' : 'authorization_code',
+      'code' : auth.toString(),
+      'redirect_uri' : 'http://localhost:4200/register',
+      'client_id' : '86dyp3ax33yxnv',
+      'client_secret' : 'yTTIjfaLrA18ryK2'
+    };
+    
+    return this.httpClient.get<IAPIResponse<any>>(URL, {params}); 
+  }
+
+  getLinkedInProfileName(token:any): Observable<any> {
+    var data = new Subject<any>()
+    const URL = 'https://api.linkedin.com/v2/me';
+    let params = new HttpParams().set('oauth2_access_token', token.toString());
+    return this.httpClient.get<IAPIResponse<any>>(URL, {params});
+  }
+
+  getLinkedInProfileEmail(token:any): Observable<any> {
+    const URL = 'https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))';
+    let params = new HttpParams().set('oauth2_access_token', token.toString());
+    return this.httpClient.get<IAPIResponse<any>>(URL, {params});
+  }
+
+  getLinkedInProfilePictrue(token:any): Observable<any> {
+    const URL = 'https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))';
+    let params = new HttpParams().set('oauth2_access_token', token.toString());
+    return this.httpClient.get<IAPIResponse<any>>(URL, {params});
+  }
+
+  
+  
 
   // updateUser(updatedUser: any) {
   //   const URL = this.IAMUrl + '/' + updatedUser.id + '/edit';
@@ -105,7 +143,8 @@ export class IAMService {
       "aboutMe": user.aboutMe,
       "aboutMeClient": user.aboutMeClient,
       "skills": user.skills,
-      "professionalTitle": user.professionalTitle
+      "professionalTitle": user.professionalTitle,
+      "profilePicUrl": user.profilePicUrl
     }
     var data = new Subject<any>();
     this.httpClient.put<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
