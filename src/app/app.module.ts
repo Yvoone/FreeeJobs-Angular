@@ -32,6 +32,7 @@ import { AccessDeniedComponent } from './components/common/access-denied/access-
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MY_DATE_FORMATS } from './models/date-formats';
 import { Observable } from 'rxjs';
+import { OtpComponent } from './components/otp/otp.component';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -88,7 +89,8 @@ export class XhrInterceptor implements HttpInterceptor {
     AlertComponent,
     AdminComponent,
     PageNotFoundComponent,
-    AccessDeniedComponent
+    AccessDeniedComponent,
+    OtpComponent
   ],
   imports: [
     BrowserAnimationsModule,

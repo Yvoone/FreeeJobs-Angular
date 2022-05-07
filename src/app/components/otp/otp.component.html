@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-card-title>One Time Password Verification</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+            <mat-form-field >
+                <mat-label>OTP</mat-label>
+                <input matInput type="text" formControlName="otp">
+
+                <mat-error *ngIf="!submitted && otp_require">
+                    <mat-error *ngIf="control.otp.errors.required">OTP is required</mat-error>
+                </mat-error>
+            </mat-form-field>
+            <br>
+            <mat-card-actions>
+                
+                <button mat-stroked-button color='primary' style="width:100%">Validate</button>
+            </mat-card-actions>
+        </form>
+        <button mat-stroked-button color='primary' style="width:100%" (click)="requestOTP()">Request For OTP</button>
+        <button mat-stroked-button color='primary' style="width:100%" (click)="goBackToLogin()">Back To Login</button>
+    </mat-card-content>
+</mat-card>

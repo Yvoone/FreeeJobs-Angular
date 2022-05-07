@@ -75,7 +75,7 @@ export class AuthService {
         this.sessionStorageService.setSessionStorage('id', e.userId);
         this.sessionStorageService.setSessionStorage('jobId', 0);
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/otp']);
         }, 100);
         this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
           this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
@@ -121,5 +121,31 @@ export class AuthService {
     this.logService.clear();
     
   }
+
+  validateOTP(otp:string, userId:number){
+      this.IAMService.validateOTP(otp, userId).subscribe(e=>{
+        console.log(e)
+        if (e == "Verified") {
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 100);
+        } else if(e == "Expired") {
+          this.alertService.error('OTP Expired, Please Requ est For New OTP', true);
+        } else{
+          this.alertService.error('Validation Failed, Please Try again.', true);
+        }
+      });
+    }
+
+    getOTP(userId:number){
+      this.IAMService.getOTP(userId).subscribe(e=>{
+        console.log(e)
+        if (e == "sent") {
+          
+        } else{
+          this.alertService.error('There is an error with request, Please Try again.', true);
+        }
+      });
+    }
 
 }

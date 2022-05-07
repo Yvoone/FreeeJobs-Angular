@@ -152,10 +152,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       let dateOfBirth = new Date(this.user.dob)  // added by John
       // TO DO pic/CV get from backend
       console.log(this.user.profilePicUrl);
-      this.showImage = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      this.showImage = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
       console.log(this.showImage)
 
-      this.showPDF = 'https://freeejobs.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
+      this.showPDF = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
 
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
@@ -439,7 +439,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
           const uploadImageData = new FormData();
           uploadImageData.append('imageFile', this.selectedFile, this.selectedImageName)
           this.iamService.uploadImage(uploadImageData).subscribe((result) => {
-            this.alertService.success('Save Successfully', true);
+            if(result!="Failed"){
+              this.alertService.success('Save Successfully', true);
+            }else{
+              this.alertService.error('Failed To Upload, Please Try Again', true);
+            }
+            
           })
         }
 
@@ -447,7 +452,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
           const uploadPDFData = new FormData();
           uploadPDFData.append('imageFile', this.selectedPDFFile, this.selectedPDFName)
           this.iamService.uploadImage(uploadPDFData).subscribe((result) => {
-            this.alertService.success('Save Successfully', true);
+            if(result!="Failed"){
+              this.alertService.success('Save Successfully', true);
+            }else{
+              this.alertService.error('Failed To Upload, Please Try Again', true);
+            }
           })
         }
 

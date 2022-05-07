@@ -11,6 +11,7 @@ import { RegisterComponent } from "./components/register/register.component";
 import { AdminComponent } from "./components/admin/admin.component";
 import { PageNotFoundComponent } from './components/common/page-not-found/page-not-found.component';
 import { AccessDeniedComponent } from './components/common/access-denied/access-denied.component';
+import { OtpComponent } from './components/otp/otp.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent, canActivate: [ AuthGuard]},
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path: 'listing/:type', component: JobListingModalComponent, canActivate: [ AuthGuard]},
   {path: 'pageNotFound', component: PageNotFoundComponent},
   {path: 'accessDenied', component: AccessDeniedComponent},
+  {path: 'otp', component: OtpComponent},
   { path: '**', redirectTo: ''}
 ];
 

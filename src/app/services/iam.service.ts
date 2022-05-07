@@ -204,4 +204,39 @@ export class IAMService {
     return data.asObservable();
   }
 
+  validateOTP(otp:string, userId:number): Observable<any> {
+    const URL = this.IAMUrl + '/validateOTP';
+    let params = new HttpParams()
+      .set('userId', userId)
+      .set('inputOtp', otp);
+    var data = new Subject<any>();
+    this.httpClient.get<IAPIResponse<any>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendErrorLoginOnly(response.status!);
+        data.next(response.data!);
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
+  }
+  getOTP(userId:number): Observable<any> {
+    const URL = this.IAMUrl + '/getOTP';
+    let params = new HttpParams()
+      .set('userId', userId);
+    var data = new Subject<any>();
+    this.httpClient.get<IAPIResponse<any>>(URL, {params}).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendErrorLoginOnly(response.status!);
+        data.next(response.data!);
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
+  }
+
+
 }

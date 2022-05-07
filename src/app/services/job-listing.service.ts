@@ -6,6 +6,7 @@ import { JobListing } from 'src/app/entities/job-listing';
 import { IAPIResponse } from '../entities/apiresponse';
 import { CommonService } from './common.service';
 import { response } from 'express';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class JobListingService {
   private jobListingUrl = '/jobListing';
 
   constructor(private httpClient: HttpClient,
-    private commonService: CommonService) {}
+    private commonService: CommonService,
+    private authService: AuthService) {}
 
   getJobListingToBrowse(pageNumber: number, searchValue: string) {
     const URL = this.jobListingUrl + '/listAllOpenActiveJobListing';
