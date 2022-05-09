@@ -81,11 +81,14 @@ export class LoginComponent implements OnInit {
         if(response.access_token) {
           this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
             console.log(data)
-            console.log(data.id)
+            console.log("idIDidIDIDid: ",data.id)
             console.log(data.localizedLastName)
             console.log(data.localizedFirstName)
 
-            this.authService.linkedInLogin(data.id);
+            setTimeout(() => {
+              console.log('coming here?')
+              this.authService.linkedInLogin(data.id);
+            }, 1000);
           })
           this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
             console.log(email)

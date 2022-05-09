@@ -92,7 +92,7 @@ export class IAMService {
     let params = {
       'grant_type' : 'authorization_code',
       'code' : auth.toString(),
-      'redirect_uri' : 'https://freeejobs-web.herokuapp.com/dashboard',
+      'redirect_uri' : 'https://freeejobs-web.herokuapp.com/login',
       'client_id' : '86dyp3ax33yxnv',
       'client_secret' : 'yTTIjfaLrA18ryK2'
     };
