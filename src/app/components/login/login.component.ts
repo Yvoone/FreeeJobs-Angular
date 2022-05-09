@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
 
     if(this.linkedInAuth){
       console.log(this.linkedInAuth)
-      this.IAMService.getLinkedInAccess(this.linkedInAuth).subscribe(response => {
+      this.IAMService.getLinkedInAccess_login(this.linkedInAuth).subscribe(response => {
         console.log(response)
         if(response.access_token) {
           this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {

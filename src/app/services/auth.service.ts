@@ -108,7 +108,7 @@ export class AuthService {
           this.sessionStorageService.setSessionStorage('id', e.userId);
           this.sessionStorageService.setSessionStorage('jobId', 0);
           setTimeout(() => {
-            this.router.navigate(['/otp']);
+            this.router.navigate(['/dashboard']);
           }, 100);
           this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
             this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
