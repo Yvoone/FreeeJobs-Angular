@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from "../../../environments/environment";
 import { SessionStorageService } from "../../services/session-storage.service";
 import { AuthService } from "../../services/auth.service";
+import { IAMService } from "../../services/iam.service";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +32,12 @@ export class LoginComponent implements OnInit {
   email_require!: boolean;
   pw_require!: boolean;
 
-  linkedInToken = "";
+  linkedInAuth = "";
+
+  string_email: any;
+  linkedIn_userEmail: any;
+  number1_email:any;
+  number2_email:any;
 
   //////////////////////////////
   // form: FormGroup = new FormGroup({
@@ -45,7 +52,9 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private sessionStorageService: SessionStorageService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private IAMService: IAMService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -62,8 +71,42 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required]
     });
 
-    this.linkedInToken = this.route.snapshot.queryParams["code"];
-    console.log(this.linkedInToken)
+    this.linkedInAuth = this.route.snapshot.queryParams["code"];
+    console.log(this.linkedInAuth)
+
+    if(this.linkedInAuth){
+      console.log(this.linkedInAuth)
+      this.IAMService.getLinkedInAccess(this.linkedInAuth).subscribe(response => {
+        console.log(response)
+        if(response.access_token) {
+          this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
+            console.log(data)
+            console.log(data.id)
+            console.log(data.localizedLastName)
+            console.log(data.localizedFirstName)
+          })
+          this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
+            console.log(email)
+            console.log(email.elements)
+            this.string_email = JSON.stringify(email.elements[0])
+            this.number1_email = this.string_email.indexOf('Address":"') +10;
+            console.log(this.string_email.indexOf('"},"handle"'))
+            this.number2_email = this.string_email.indexOf('"},"handle"')
+            console.log(this.string_email.substring(this.number1_email, this.number2_email))
+            this.linkedIn_userEmail = this.string_email.substring(this.number1_email, this.number2_email);
+
+          })
+          this.IAMService.getLinkedInProfilePictrue(response.access_token).subscribe(pic => {
+            console.log(pic)
+            console.log(pic.displayImage.elements[3].identifiers[0].identifier)
+
+          })
+
+        }
+      })
+    } else {
+      console.log("undefined")
+    }
   }
 
   linkedInCredentials = {
@@ -132,6 +175,17 @@ export class LoginComponent implements OnInit {
     this.sessionStorageService.removeSessionStorage('email');
     //this.sessionStorageService.removeID('id');
     this.sessionStorageService.removeSessionStorage('id');
+  }
+
+
+  forget_Password!:string;
+  forgetPassword(content:any, requestId: number){
+    this.modalService.open(content, {centered: true });
+    // change to default password "1!Qazxcnm", then send email
+  }
+  sendRequest(){
+    console.log("Send Request Action")
+    this.modalService.dismissAll();
   }
 
 }

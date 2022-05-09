@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras, Params } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthService } from "../../services/auth.service";
@@ -66,6 +66,7 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthService,
     private alertService: AlertService,
+    private route: ActivatedRoute,
     // private userService: UserService,
     // private alertService: AlertService
   ) { 
@@ -73,7 +74,15 @@ export class RegisterComponent implements OnInit {
     this.minDate = new Date(currentYear - 100, 0, 1);
     this.maxDate = new Date
   }
-  
+  linkedInAuth='';
+  string_email: any;
+  linkedIn_id:any;
+  linkedIn_userEmail: any;
+  linkedIn_firstName:any;
+  linkedIn_lastName:any;
+  number1_email:any;
+  number2_email:any;
+  // string3 = '{"handle~":{"emailAddress":"freeejob4@gmail.com"},"handle":"urn:li:emailAddress:8371471861"}'
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       firstName: ['', Validators.required],
@@ -95,6 +104,72 @@ export class RegisterComponent implements OnInit {
       profilePicUrl: ['']
     });
 
+    this.linkedInAuth = this.route.snapshot.queryParams["code"];
+    console.log(this.linkedInAuth)
+    console.log(this.route.snapshot.queryParams)
+    if(this.linkedInAuth && this.linkedInAuth != ''){
+      console.log(this.linkedInAuth)
+      this.IAMService.getLinkedInAccess(this.linkedInAuth).subscribe(response => {
+        console.log(response)
+        if(response.access_token) {
+          this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
+            console.log(data)
+            console.log(data.id)
+            console.log(data.localizedLastName)
+            console.log(data.localizedFirstName)
+            this.linkedIn_id = data.id;
+            this.linkedIn_lastName = data.localizedLastName;
+            this.linkedIn_firstName = data.localizedFirstName;
+
+            // this.user.firstName = this.linkedIn_firstName;
+            // this.user.lastName = this.linkedIn_lastName;
+            // this.user.linkedInAcct = this.linkedIn_id;
+
+            this.IAMService.registerLinkedInUser(this.linkedIn_firstName, this.linkedIn_lastName, this.linkedIn_id)
+              .pipe(first())
+              .subscribe(e =>{
+                this.alertService.success('Registration Successful', true);
+                console.log(e);
+                this.router.navigate(['/login']);
+            });
+          })
+          this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
+            console.log(email)
+            console.log(email.elements)
+            this.string_email = JSON.stringify(email.elements[0])
+            this.number1_email = this.string_email.indexOf('Address":"') +10;
+            console.log(this.string_email.indexOf('"},"handle"'))
+            this.number2_email = this.string_email.indexOf('"},"handle"')
+            console.log(this.string_email.substring(this.number1_email, this.number2_email))
+            this.linkedIn_userEmail = this.string_email.substring(this.number1_email, this.number2_email);
+
+          })
+          this.IAMService.getLinkedInProfilePictrue(response.access_token).subscribe(pic => {
+            console.log(pic)
+            // console.log(pic.displayImage.elements[3].identifiers[0].identifier)
+
+          })
+          
+          setTimeout(() => {                    //To check is it succussful registered
+            
+          }, 1000);
+        }
+      })
+    } else {
+      console.log("undefined")
+    }
+  }
+
+  linkedInCredentials = {
+    clientId: "86dyp3ax33yxnv",
+    redirectUrl: "http://localhost:4200/register",
+    scope: "r_liteprofile%20r_emailaddress%20w_member_social" // To read basic user profile data and email
+  }
+
+  linkedin(){
+    window.location.href = `https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=${
+      this.linkedInCredentials.clientId
+    }&redirect_uri=${this.linkedInCredentials.redirectUrl}&scope=${this.linkedInCredentials.scope}`;
   }
 
   get f() { return this.registerForm.controls; }
