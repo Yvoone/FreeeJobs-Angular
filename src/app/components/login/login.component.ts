@@ -111,7 +111,7 @@ export class LoginComponent implements OnInit {
 
   linkedInCredentials = {
     clientId: "86dyp3ax33yxnv",
-    redirectUrl: "http://localhost:4200/login",
+    redirectUrl: "https://freeejobs-web.herokuapp.com/login",
     scope: "r_liteprofile%20r_emailaddress" // To read basic user profile data and email
   }
 

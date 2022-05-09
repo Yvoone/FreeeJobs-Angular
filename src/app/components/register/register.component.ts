@@ -162,7 +162,7 @@ export class RegisterComponent implements OnInit {
 
   linkedInCredentials = {
     clientId: "86dyp3ax33yxnv",
-    redirectUrl: "http://localhost:4200/register",
+    redirectUrl: "https://freeejobs-web.herokuapp.com/register",
     scope: "r_liteprofile%20r_emailaddress%20w_member_social" // To read basic user profile data and email
   }
 
