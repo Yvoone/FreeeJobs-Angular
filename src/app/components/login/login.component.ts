@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
 
   linkedInAuth = "";
 
+  linkedIn_id:any;
   string_email: any;
   linkedIn_userEmail: any;
   number1_email:any;
@@ -84,10 +85,10 @@ export class LoginComponent implements OnInit {
             console.log("idIDidIDIDid: ",data.id)
             console.log(data.localizedLastName)
             console.log(data.localizedFirstName)
-
+            this.linkedIn_id = data.id;
             setTimeout(() => {
-              console.log('coming here?')
-              this.authService.linkedInLogin(data.id);
+              console.log('coming here?', this.linkedIn_id)
+              this.authService.linkedInLogin(this.linkedIn_id);
             }, 1000);
           })
           this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
