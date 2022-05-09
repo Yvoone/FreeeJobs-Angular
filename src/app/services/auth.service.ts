@@ -92,6 +92,39 @@ export class AuthService {
     });
   }
 
+  linkedInLogin(id:any){
+    // login(email: string, password: string){
+      console.log("auth service login in")
+      this.IAMService.login(id).subscribe(e=>{
+        console.log(e)
+        if (e.loginStatus == 1) {
+          this.loggedIn.next(true);
+          this.loggedIn2.next('loggin');
+          sessionStorage.clear();
+          console.log(this.sessionStorageService.getSessionStorage('email'));
+          //this.sessionStorageService.setEmail('email', user.email);
+          this.sessionStorageService.setSessionStorage('email', id);
+          //this.sessionStorageService.setID('id', e.userId)
+          this.sessionStorageService.setSessionStorage('id', e.userId);
+          this.sessionStorageService.setSessionStorage('jobId', 0);
+          setTimeout(() => {
+            this.router.navigate(['/otp']);
+          }, 100);
+          this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
+            this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
+            console.log("sessiontimeout:"+sessionStorage.getItem("sessionTimeout"));
+          });
+          // this.router.navigateByUrl("")
+        } else if(e.loginStatus == 0) {
+          this.alertService.error('Login Fail', true);
+        } else if(e.loginStatus == 2){
+          console.log("login status == 2")
+        } else if(e.loginStatus == 3){
+          this.alertService.error('The Account is locked after 3 fail attempts. Please contact admin.', true)
+        }
+      });
+    }
+
   // //Login WITHOUT API
   // login(email: string, password: string){
   //   console.log("auth service login in")

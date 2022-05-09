@@ -84,6 +84,8 @@ export class LoginComponent implements OnInit {
             console.log(data.id)
             console.log(data.localizedLastName)
             console.log(data.localizedFirstName)
+
+            this.authService.linkedInLogin(data.id);
           })
           this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
             console.log(email)
