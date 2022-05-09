@@ -95,7 +95,7 @@ export class AuthService {
   linkedInLogin(id:any){
     // login(email: string, password: string){
       console.log("auth service login in")
-      this.IAMService.login(id).subscribe(e=>{
+      this.IAMService.linkedInLogin(id).subscribe(e=>{
         console.log(e)
         if (e.loginStatus == 1) {
           this.loggedIn.next(true);
