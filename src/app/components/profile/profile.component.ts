@@ -152,7 +152,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       let dateOfBirth = new Date(this.user.dob)  // added by John
       // TO DO pic/CV get from backend
       console.log(this.user.profilePicUrl);
-      this.showImage = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      this.showImage = this.user.profilePicUrl;
+      if (!(this.showImage?.includes('default'))){
+        this.showImage = this.user.profilePicUrl + this.sessionStorageService.getSessionStorage('id') + '.jpg';
+      }
+      // this.showImage = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
       console.log(this.showImage)
 
       this.showPDF = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
@@ -384,6 +388,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       console.log(this.myInputVariable)
       this.myInputVariable.nativeElement.value = ''; // clear uploaded image
       this.url = null;
+      this.uploadImagePending = false;
     } else if(type == 'PDF') {
       console.log("Delete Pending Upload-PDF")
       console.log(document.getElementById('pdfPreview'))
@@ -391,6 +396,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       console.log(this.myInputPDF)
       this.myInputPDF.nativeElement.value = '';
       this.pdfUrl = null;
+      this.uploadPDFPending = false;
     }
 
   }
@@ -423,6 +429,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           aboutMe: this.editProfileForm.value.aboutMe,
           aboutMeClient: this.editProfileForm.value.aboutMeClient,
           skills: this.editProfileForm.value.skills,
+          profilePicUrl: 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
         }
   
         this.iamService.updateUser(editObj).subscribe((result) => {
