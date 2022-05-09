@@ -2,6 +2,7 @@ import { HostListener } from '@angular/core';
 import { Component, OnInit, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { IAMService } from 'src/app/services/iam.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class OtpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private sessionStorageService: SessionStorageService) { }
+    private sessionStorageService: SessionStorageService,
+    private iamService: IAMService) { }
 
   ngOnInit(): void {
     this.otpForm = this.formBuilder.group({
@@ -51,12 +53,26 @@ export class OtpComponent implements OnInit {
   }
 
   goBackToLogin(){
-    this.authService.logout();
+    this.logout();
   }
 
   @HostListener('window:popstate', ['$event'])
   onPopState() {
-    this.authService.logout();
+    this.logout();
+  }
+
+  logout(){
+    this.iamService.logout(this.sessionStorageService.getSessionStorage('id')).subscribe(e=>{
+      if(e.status!.statusCode==200){
+        //this.sessionStorageService.removeEmail('email');
+        this.sessionStorageService.removeSessionStorage('email');
+        // this.sessionStorageService.removeID('id');
+        this.sessionStorageService.removeSessionStorage('id');
+        this.authService.logout();                      // {3}
+        console.log("logout action")
+      }
+    });
+    
   }
 
 }
