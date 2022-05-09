@@ -12,8 +12,8 @@ import { IAPIResponse } from '../entities/apiresponse';
 })
 export class IAMService {
 
-  // private IAMUrl = '/iam';
-  private IAMUrl = 'https://freeejobs-iam-ms.herokuapp.com/iam'; //Cloud URL
+  private IAMUrl = '/iam';
+  // private IAMUrl = 'https://freeejobs-iam-ms.herokuapp.com/iam'; //Cloud URL
 
   constructor(private httpClient: HttpClient,
     private commonService: CommonService) { }
