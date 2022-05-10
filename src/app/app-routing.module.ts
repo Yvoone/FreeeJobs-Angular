@@ -12,6 +12,7 @@ import { AdminComponent } from "./components/admin/admin.component";
 import { PageNotFoundComponent } from './components/common/page-not-found/page-not-found.component';
 import { AccessDeniedComponent } from './components/common/access-denied/access-denied.component';
 import { OtpComponent } from './components/otp/otp.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent, canActivate: [ AuthGuard]},
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path: 'pageNotFound', component: PageNotFoundComponent},
   {path: 'accessDenied', component: AccessDeniedComponent},
   {path: 'otp', component: OtpComponent},
+  {path: 'resetPassword', component: ResetPasswordComponent},
   { path: '**', redirectTo: ''}
 ];
 

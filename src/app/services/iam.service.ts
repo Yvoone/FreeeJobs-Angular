@@ -390,5 +390,14 @@ export class IAMService {
     }
     return this.httpClient.post<IAPIResponse<any>>(URL, reqBody);
   }
+  changePassword(email:any, password:any, tempPassward:any): Observable<any> {
+    const URL = this.IAMUrl + '/changePassword';
+    let reqBody: any = {
+      "email": email,
+      "password": password,
+      "tempPassward":tempPassward
+    }
+    return this.httpClient.post<IAPIResponse<any>>(URL, reqBody);
+  }
 
 }

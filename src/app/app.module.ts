@@ -33,6 +33,7 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MY_DATE_FORMATS } from './models/date-formats';
 import { Observable } from 'rxjs';
 import { OtpComponent } from './components/otp/otp.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -90,7 +91,8 @@ export class XhrInterceptor implements HttpInterceptor {
     AdminComponent,
     PageNotFoundComponent,
     AccessDeniedComponent,
-    OtpComponent
+    OtpComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserAnimationsModule,
