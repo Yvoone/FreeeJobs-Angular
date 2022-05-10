@@ -269,6 +269,30 @@ export class IAMService {
     return data.asObservable();
   }
 
+  linkedInLogin_test(linkedInAuth: any): Observable<any> {
+    const URL = this.IAMUrl + '/linkedInLogin';
+    let reqBody: any = {
+      "authCode": linkedInAuth
+    }
+    var data = new Subject<any>();
+    this.httpClient.post<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{
+      if(response.status!.statusCode!=200){
+        this.commonService.backendErrorLoginOnly(response.status!);
+        data.next(response.data!);
+      }else{
+        this.commonService.logInfo(response.status!);
+        data.next(response.data!);
+      }
+    });
+    return data.asObservable();
+  }
+
+  linkedInLogin_test2(linkedInAuth: any): Observable<any> {
+    const URL = this.IAMUrl + '/linkedInLogin';
+    let params = new HttpParams().set('authCode', linkedInAuth);
+    return this.httpClient.get<IAPIResponse<any>>(URL, {params});
+  }
+
 
   getSessionTimeout(userId: number): Observable<any> {
     const URL = this.IAMUrl + '/getUserSessionTimeout';

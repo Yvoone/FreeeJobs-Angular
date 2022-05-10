@@ -73,46 +73,55 @@ export class LoginComponent implements OnInit {
     });
 
     this.linkedInAuth = this.route.snapshot.queryParams["code"];
-    console.log(this.linkedInAuth)
+    console.log("linkedIn_Auth", this.linkedInAuth)
 
     if(this.linkedInAuth){
-      console.log(this.linkedInAuth)
-      this.IAMService.getLinkedInAccess_login(this.linkedInAuth).subscribe(response => {
-        console.log(response)
-        if(response.access_token) {
-          this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
-            console.log(data)
-            console.log("idIDidIDIDid: ",data.id)
-            console.log(data.localizedLastName)
-            console.log(data.localizedFirstName)
-            this.linkedIn_id = data.id;
-            setTimeout(() => {
-              console.log('coming here?', this.linkedIn_id)
-              this.authService.linkedInLogin(this.linkedIn_id);
-            }, 1000);
-          })
-          this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
-            console.log(email)
-            console.log(email.elements)
-            this.string_email = JSON.stringify(email.elements[0])
-            this.number1_email = this.string_email.indexOf('Address":"') +10;
-            console.log(this.string_email.indexOf('"},"handle"'))
-            this.number2_email = this.string_email.indexOf('"},"handle"')
-            console.log(this.string_email.substring(this.number1_email, this.number2_email))
-            this.linkedIn_userEmail = this.string_email.substring(this.number1_email, this.number2_email);
-
-          })
-          this.IAMService.getLinkedInProfilePictrue(response.access_token).subscribe(pic => {
-            console.log(pic)
-            console.log(pic.displayImage.elements[3].identifiers[0].identifier)
-
-          })
-
-        }
+      this.IAMService.linkedInLogin_test(this.linkedInAuth).subscribe(response => {
+        console.log("1st", response)
       })
-    } else {
-      console.log("undefined")
+      this.IAMService.linkedInLogin_test2(this.linkedInAuth).subscribe(response => {
+        console.log("2nd",response)
+      })
     }
+
+    // if(this.linkedInAuth){
+    //   console.log(this.linkedInAuth)
+    //   this.IAMService.getLinkedInAccess_login(this.linkedInAuth).subscribe(response => {
+    //     console.log(response)
+    //     if(response.access_token) {
+    //       this.IAMService.getLinkedInProfileName(response.access_token).subscribe(data => {
+    //         console.log(data)
+    //         console.log("idIDidIDIDid: ",data.id)
+    //         console.log(data.localizedLastName)
+    //         console.log(data.localizedFirstName)
+    //         this.linkedIn_id = data.id;
+    //         setTimeout(() => {
+    //           console.log('coming here?', this.linkedIn_id)
+    //           this.authService.linkedInLogin(this.linkedIn_id);
+    //         }, 100);
+    //       })
+    //       this.IAMService.getLinkedInProfileEmail(response.access_token).subscribe(email => {
+    //         console.log(email)
+    //         console.log(email.elements)
+    //         this.string_email = JSON.stringify(email.elements[0])
+    //         this.number1_email = this.string_email.indexOf('Address":"') +10;
+    //         console.log(this.string_email.indexOf('"},"handle"'))
+    //         this.number2_email = this.string_email.indexOf('"},"handle"')
+    //         console.log(this.string_email.substring(this.number1_email, this.number2_email))
+    //         this.linkedIn_userEmail = this.string_email.substring(this.number1_email, this.number2_email);
+
+    //       })
+    //       this.IAMService.getLinkedInProfilePictrue(response.access_token).subscribe(pic => {
+    //         console.log(pic)
+    //         console.log(pic.displayImage.elements[3].identifiers[0].identifier)
+
+    //       })
+
+    //     }
+    //   })
+    // } else {
+    //   console.log("undefined")
+    // }
   }
 
   linkedInCredentials = {
