@@ -165,28 +165,28 @@ export class CommonService {
     if(response !instanceof User){
       errors.push("User is invalid");
     }
-    if(typeof response.firstName!="string"){
+    if(response.firstName!=null && typeof response.firstName!="string"){
       errors.push("first name not string");
     }
-    if(typeof response.lastName!="string"){
+    if(response.lastName!=null && typeof response.lastName!="string"){
       errors.push("last name not string");
     }
-    if(typeof response.email!="string"||!this.emailRegEx.test(response.email)){
+    if(response.email!=null && (typeof response.email!="string"||!this.emailRegEx.test(response.email))){
       errors.push("email invalid");
     }
-    if(typeof response.contactNo!="string"||!this.contactNumberRegEx.test(response.contactNo)){
+    if(response.contactNo!=null && (typeof response.contactNo!="string"||!this.contactNumberRegEx.test(response.contactNo))){
       errors.push("contact number invalid");
     }
-    if(typeof response.gender!="string"){
+    if(response.gender!=null && typeof response.gender!="string"){
       errors.push("gender not string");
     }
-    if(typeof response.aboutMe!="string"){
+    if(response.aboutMe!=null && typeof response.aboutMe!="string"){
       errors.push("about me not string");
     }
-    if(typeof response.skills!="string"){
+    if(response.skills!=null && typeof response.skills!="string"){
       errors.push("skills not string");
     }
-    if(typeof response.professionalTitle!="string"){
+    if(response.professionalTitle!=null && typeof response.professionalTitle!="string"){
       errors.push("professional title not string");
     }
     if(errors.length>0){
