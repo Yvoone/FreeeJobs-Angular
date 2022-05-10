@@ -147,6 +147,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   //End here
 
   getCurrentUserDetails(id: number) {
+    console.log("Get User Info", this.showImage, this.showPDF, this.PDF_url)
+    this.showImage = '';
+    this.PDF_url = ''
     this.iamService.getUserProfileWithEmailByUserId(id).subscribe(response => {
       this.commonService.checkUserInfoBeforeDisplay(response, this.classname);
       this.user = response;
@@ -503,9 +506,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     }
     
-    // setTimeout(() => {
-    //   this.refresh();
-    // }, 1000);
+    setTimeout(() => {
+      this.refresh();
+    }, 1000);
   }
 
   refresh() {
