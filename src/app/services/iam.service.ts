@@ -183,7 +183,8 @@ export class IAMService {
       "aboutMeClient": user.aboutMeClient,
       "skills": user.skills,
       "professionalTitle": user.professionalTitle,
-      "profilePicUrl": user.profilePicUrl
+      "profilePicUrl": user.profilePicUrl,
+      "resumeUrl": user.resumeUrl
     }
     var data = new Subject<any>();
     this.httpClient.put<IAPIResponse<any>>(URL, reqBody).subscribe(response=>{

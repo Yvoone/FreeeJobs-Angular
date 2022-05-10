@@ -443,11 +443,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
           profilePicUrl: './assets/img/default.png',
           resumeUrl:''
         }
-        if(this.uploadImagePending) {
+        if(this.uploadImagePending || !(this.showImage?.includes('default'))) {
           editObj.profilePicUrl = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
         }
-        if(this.uploadPDFPending) {
+        if(this.uploadPDFPending || this.showPDF == 'View Uploaded Resume') {
           editObj.resumeUrl = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
+          console.log("uploaded PDF? ", editObj.resumeUrl)
         }
   
         this.iamService.updateUser(editObj).subscribe((result) => {
@@ -458,6 +459,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
           });
           this.alert = "Profile Updated Successfully!";
           this.alertService.success('Save Successfully', true);
+
+          // setTimeout(() => {
+          //   this.refresh();
+          // }, 1000);
         })
 
         if(this.uploadImagePending) {
@@ -506,9 +511,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     }
     
-    setTimeout(() => {
-      this.refresh();
-    }, 1000);
+    
   }
 
   refresh() {
