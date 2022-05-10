@@ -289,8 +289,12 @@ export class IAMService {
 
   linkedInLogin_test2(linkedInAuth: any): Observable<any> {
     const URL = this.IAMUrl + '/linkedInLogin';
-    let params = new HttpParams().set('authCode', linkedInAuth);
-    return this.httpClient.post<IAPIResponse<any>>(URL, {params});
+    let reqBody: any = {
+      "authCode": linkedInAuth
+    }
+    console.log("In IAMMMS",linkedInAuth )
+    // let params = new HttpParams().set('authCode', linkedInAuth);
+    return this.httpClient.post<IAPIResponse<any>>(URL, reqBody);
   }
 
 
