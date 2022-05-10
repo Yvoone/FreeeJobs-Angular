@@ -64,8 +64,9 @@ export class AuthService {
     console.log("auth service login in")
     this.IAMService.login(user).subscribe(e=>{
       console.log(e)
+      console.log("userRole: ", e.userRole)
       if (e.loginStatus == 1) {
-        this.loggedIn.next(true);
+        this.loggedIn.next(false);
         this.loggedIn2.next('loggin');
         sessionStorage.clear();
         console.log(this.sessionStorageService.getSessionStorage('email'));
@@ -74,8 +75,14 @@ export class AuthService {
         //this.sessionStorageService.setID('id', e.userId)
         this.sessionStorageService.setSessionStorage('id', e.userId);
         this.sessionStorageService.setSessionStorage('jobId', 0);
+        this.sessionStorageService.setSessionStorage('userRole', e.userRole);
         setTimeout(() => {
-          this.router.navigate(['/otp']);
+          if(e.userRole==1){
+            this.router.navigate(['/otp']);
+          } else if(e.userRole==2) {
+            this.loggedIn.next(true);
+            this.router.navigate(['/admin']);
+          }
         }, 100);
         this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
           this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
@@ -92,38 +99,35 @@ export class AuthService {
     });
   }
 
-  linkedInLogin(id:any){
+  linkedInLogin(data:any){
     // login(email: string, password: string){
       console.log("auth service login in")
-      console.log("auth ID: ",id)
-      this.IAMService.linkedInLogin(id).subscribe(e=>{
-        console.log("after calling linkedInLogin: ", e)
-        if (e.loginStatus == 1) {
+        console.log("after calling linkedInLogin: ", data)
+        if (data.loginStatus == 1) {
           this.loggedIn.next(true);
           this.loggedIn2.next('loggin');
           sessionStorage.clear();
           console.log(this.sessionStorageService.getSessionStorage('email'));
           //this.sessionStorageService.setEmail('email', user.email);
-          this.sessionStorageService.setSessionStorage('email', id);
+          this.sessionStorageService.setSessionStorage('email', data.linkedInDTO.email);
           //this.sessionStorageService.setID('id', e.userId)
-          this.sessionStorageService.setSessionStorage('id', e.userId);
+          this.sessionStorageService.setSessionStorage('id', data.userId);
           this.sessionStorageService.setSessionStorage('jobId', 0);
           setTimeout(() => {
             this.router.navigate(['/dashboard']);
           }, 100);
-          this.IAMService.getSessionTimeout(Number(e.userId)).subscribe(e=>{
+          this.IAMService.getSessionTimeout(Number(data.userId)).subscribe(e=>{
             this.sessionStorageService.setSessionStorage('sessionTimeout', new Date(e));
             console.log("sessiontimeout:"+sessionStorage.getItem("sessionTimeout"));
           });
           // this.router.navigateByUrl("")
-        } else if(e.loginStatus == 0) {
+        } else if(data.loginStatus == 0) {
           this.alertService.error('Login Fail', true);
-        } else if(e.loginStatus == 2){
+        } else if(data.loginStatus == 2){
           console.log("login status == 2")
-        } else if(e.loginStatus == 3){
+        } else if(data.loginStatus == 3){
           this.alertService.error('The Account is locked after 3 fail attempts. Please contact admin.', true)
         }
-      });
     }
 
   // //Login WITHOUT API
@@ -161,6 +165,7 @@ export class AuthService {
         console.log(e)
         if (e == "Verified") {
           setTimeout(() => {
+            this.loggedIn.next(true);
             this.router.navigate(['/dashboard']);
           }, 100);
         } else if(e == "Expired") {

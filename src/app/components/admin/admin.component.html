@@ -10,15 +10,58 @@
             <a ngbNavLink>Password Change Requests</a>
             <!-- First content -->
             <ng-template ngbNavContent class="tab-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email Address</th>
+                            <th>Action</th>
 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tbody>
+                            <ng-container *ngFor="let data of list; let i=index">
+                                <tr>
+                                    <td>
+                                        {{data.email}}
+                                    </td>
+                                    <td>
+                                        <button (click)="resetPassword(reset, data.email, data.userId)">Reset Password</button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                    </tbody>
+                </table>
             </ng-template>
         </li>
-        <li ngbNavItem>
-            <a ngbNavLink>Manage Users</a>
-            <!-- First content -->
-            <ng-template ngbNavContent class="tab-content">
-
-            </ng-template>
-        </li>
+        
     </ul>
+    <div [ngbNavOutlet]="nav"></div>
+
+    <ng-template #reset let-modal class="mt-5">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Reset Password</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <mat-card>
+            <mat-card-content style="text-align: center;">
+
+                <div align='left'>
+                    <label for="name" style="text-align: left;">This ID is requesting for password change</label>
+                </div>
+
+                <mat-card-actions>
+                    <button type="button" class="btn btn-dark mr-1" (click)="modal.dismiss('Cross click')">Cancel</button>
+                    <button type="button" class="btn btn-dark" (click)="confirmReset()">Confirm</button>
+                    <!-- <a href="mailto:abc@gmail.com?Subject=Password is reset"
+                        target="_top" style="color: #1C3B98;">
+                        Send Email&nbsp;
+                    </a> -->
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
 </div>

@@ -366,5 +366,29 @@ export class IAMService {
     return data.asObservable();
   }
 
+  forgetPassword(email:any): Observable<any> {
+    const URL = this.IAMUrl + '/forgetPassword';
+    let reqBody: any = {
+      "email": email
+    }
+    console.log("email: ", email )
+    // let params = new HttpParams().set('authCode', linkedInAuth);
+    return this.httpClient.post<IAPIResponse<any>>(URL, reqBody);
+  }
+
+  getUsersToResetPassword(): Observable<any> {
+    const URL = this.IAMUrl + '/getUsersToResetPassword';
+    // let params = new HttpParams().set('authCode', linkedInAuth);
+    return this.httpClient.get<IAPIResponse<any>>(URL);
+  }
+
+  informResetPassword(email:any, id:any): Observable<any> {
+    const URL = this.IAMUrl + '/informResetPassword';
+    let reqBody: any = {
+      "email": email,
+      "userId": id
+    }
+    return this.httpClient.post<IAPIResponse<any>>(URL, reqBody);
+  }
 
 }

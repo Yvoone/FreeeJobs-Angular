@@ -81,6 +81,10 @@ export class LoginComponent implements OnInit {
       // })
       this.IAMService.linkedInLogin_test2(this.linkedInAuth).subscribe(response => {
         console.log("2nd",response)
+        setTimeout(() => {
+          console.log('coming here?', response)
+          this.authService.linkedInLogin(response.data);
+        }, 100);
       })
     }
 
@@ -194,13 +198,29 @@ export class LoginComponent implements OnInit {
 
 
   forget_Password!:string;
+  forget_Password_msg!:string;
+  forget_Password_msg_display:boolean=false;
+  emailRegEx = /^(([^<>()[\]\\.,;:\s@!\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]{2,}\.)+[a-zA-Z]{2,}))$/;
+  emailRegEx_format = new RegExp(this.emailRegEx)
   forgetPassword(content:any, requestId: number){
     this.modalService.open(content, {centered: true });
     // change to default password "1!Qazxcnm", then send email
   }
-  sendRequest(){
-    console.log("Send Request Action")
-    this.modalService.dismissAll();
+  
+  sendRequest(e:any){
+    console.log(this.emailRegEx_format.test(e))
+    if(this.emailRegEx_format.test(e)) {
+      console.log("Send Request Action", e)
+      this.IAMService.forgetPassword(e).subscribe(response => {
+          console.log(response)
+      })
+      this.forget_Password_msg = 'Correct Format';
+      this.modalService.dismissAll();
+      this.forget_Password = '';
+    } else {
+      this.forget_Password_msg_display = true;
+      this.forget_Password_msg = 'Wrong Email Format, Please Input Again.'
+    }
   }
 
 }
