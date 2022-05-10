@@ -54,6 +54,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   selectedPDFName!:string;
   showImage!:string;
   showPDF!: string;
+  PDF_url!:string;
   alert!: string;
 
   classname: string = ProfileComponent.name;
@@ -159,7 +160,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       // this.showImage = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.jpg';
       console.log(this.showImage)
 
-      this.showPDF = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
+      console.log(this.user.resumeUrl)
+      if(!this.user.resumeUrl){
+        this.showPDF = ''
+      } else {
+        this.showPDF = 'View Uploaded Resume'
+        this.PDF_url = this.user.profilePicUrl + this.sessionStorageService.getSessionStorage('id') + '.pdf';
+      }
+      // this.showPDF = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'+this.sessionStorageService.getSessionStorage('id') + '.pdf';
 
       this.editProfileForm.patchValue({
         'firstName': this.user.firstName,
@@ -429,7 +437,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
           aboutMe: this.editProfileForm.value.aboutMe,
           aboutMeClient: this.editProfileForm.value.aboutMeClient,
           skills: this.editProfileForm.value.skills,
-          profilePicUrl: 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
+          profilePicUrl: './assets/img/default.png',
+          resumeUrl:''
+        }
+        if(this.uploadImagePending) {
+          editObj.profilePicUrl = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
+        }
+        if(this.uploadPDFPending) {
+          editObj.resumeUrl = 'https://freeejobs-iam.s3.ap-southeast-1.amazonaws.com/'
         }
   
         this.iamService.updateUser(editObj).subscribe((result) => {

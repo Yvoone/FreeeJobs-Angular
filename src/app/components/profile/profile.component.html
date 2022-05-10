@@ -43,16 +43,21 @@
                     <div class="col-auto mr-auto">
                         <div class="skills" *ngIf="!clientProfile"><strong>Skills: </strong> {{ user.skills }} </div>
                         <div class="resume" *ngIf="!clientProfile">
-                            <a href="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-file-earmark-text" viewBox="0 0 16 16">
-                                    <path
-                                        d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
-                                    <path
-                                        d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                                </svg>
-                                <span class="alignWithSvgRight">View Resume</span>
-                            </a>
+                            <ng-container *ngIf="this.showPDF == ''">
+                                No Resume Uploaded
+                            </ng-container>
+                            <ng-container *ngIf="this.showPDF == 'View Uploaded Resume'">
+                                <a href="{{PDF_url}}" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                                        <path
+                                            d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                    </svg>
+                                    <span class="alignWithSvgRight">View Resume</span>
+                                </a>
+                            </ng-container>
                         </div>
                     </div>
                     <div class="align-self-end">
@@ -98,18 +103,21 @@
                                     <div class="border-container">
                                         <div class="icons fa-4x" *ngIf="!pdfUrl">
                                         </div>
-                                        <div>Upload Resume</div>
+                                        <div>Upload Resume:</div>
                                         <ng-container *ngIf="uploadPDFPending" >
                                             <!-- {{pdfUrl}}/1 -->
-                                            <div id="pdfPreview">{{uploadedPDFName}}</div>
+                                            <div id="pdfPreview">
+                                                {{uploadedPDFName}}
+                                                
+                                                <button type="button" class="close" aria-label="Close" (click)="removeImage('PDF')"
+                                                    *ngIf="pdfUrl">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
                                         </ng-container>
                                         <ng-container *ngIf="!uploadPDFPending" id="pdfPreview">
                                             {{showPDF}}
                                         </ng-container>
-                                        <button type="button" class="close" aria-label="Close" (click)="removeImage('PDF')"
-                                            *ngIf="pdfUrl">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
                                         <input type="file" (change)="onPDFChanged($event)" #inputPDFFile>
                                     </div>
                                 </div>
