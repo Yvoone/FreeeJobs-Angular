@@ -76,9 +76,9 @@ export class LoginComponent implements OnInit {
     console.log("linkedIn_Auth", this.linkedInAuth)
 
     if(this.linkedInAuth){
-      this.IAMService.linkedInLogin_test(this.linkedInAuth).subscribe(response => {
-        console.log("1st", response)
-      })
+      // this.IAMService.linkedInLogin_test(this.linkedInAuth).subscribe(response => {
+      //   console.log("1st", response)
+      // })
       this.IAMService.linkedInLogin_test2(this.linkedInAuth).subscribe(response => {
         console.log("2nd",response)
       })
