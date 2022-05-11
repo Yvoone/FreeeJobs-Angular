@@ -109,7 +109,9 @@ export class AuthService {
           sessionStorage.clear();
           console.log(this.sessionStorageService.getSessionStorage('email'));
           //this.sessionStorageService.setEmail('email', user.email);
-          this.sessionStorageService.setSessionStorage('email', data.linkedInDTO.email);
+          if(data.linkedInDTO.email){
+            this.sessionStorageService.setSessionStorage('email', data.linkedInDTO.email);
+          }
           //this.sessionStorageService.setID('id', e.userId)
           this.sessionStorageService.setSessionStorage('id', data.userId);
           this.sessionStorageService.setSessionStorage('jobId', 0);
